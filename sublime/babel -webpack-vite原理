@@ -1,0 +1,2530 @@
+词法分析
+词法解析器(Tokenizer)在这个阶段将字符串形式的代码转换为Tokens(令牌). Tokens 可以视作是一些语法片段组成的数组. 例如for (const item of items) {} 词法解析后的结果如下:
+
+
+语法分析
+这个阶段语法解析器(Parser)会把Tokens转换为抽象语法树(Abstract Syntax Tree，AST)
+
+
+
+
+遍历（编辑AST，这一步称为transforming）
+接着就是**转换(Transform)**了，转换阶段会对 AST 进行遍历，在这个过程中对节点进行增删查改。Babel 所有插件都是在这个阶段工作, 比如语法转换、代码压缩。
+
+AST转化器
+
+代码生成：
+Javascript In Javascript Out, 最后阶段还是要把 AST 转换回字符串形式的Javascript，同时这个阶段还会生成Source Map。
+
+
+
+AST: 它就是一棵'对象树'，用来表示代码的语法结构。
+
+
+babel初步了解：https://zhuanlan.zhihu.com/p/352878760
+
+npm install --save-dev @babel/core @babel/cli @babel/preset-env
+
+1：：Babel 自带了一个内置的 CLI 命令行工具，可通过命令行编译文件
+
+
+
+
+架构和原理 + 实战（https://juejin.cn/post/6844903956905197576#babel-%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B）
+
+
+babel的常用插件：：：
+@babel/plugin-proposal-class-properties
+(该插件可以让你在类中书写初始化字段)
+
+@babel/plugin-proposal-function-bind
+(该插件可以让你轻松的为某个方法绑定this)
+
+example:
+function Print() {
+    console.log(this.loginId);
+}
+
+const obj = {
+    loginId: "abc"
+};
+
+obj::Print(); //相当于：Print.call(obj);
+
+
+babel-plugin-transform-remove-console（打包后移除console.log）
+
+
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+
+
+
+
+@babel/plugin-transform-runtime（语法转码后生成的代码 有太多冗余的代码，插件可以把重复的函数声明代码集中在一个文件）
+
+@babel-plugin-import
+(组件库按需导入--在babel转码的时候，把整个库‘antd’的引用，变为’antd/lib/button’具体模块的引用。这样webpack收集依赖module就不是整个antd，而是里面的button)。
+
+example：
+plugins: [
+      react({
+        babel: {
+          plugins: [
+            [
+              'import',
+              {
+                libraryName: 'fnx-ui',
+                libraryDirectory: 'es',
+                style: true,
+              },
+            ],
+          ],
+        },
+      })]
+
+core-js polyfill的类库
+（core-js 是babel-polyfill 的底层依赖）
+
+代码案例演示：https://astexplorer.net/#/KJ8AjD6maa
+
+
+
+Webpack：：：
+Webpack是一种前端资源构建工具，一个静态模块打包器
+(将各种类型的资源，包括图片、css、js等，转译、组合、拼接、生成 JS 格式的 bundler 文件)
+
+社区围绕着 Webpack 衍生出了各种手脚架，比如 vue-cli、create-react-app，解决“用”的问题。
+
+文章地址：https://zhuanlan.zhihu.com/p/363928061
+
+webpack-dev-server
+
+先build——>bubdle(内存)——>启动（web server）
+
+vite--->启动 web server ————编译请求的文件到浏览器
+
+但是webpack 这类工具的做法是将所有模块提前编译、打包进bundle里，换句话说，不管模块是否会被执行，都要被编译和打包到bundle里。随着项目越来越大，打包后的bundle也越来越大，打包的速度自然会越来越慢。
+
+Webpack
+原理：：逐级递归识别依赖，构建依赖图谱->转化AST语法树->处理代码->转换为浏览器可识别的代码
+
+与vite的打包相比， webpack 会需要打包一个一个大体积的bundle.js？ 之前会产生打包需求的主要原因：
+
+浏览器环境并不支持模块化
+零散模块文件会产生大量的http请求（大量请求在浏览器端会出现并发请求资源的问题）
+
+而vite的打包原理是基于es新特性 Dynamic imports 实现的，那对老浏览器必然会有兼容问题 处理方案还是用大剑熟悉的 Polyfill。
+
+npm install dynamic-import-polyfill
+
+import dynamicImportPolyfill from 'dynamic-import-polyfill';
+
+// This needs to be done before any dynamic imports are used.
+dynamicImportPolyfill.initialize({
+  modulePath: '/public', // Defaults to '.'
+  importFunctionName: '$$import' // Defaults to '__import__'
+});
+
+vite源码分析::https://juejin.cn/post/6968793122029436959
+
+vite
+常见的模块规范
+commonjs
+amd
+umd
+ESM
+
+vite 在构建过程中使用esbuild进行构建，esbuild 是一个新的代码构建工具，近来构建速度及其迅猛，圈粉速度也很疯狂，它可以将 CommonJS / UMD 转换为 ESM 格式，转换ts, tsx文件等，它使用go编写，并编译成了机器码，利用paralleljs 的高并行优势，具有大量的并行算法
+
+使用esbuild 将 .tsx .jsx .vue 等文件转化成浏览器可以识别的js文件
+
+vite 的作用就是体现在了这里，vite的任务就是用koa起一个http请求，然后利用拦截器去拦截修改这些请求内容
+
+
+
+
+
+
+Lerna 是一个管理工具，用于管理包含多个软件包（package）的 JavaScript 项目
+
+
+
+
+
+vite-plugin-svg-icons
+用于生成 svg 雪碧图，方便在项目中使用 .svg 文件。
+
+
+vite-plugin-mock
+提供了本地和生产 mock 服务。
+
+优势在于本地使用，与传统使用 mockjs 不同，是可以真实在浏览器里看到请求记录，大大提高了开发效率。  
+
+
+
+
+移动端支持
+模板支持使用 vw/vh 做为移动端的布局单位，并默认集成了 postcss-px-to-viewport 插件。
+
+使用也很简单，只需将根目录下的 .postcss.config.js 文件修改为 postcss.config.js 即可，文件内具体配置信息可根据项目实际调整：
+
+module.exports = {
+    plugins: {
+        'postcss-px-to-viewport': {
+            // 需要转换的单位，默认为 px
+            unitToConvert: 'px',
+            // 视窗的宽度，对应的是我们设计稿的宽度
+            viewportWidth: 750,
+            // 指定 px 转换为视窗单位值的小数位数（很多时候无法整除）
+            unitPrecision: 3,
+            // 能转化为 vw 的属性列表
+            propList: ['*'],
+            // 指定需要转换成的视窗单位，建议使用 vw
+            viewportUnit: 'vw',
+            // 字体使用的视口单位
+            fontViewportUnit: 'vw',
+            // 指定不转换为视窗单位的类，可以自定义，可以无限添加,建议定义一至两个通用的类名
+            selectorBlackList: [
+                '.ignore'
+            ],
+            // 小于或等于 1px 不转换为视窗单位，你也可以设置为你想要的值
+            minPixelValue: 1,
+            // 允许在媒体查询中转换 px
+            mediaQuery: false
+        }
+    }
+}
+
+
+http://www.guofeian.cn/article_details/647258913514991616
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+babel:
+
+babel 源码分析 - 入口
+
+东都花神 2021-05-08 22:34:23  92  收藏
+分类专栏： babel js 工程化
+版权
+
+babel
+同时被 3 个专栏收录
+4 篇文章0 订阅
+订阅专栏
+
+js
+32 篇文章0 订阅
+订阅专栏
+
+工程化
+4 篇文章0 订阅
+订阅专栏
+babel 是日常工作中必不可少的依赖包，虽然天天在用，但是对于内部构造却了解不多，抽空看下了源码，从入口文件开始一步步解密 babel 是如何工作的。
+
+当我们使用 npm run babel 的时候会执行到下面的代码，具体位置是 babel-cli/src/babel/index.js。
+
+#!/usr/bin/env node
+
+import parseArgv from "./options";
+import dirCommand from "./dir";
+import fileCommand from "./file";
+
+const opts = parseArgv(process.argv);
+
+if (opts) {
+ // 🌵🌵🌵 执行这里 🌵🌵🌵
+  const fn = opts.cliOptions.outDir ? dirCommand : fileCommand;
+  fn(opts).catch(err => {
+    console.error(err);
+    process.exitCode = 1;
+  });
+} else {
+  process.exitCode = 2;
+}
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+这个这里会从 process 中获取配置信息，然后判断输入的是一个文件还是文件夹，假如我们的执行命令是
+babel src --out-dir lib 那么这里的对应生成的 opts 如下：
+
+{
+  babelOptions: {},
+  cliOptions: {
+    filename: undefined,
+    filenames: [ 'src' ],
+    extensions: undefined,
+    keepFileExtension: undefined,
+    outFileExtension: undefined,
+    watch: true,
+    skipInitialBuild: undefined,
+    outFile: undefined,
+    outDir: 'lib',
+    relative: undefined,
+    copyFiles: undefined,
+    copyIgnored: undefined,
+    includeDotfiles: undefined,
+    verbose: undefined,
+    quiet: undefined,
+    deleteDirOnStart: undefined,
+    sourceMapTarget: undefined
+  }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+因为我们只传入了入口文件 src 和出口文件 lib 所以其他配置都是空的，这里的 outDir 是存在的，所以会执行 dirCommand 命令，进入 dir.js 中会执行如下代码：
+
+  if (!cliOptions.skipInitialBuild) {
+    if (cliOptions.deleteDirOnStart) {
+      util.deleteDir(cliOptions.outDir);
+    }
+
+    fs.mkdirSync(cliOptions.outDir, { recursive: true });
+
+    startTime = process.hrtime();
+
+    for (const filename of cliOptions.filenames) {
+      // 🌵🌵🌵 执行 handle('src') 🌵🌵🌵
+      compiledFiles += await handle(filename);
+    }
+
+    if (!cliOptions.quiet) {
+      logSuccess();
+      logSuccess.flush();
+    }
+  }
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+也就是循环 filenames 输入然后传入到 handle 执行，这里对应就是执行 handle(‘src’)，接着是 handle 的代码：
+
+  async function handle(filenameOrDir: string): Promise<number> {
+    if (!fs.existsSync(filenameOrDir)) return 0;
+
+    const stat = fs.statSync(filenameOrDir);
+
+    if (stat.isDirectory()) {
+      const dirname = filenameOrDir;
+
+      let count = 0;
+
+      const files = util.readdir(dirname, cliOptions.includeDotfiles);
+      for (const filename of files) {
+        const src = path.join(dirname, filename);
+        // 🌵🌵🌵 执行这里 🌵🌵🌵
+        const written = await handleFile(src, dirname);
+        if (written) count += 1;
+      }
+
+      return count;
+    } else {
+      const filename = filenameOrDir;
+      const written = await handleFile(filename, path.dirname(filename));
+
+      return written ? 1 : 0;
+    }
+  }
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+这个方法会读取 src 目录下的所有文件，组成数组，然后逐个传入到 handleFile 中执行
+
+// 假设入口文件的目录结构如下
+// ├── src
+// │   └── index.js
+
+async function handleFile(src: string, base: string): Promise<boolean> {
+
+  // 🌵🌵🌵 执行 write('src/index.js', 'src') 🌵🌵🌵
+  const written = await write(src, base);
+
+if (
+  (cliOptions.copyFiles && written === FILE_TYPE.NON_COMPILABLE) ||
+  (cliOptions.copyIgnored && written === FILE_TYPE.IGNORED)
+) {
+  const filename = path.relative(base, src);
+  const dest = getDest(filename, base);
+  outputFileSync(dest, fs.readFileSync(src));
+  util.chmod(src, dest);
+}
+return written === FILE_TYPE.COMPILED;
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+接着我们查看下 write 方法。
+
+  async function write(
+    src: string,
+    base: string,
+  ): Promise<$Keys<typeof FILE_TYPE>> {
+    let relative = path.relative(base, src);
+
+    relative = util.withExtension(
+      relative,
+      cliOptions.keepFileExtension
+        ? path.extname(relative)
+        : cliOptions.outFileExtension,
+    );
+
+    const dest = getDest(relative, base);
+    // 🌵🌵🌵 执行这里 🌵🌵🌵
+    const res = await util.compile(src, {
+      ...babelOptions,
+      sourceFileName: slash(path.relative(dest + "/..", src)),
+    });
+
+    if (!res) return FILE_TYPE.IGNORED;
+
+    outputFileSync(dest, res.code);
+    util.chmod(src, dest);
+
+    return FILE_TYPE.COMPILED;
+  }
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+其实就是传入了路径和配置然后执行 compile 方法。
+
+export function compile(
+  filename: string,
+  opts: Object | Function,
+): Promise<Object> {
+  opts = {
+    ...opts,
+    caller: CALLER,
+  };
+
+  return new Promise((resolve, reject) => {
+    // 🌵🌵🌵 执行这里 🌵🌵🌵
+    babel.transformFile(filename, opts, (err, result) => {
+      if (err) reject(err);
+      else resolve(result);
+    });
+  });
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+然后将文件地址和配置传入到 babel.transformFile 中处理。
+
+至此 babel-cli 的工作就执行完毕，接着会进入到 babel-core 中执行。
+
+// babel-core/src/transform-file.ts
+
+const transformFileRunner = gensync<
+  (filename: string, opts?: InputOptions) => FileResult | null
+>(function* (filename, opts: InputOptions) {
+  const options = { ...opts, filename };
+
+  const config: ResolvedConfig | null = yield* loadConfig(options);
+  if (config === null) return null;
+
+  const code = yield* fs.readFile(filename, "utf8");
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  return yield* run(config, code);
+});
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+这个文件主要使用 gensync 生成同步和异步两种执行方法，我们这里调用的是异步执行方式，接着继续向下执行run 方法。
+
+export function* run(
+  config: ResolvedConfig,
+  code: string,
+  ast?: t.File | t.Program | null,
+): Handler<FileResult> {
+  // 🌵🌵🌵 1. 将代码转化为 AST 🌵🌵🌵
+  const file = yield* normalizeFile(
+    config.passes,
+    normalizeOptions(config),
+    code,
+    ast,
+  );
+
+  const opts = file.opts;
+  try {
+    // 🌵🌵🌵 2. 将 ES6 的 AST 转化为 ES5 的 AST 🌵🌵🌵
+    yield* transformFile(file, config.passes);
+  } catch (e) {}
+
+  let outputCode, outputMap;
+  try {
+    if (opts.code !== false) {
+      // 🌵🌵🌵 3. 将 ES5 的 AST 生成 ES5 代码 🌵🌵🌵
+      ({ outputCode, outputMap } = generateCode(config.passes, file));
+    }
+  } catch (e) {}
+
+  return {
+    metadata: file.metadata,
+    options: opts,
+    ast: opts.ast === true ? file.ast : null,
+    code: outputCode === undefined ? null : outputCode,
+    map: outputMap === undefined ? null : outputMap,
+    sourceType: file.ast.program.sourceType,
+  };
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+这个方法主要做了三件事件：
+
+通过 normalizeFile 将传入的文件转化为 AST。
+通过 transformFile 处理 AST 产出新的 AST。
+通过 generateCode 将新的 AST 转化为目标代码。
+至此，babel-core 的工作就结束，至于三个步骤是如何运行的，分布在 babel-parser，babel-traverse， babel-generator 三个包中，具体下一篇文章会具体介绍。
+————————————————
+版权声明：本文为CSDN博主「东都花神」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_33988065/article/details/116546304
+
+
+
+
+
+babel 源码分析 一 parse
+
+东都花神 2021-05-09 10:36:10  157  收藏
+分类专栏： js babel 工程化
+版权
+
+js
+同时被 3 个专栏收录
+32 篇文章0 订阅
+订阅专栏
+
+babel
+4 篇文章0 订阅
+订阅专栏
+
+工程化
+4 篇文章0 订阅
+订阅专栏
+上一篇：babel 源码分析 一 入口
+
+接着上篇，我们继续分析 babel 如何将原始代码转化为 AST 。
+
+上篇中执行 normalizeFile 函数时最终执行的是下面的 parse 方法。
+
+// babel-parser/src/index.js
+
+export function parse(input: string, options?: Options): File {
+  if (options?.sourceType === "unambiguous") {
+    // some code
+  } else {
+    // 🌵🌵🌵 执行这里 🌵🌵🌵
+    return getParser(options, input).parse();
+  }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+沿用上篇中的命令，这里的 options 对应就是
+
+{
+  sourceType: 'module',
+  sourceFileName: '/Users/9527/Desktop/babel/src/index.js',
+  plugins: [
+    'classProperties',
+    'classPrivateProperties',
+    'classPrivateMethods',
+    'numericSeparator',
+    'logicalAssignment',
+    'nullishCoalescingOperator',
+    'optionalChaining',
+    'jsonStrings',
+    'optionalCatchBinding',
+    'asyncGenerators',
+    'objectRestSpread',
+    'exportNamespaceFrom',
+    'dynamicImport'
+  ]
+}
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+接着执行 getParser 方法
+
+function getParser(options: ?Options, input: string): Parser {
+  let cls = Parser;
+  if (options?.plugins) {
+    validatePlugins(options.plugins); // 校验插件
+    cls = getParserClass(options.plugins);
+  }
+  
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  return new cls(options, input);
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+在 getParserClass 方法中，会将我们的插件和 parse 中内置的插件进行对比，如果没有匹配到就返回空数组，下面是 parse 内置的一些插件：
+
+const mixinPlugins = {
+  estree,
+  jsx,
+  flow,
+  typescript,
+  v8intrinsic,
+  placeholders
+};
+1
+2
+3
+4
+5
+6
+7
+8
+这里没有匹配到，所以返回的还是 Parser，这个类拥有一条很长的继承链，如下
+
+Parser
+-> StatementParser 
+-> ExpressionParser 
+-> LValParser 
+-> NodeUtils 
+-> UtilParser 
+-> Tokenizer 
+-> ParserError
+-> CommentsParser
+-> BaseParser
+
+// 对应的目录结构
+├── parser
+│   ├── base.js
+│   ├── comments.js
+│   ├── error-codes.js
+│   ├── error-message.js
+│   ├── error.js
+│   ├── expression.js
+│   ├── index.js
+│   ├── lval.js
+│   ├── node.js
+│   ├── statement.js
+│   └── util.js
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+每一个类都单独做了一些事情，然后传递给下个类，就像我们平常请假需要层层审批一样，这种模式也被称为责任链模式。
+
+为了方便理解接下来的讲解，我们写一段最简单的 ES6 代码，看下 parse 是如何解析的，假如我们待解析的代码为：
+
+let age = 18
+1
+那么运行入口文件中执行 getParser(options, input).parse() 时会运行下面代码：
+
+parse(): File {
+  this.enterInitialScopes();
+  const file = this.startNode();
+  const program = this.startNode();
+  this.nextToken();
+  file.errors = null;
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  this.parseTopLevel(file, program);
+  file.errors = this.state.errors;
+  return file;
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+生成了 file 和 program 两个节点，然后将这两个节点传入到 parseTopLevel 中执行。
+
+parseTopLevel(file: N.File, program: N.Program): N.File {
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  file.program = this.parseProgram(program);
+  file.comments = this.state.comments;
+
+  if (this.options.tokens) file.tokens = this.tokens;
+
+  return this.finishNode(file, "File");
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+首先是处理 program 节点，这个节点的 body 会存放我们书写代码生成的节点，不过此时还未挂载 body 暂时不存在，节点目前结构如下：
+
+// program 节点
+Node {
+  type: '',
+  start: 0,
+  end: 0,
+  loc: SourceLocation {
+    start: Position { line: 1, column: 0 },
+    end: undefined,
+    filename: undefined,
+    identifierName: undefined
+  },
+  range: undefined,
+  leadingComments: undefined,
+  trailingComments: undefined,
+  innerComments: undefined,
+  extra: undefined,
+  sourceType: 'module',
+  interpreter: null
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+接着执行 parseProgram 方法：
+
+parseProgram(program, end = types.eof, sourceType = this.options.sourceType) {
+  program.sourceType = sourceType;
+  program.interpreter = this.parseInterpreterDirective();
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  this.parseBlockBody(program, true, true, end);
+
+  if (this.inModule && !this.options.allowUndeclaredExports && this.scope.undefinedExports.size > 0) {
+    for (const [name] of Array.from(this.scope.undefinedExports)) {
+      const pos = this.scope.undefinedExports.get(name);
+      this.raise(pos, ErrorMessages.ModuleExportUndefined, name);
+    }
+  }
+
+  return this.finishNode(program, "Program");
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+将 program 节点传入到 parseBlockBody 中向下执行。
+
+parseBlockBody(node, allowDirectives, topLevel, end, afterBlockParse) {
+  const body = node.body = [];
+  const directives = node.directives = [];
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  this.parseBlockOrModuleBlockBody(body, allowDirectives ? directives : undefined, topLevel, end, afterBlockParse);
+}
+1
+2
+3
+4
+5
+6
+此时会给节点添加 body 属性，因为我们代码不可能只有一行，所有使用数组存放，然后继续执行 parseBlockOrModuleBlockBody 方法。
+
+parseBlockOrModuleBlockBody(body, directives, topLevel, end, afterBlockParse) {
+  const oldStrict = this.state.strict;
+  let hasStrictModeDirective = false;
+  let parsedNonDirective = false;
+
+  while (!this.match(end)) {
+    // 🌵🌵🌵 执行这里 🌵🌵🌵
+    const stmt = this.parseStatement(null, topLevel);
+
+    if (directives && !parsedNonDirective) {
+      if (this.isValidDirective(stmt)) {
+        const directive = this.stmtToDirective(stmt);
+        directives.push(directive);
+
+        if (!hasStrictModeDirective && directive.value.value === "use strict") {
+          hasStrictModeDirective = true;
+          this.setStrict(true);
+        }
+
+        continue;
+      }
+
+      parsedNonDirective = true;
+      this.state.strictErrors.clear();
+    }
+
+    body.push(stmt);
+  }
+
+  if (afterBlockParse) {
+    afterBlockParse.call(this, hasStrictModeDirective);
+  }
+
+  if (!oldStrict) {
+    this.setStrict(false);
+  }
+
+  this.next();
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+这里使用 while 来循环判断，如果没有结束就继续执行 parseStatement 方法。
+
+parseStatement(context, topLevel) {
+  if (this.match(types.at)) {
+    this.parseDecorators(true);
+  }
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  return this.parseStatementContent(context, topLevel);
+}
+1
+2
+3
+4
+5
+6
+7
+传入参数给 parseStatementContent 方法继续执行：
+
+parseStatementContent(context, topLevel) {
+  let starttype = this.state.type;
+  const node = this.startNode();
+  let kind;
+
+  if (this.isLet(context)) {
+    starttype = types._var;
+    kind = "let";
+  }
+
+  switch (starttype) {
+    case types._break:
+    case types._continue:
+      return this.parseBreakContinueStatement(node, starttype.keyword);
+    case types._function:
+      if (this.lookaheadCharCode() === 46) break;
+
+      if (context) {
+        if (this.state.strict) {
+          this.raise(this.state.start, ErrorMessages.StrictFunction);
+        } else if (context !== "if" && context !== "label") {
+          this.raise(this.state.start, ErrorMessages.SloppyFunction);
+        }
+      }
+
+      return this.parseFunctionStatement(node, false, !context);
+
+    case types._const:
+    case types._var:
+      kind = kind || this.state.value;
+
+      if (context && kind !== "var") {
+        this.raise(this.state.start, ErrorMessages.UnexpectedLexicalDeclaration);
+      }
+      // 🌵🌵🌵 执行这里 🌵🌵🌵
+      return this.parseVarStatement(node, kind);
+
+      // ... code ...
+    default:
+      {
+        if (this.isAsyncFunction()) {
+          if (context) {
+            this.raise(this.state.start, ErrorMessages.AsyncFunctionInSingleStatementContext);
+          }
+
+          this.next();
+          return this.parseFunctionStatement(node, true, !context);
+        }
+      }
+  }
+
+  const maybeName = this.state.value;
+  const expr = this.parseExpression();
+
+  if (starttype === types.name && expr.type === "Identifier" && this.eat(types.colon)) {
+    return this.parseLabeledStatement(node, maybeName, expr, context);
+  } else {
+    return this.parseExpressionStatement(node, expr);
+  }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+这里通过首先通过 this.startNode() 生成了新的节点，然后通过 this.isLet(context) 判断是否 let 声明，我们之前假设待代码是 let age = 18 , 所以会匹配到 types._var，然后执行 parseVarStatement 方法。
+
+  parseVarStatement(node, kind) {
+    this.next();
+    this.parseVar(node, false, kind);
+    this.semicolon();
+    return this.finishNode(node, "VariableDeclaration");
+  }
+1
+2
+3
+4
+5
+6
+这个方法会解析变量，添加末尾分号等操作，最后调用 finishNode 执行后会返回一个变量声明节点，结构如下：
+
+{
+    "type":"VariableDeclaration",
+    "start":0,
+    "end":18,
+    "loc":{
+        "start":{
+            "line":1,
+            "column":0
+        },
+        "end":{
+            "line":1,
+            "column":18
+        }
+    },
+    "declarations":[
+        {
+            "type":"VariableDeclarator",
+            "start":4,
+            "end":17,
+            "loc":{
+                "start":{
+                    "line":1,
+                    "column":4
+                },
+                "end":{
+                    "line":1,
+                    "column":17
+                }
+            },
+            "id":{
+                "type":"Identifier",
+                "start":4,
+                "end":8,
+                "loc":{
+                    "start":{
+                        "line":1,
+                        "column":4
+                    },
+                    "end":{
+                        "line":1,
+                        "column":8
+                    },
+                    "identifierName":"name"
+                },
+                "name":"name"
+            },
+            "init":{
+                "type":"NumericLiteral",
+                "start":11,
+                "end":17,
+                "loc":{
+                    "start":{
+                        "line":1,
+                        "column":11
+                    },
+                    "end":{
+                        "line":1,
+                        "column":17
+                    }
+                },
+                "extra":{
+                    "rawValue":123123,
+                    "raw":"123123"
+                },
+                "value":123123
+            }
+        }
+    ],
+    "kind":"let"
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+之后就是一路 return，然后在 parseBlockOrModuleBlockBody 中将返回的节点添加到 body 中，因为我们只有一行代码，所以继续执行 this.next() 时也会 return 出栈。
+
+至此 parse 解析完成。
+————————————————
+版权声明：本文为CSDN博主「东都花神」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_33988065/article/details/116561689
+
+babel源码分析 - traverse
+
+东都花神 2021-05-09 22:25:13  181  收藏
+分类专栏： babel 工程化 js
+版权
+
+babel
+同时被 3 个专栏收录
+4 篇文章0 订阅
+订阅专栏
+
+工程化
+4 篇文章0 订阅
+订阅专栏
+
+js
+32 篇文章0 订阅
+订阅专栏
+上一篇：babel 源码分析 一 parse
+
+接着上篇，traverse 的主要工作是将 ES6 的 AST 转化为 ES5 的 AST，babel 的各种插件也都是基于此实现的，比如 JSX，TS 的转化等。
+
+还记得入口篇中最后 run 方法里的 transformFile 方法吗，它执行的时候最终会执行下面的方法：
+
+// babel-traverse/src/index.js
+
+function traverse(
+  parent: t.Node,
+  opts: TraverseOptions = {},
+  scope?: Scope,
+  state?: any,
+  parentPath?: NodePath,
+) {
+  if (!parent) return;
+
+  if (!t.VISITOR_KEYS[parent.type]) {
+    return;
+  }
+
+  visitors.explode(opts);
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  traverse.node(parent, opts, scope, state, parentPath);
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+这里的 parent 就是之前生成的 AST，opts 是根据 babel.config.js 的配置所需要依赖插件生成的数组，其中就包含了处理 let 变量的 VariableDeclaration，之后执行 node 方法。
+
+traverse.node = function (
+  node: t.Node,
+  opts: TraverseOptions,
+  scope?: Scope,
+  state?: any,
+  parentPath?: NodePath,
+  skipKeys?,
+) {
+  const keys = t.VISITOR_KEYS[node.type];
+  if (!keys) return;
+  
+  const context = new TraversalContext(scope, opts, state, parentPath);
+  for (const key of keys) {
+    if (skipKeys && skipKeys[key]) continue;
+    // 🌵🌵🌵 context.visit(ast, 'program') 🌵🌵🌵
+    if (context.visit(node, key)) return;
+  }
+};
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+其中的 VISITOR_KEYS 是定义在 babel-types 中，定义了每种节点对应的 key，首次进来的时候节点的类型是 file，根据下面的配置对应获取的 key 就是 program。
+
+// babel-types/src/definitions/core.ts
+
+defineType("File", {
+  builder: ["program", "comments", "tokens"],
+  visitor: ["program"],
+  fields: {
+    program: {
+      validate: assertNodeType("Program"),
+    },
+    comments: {
+      validate: !process.env.BABEL_TYPES_8_BREAKING
+        ? Object.assign(() => {}, {
+            each: { oneOfNodeTypes: ["CommentBlock", "CommentLine"] },
+          })
+        : assertEach(assertNodeType("CommentBlock", "CommentLine")),
+      optional: true,
+    },
+    tokens: {
+      // todo(ts): add Token type
+      validate: assertEach(Object.assign(() => {}, { type: "any" })),
+      optional: true,
+    },
+  },
+});
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+接着将 AST 和 program 依次传入到 visit -> visitSingle -> visitQueue 中执行
+
+visit(node, key) {
+  const nodes = node[key];
+  if (!nodes) return false;
+
+  if (Array.isArray(nodes)) {
+    return this.visitMultiple(nodes, node, key);
+  } else {
+    // 🌵🌵🌵 执行这里 🌵🌵🌵
+    return this.visitSingle(node, key);
+  }
+}
+
+// -------------我快乐的分割线--------------
+
+visitSingle(node, key): boolean {
+  if (this.shouldVisit(node[key])) {
+    // 🌵🌵🌵 执行这里 🌵🌵🌵
+    return this.visitQueue([this.create(node, node, key)]);
+  } else {
+    return false;
+  }
+}
+
+// -------------我是快乐的分割线--------------
+
+visitQueue(queue: Array<NodePath>) {
+  this.queue = queue;
+  this.priorityQueue = [];
+
+  const visited = new WeakSet();
+  let stop = false;
+
+  for (const path of queue) {
+    path.resync();
+
+    if (
+      path.contexts.length === 0 ||
+      path.contexts[path.contexts.length - 1] !== this
+    ) {
+      path.pushContext(this);
+    }
+
+    if (path.key === null) continue;
+
+    if (testing && queue.length >= 10_000) {
+      this.trap = true;
+    }
+
+    const { node } = path;
+    if (visited.has(node)) continue;
+    if (node) visited.add(node);
+    // 🌵🌵🌵 执行这里 🌵🌵🌵
+    if (path.visit()) {
+      stop = true;
+      break;
+    }
+
+    if (this.priorityQueue.length) {
+      stop = this.visitQueue(this.priorityQueue);
+      this.priorityQueue = [];
+      this.queue = queue;
+      if (stop) break;
+    }
+  }
+
+  for (const path of queue) {
+    path.popContext();
+  }
+
+  this.queue = null;
+
+  return stop;
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+然后就是执行 visit 方法。
+
+export function visit(this: NodePath): boolean {
+  if (!this.node) {
+    return false;
+  }
+
+  if (this.isDenylisted()) {
+    return false;
+  }
+
+  if (this.opts.shouldSkip && this.opts.shouldSkip(this)) {
+    return false;
+  }
+
+  // Note: We need to check "this.shouldSkip" twice because
+  // the visitor can set it to true. Usually .shouldSkip is false
+  // before calling the enter visitor, but it can be true in case of
+  // a requeued node (e.g. by .replaceWith()) that is then marked
+  // with .skip().
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  if (this.shouldSkip || this.call("enter") || this.shouldSkip) {
+    this.debug("Skip...");
+    return this.shouldStop;
+  }
+
+  this.debug("Recursing into...");
+  traverse.node(
+    this.node,
+    this.opts,
+    this.scope,
+    this.state,
+    this,
+    this.skipKeys,
+  );
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  this.call("exit");
+
+  return this.shouldStop;
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+这个方法会执行插件中挂载的 enter 和 exit 方法方法，而 enter 和 exit 方法的收集是在 transformFile 中，也是在转化逻辑之前之前收集的。
+
+function* transformFile(file: File, pluginPasses: PluginPasses): Handler<void> {
+  for (const pluginPairs of pluginPasses) {
+    const passPairs = [];
+    const passes = [];
+    const visitors = [];
+
+    for (const plugin of pluginPairs.concat([loadBlockHoistPlugin()])) {
+      const pass = new PluginPass(file, plugin.key, plugin.options);
+
+      passPairs.push([plugin, pass]);
+      passes.push(pass);
+      visitors.push(plugin.visitor);
+    }
+
+    // 🌵🌵🌵 merge all plugin visitors into a single visitor 🌵🌵🌵
+    const visitor = traverse.visitors.merge(
+      visitors,
+      passes,
+      file.opts.wrapPluginVisitorMethod,
+    );
+    // 🌵🌵🌵 转化入口 🌵🌵🌵
+    traverse(file.ast, visitor, file.scope);
+  }
+}
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+然后就进入到对应的插件中执行，我们这需要将 let 转化为 var，所以就会进入到 plugin-transform-block-scoping 中执行具体执行过程就不贴都是流水账，大致顺序如下：
+
+"BlockStatement|SwitchStatement|Program"(path, state)
+-> blockScoping.run();
+-> this.getLetReferences();
+-> addDeclarationsFromChild(declarPaths[i]);
+-> convertBlockScopedToVar(path, node, block, this.scope);
+1
+2
+3
+4
+5
+其中将 let 转化为 var 的操作就在最后一个函数中
+
+function convertBlockScopedToVar(
+  path,
+  node,
+  parent,
+  scope,
+  moveBindingsToParent = false,
+) {
+  if (!node) {
+    node = path.node;
+  }
+
+  // https://github.com/babel/babel/issues/255
+  if (isInLoop(path) && !t.isFor(parent)) {
+    for (let i = 0; i < node.declarations.length; i++) {
+      const declar = node.declarations[i];
+      declar.init = declar.init || scope.buildUndefinedNode();
+    }
+  }
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  node[t.BLOCK_SCOPED_SYMBOL] = true;
+  node.kind = "var";
+
+  // Move bindings from current block scope to function scope.
+  if (moveBindingsToParent) {
+    const parentScope = scope.getFunctionParent() || scope.getProgramParent();
+    for (const name of Object.keys(path.getBindingIdentifiers())) {
+      const binding = scope.getOwnBinding(name);
+      if (binding) binding.kind = "var";
+      scope.moveBindingTo(name, parentScope);
+    }
+  }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+这方法会将 AST 上的变量节点的 kind 属性从 let 变成 var。
+
+至此，traverse 逻辑就分析完毕，接下就是根据转化好的 AST 生成 ES5 代码了。
+————————————————
+版权声明：本文为CSDN博主「东都花神」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_33988065/article/details/116572078
+
+babel源码分析 - generator
+
+东都花神 2021-05-30 10:05:03  64  收藏
+分类专栏： babel js 工程化
+版权
+
+babel
+同时被 3 个专栏收录
+4 篇文章0 订阅
+订阅专栏
+
+js
+32 篇文章0 订阅
+订阅专栏
+
+工程化
+4 篇文章0 订阅
+订阅专栏
+上一篇：babel源码分析 - traverse
+
+这是 babel 解析的最后一篇，坚持就是胜利✌️。
+
+在这篇中我会梳理下 babel 是如何需要借助 generator 方法将处理好的 AST 重新转化为代码，从而完成整个流程。
+
+首先还是回到 babel-core 的 run 方法中，当执行 generateCode(config.passes, file) 方法时最终执行的下面的代码:
+
+// babel-generator/src/index.ts
+
+export default function generate(
+  ast: t.Node,
+  opts?: GeneratorOptions,
+  code?: string | { [filename: string]: string },
+): any {
+  const gen = new Generator(ast, opts, code);
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  return gen.generate();
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+当调用 generate 时执行的是 Printer 中的 generate。
+
+// Generator
+generate() {
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  return super.generate(this.ast);
+}
+
+// -------------我是快乐的分割线--------------
+
+// Printer
+generate(ast) {
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  this.print(ast);
+  this._maybeAddAuxComment();
+
+  return this._buf.get();
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+然后将 ast 传入到实例上 print 方法中开始生成逻辑。
+
+print(node, parent ?) {
+  if (!node) return;
+
+  const oldConcise = this.format.concise;
+  if (node._compact) {
+    this.format.concise = true;
+  }
+
+  const printMethod = this[node.type];
+  if (!printMethod) { }
+
+  this._printStack.push(node);
+
+  const oldInAux = this._insideAux;
+  this._insideAux = !node.loc;
+  this._maybeAddAuxComment(this._insideAux && !oldInAux);
+
+  let needsParens = n.needsParens(node, parent, this._printStack);
+  if (
+    this.format.retainFunctionParens &&
+    node.type === "FunctionExpression" &&
+    node.extra &&
+    node.extra.parenthesized
+  ) {
+    needsParens = true;
+  }
+  if (needsParens) this.token("(");
+
+  this._printLeadingComments(node);
+
+  const loc = t.isProgram(node) || t.isFile(node) ? null : node.loc;
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  this.withSource("start", loc, () => {
+    printMethod.call(this, node, parent);
+  });
+
+  this._printTrailingComments(node);
+
+  if (needsParens) this.token(")");
+
+  // end
+  this._printStack.pop();
+
+  this.format.concise = oldConcise;
+  this._insideAux = oldInAux;
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+这里的 withSource 会多次执行，分别对应着 File，Program，VariableDeclaration
+
+// babel-generator/src/generators/base.ts
+
+export function File(this: Printer, node: t.File) {
+  if (node.program) {
+    // Print this here to ensure that Program node 'leadingComments' still
+    // get printed after the hashbang.
+    this.print(node.program.interpreter, node);
+  }
+
+  this.print(node.program, node);
+}
+
+// -------------我是快乐的分割线--------------
+
+export function Program(this: Printer, node: t.Program) {
+  this.printInnerComments(node, false);
+  
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  this.printSequence(node.directives, node);
+  if (node.directives && node.directives.length) this.newline();
+
+  this.printSequence(node.body, node);
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+当执行 printSequence 的时候会跳到 printer 中继续执行
+
+// packages/babel-generator/src/printer.ts
+
+printSequence(
+  nodes,
+  parent,
+  opts: {
+  statement?: boolean;
+  indent?: boolean;
+  addNewlines?: Function;
+  } = {},
+  ) {
+    opts.statement = true;
+    // 🌵🌵🌵 执行这里 🌵🌵🌵
+    return this.printJoin(nodes, parent, opts);
+  }
+
+// -------------我是快乐的分割线--------------
+
+printJoin(nodes: Array<any> | undefined | null, parent: any, opts: any = {}) {
+  if (!nodes?.length) return;
+
+      if (opts.indent) this.indent();
+
+  const newlineOpts = {
+    addNewlines: opts.addNewlines,
+  };
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    if (!node) continue;
+
+    if (opts.statement) this._printNewline(true, node, parent, newlineOpts);
+    // 🌵🌵🌵 执行这里 🌵🌵🌵
+    this.print(node, parent);
+
+    if (opts.iterator) {
+      opts.iterator(node, i);
+    }
+
+    if (opts.separator && i < nodes.length - 1) {
+      opts.separator.call(this);
+    }
+
+    if (opts.statement) this._printNewline(false, node, parent, newlineOpts);
+  }
+
+  if (opts.indent) this.dedent();
+}
+
+// -------------我是快乐的分割线--------------
+
+ print(node, parent?) {
+  if (!node) return;
+
+  const oldConcise = this.format.concise;
+  if (node._compact) {
+    this.format.concise = true;
+  }
+
+  const printMethod = this[node.type];
+  if (!printMethod) {}
+
+  this._printStack.push(node);
+
+  const oldInAux = this._insideAux;
+  this._insideAux = !node.loc;
+  this._maybeAddAuxComment(this._insideAux && !oldInAux);
+
+  let needsParens = n.needsParens(node, parent, this._printStack);
+  if (
+    this.format.retainFunctionParens &&
+    node.type === "FunctionExpression" &&
+    node.extra &&
+    node.extra.parenthesized
+  ) {
+    needsParens = true;
+  }
+  if (needsParens) this.token("(");
+
+  this._printLeadingComments(node);
+
+  const loc = t.isProgram(node) || t.isFile(node) ? null : node.loc;
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  this.withSource("start", loc, () => {
+    printMethod.call(this, node, parent);
+  });
+
+  this._printTrailingComments(node);
+
+  if (needsParens) this.token(")");
+
+  // end
+  this._printStack.pop();
+
+  this.format.concise = oldConcise;
+  this._insideAux = oldInAux;
+}
+
+// -------------我是快乐的分割线--------------
+
+withSource(prop: string, loc: any, cb: () => void): void {
+  this._catchUp(prop, loc);
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  this._buf.withSource(prop, loc, cb);
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+之后会跳到 buffer.ts 执行 withSource 方法，然后执行参数中的 cb 方法
+
+// babel-generator/src/buffer.ts
+
+withSource(prop: string, loc: t.SourceLocation, cb: () => void): void {
+  // 🌵🌵🌵 执行这里 🌵🌵🌵
+  if (!this._map) return cb();
+
+  // Use the call stack to manage a stack of "source location" data because
+  // the _sourcePosition object is mutated over the course of code generation,
+  // and constantly copying it would be slower.
+  const originalLine = this._sourcePosition.line;
+  const originalColumn = this._sourcePosition.column;
+  const originalFilename = this._sourcePosition.filename;
+  const originalIdentifierName = this._sourcePosition.identifierName;
+
+  this.source(prop, loc);
+
+  cb();
+
+  if (
+    // If the current active position is forced, we only want to reactivate
+    // the old position if it is different from the newest position.
+    (!this._sourcePosition.force ||
+      this._sourcePosition.line !== originalLine ||
+      this._sourcePosition.column !== originalColumn ||
+      this._sourcePosition.filename !== originalFilename) &&
+    // Verify if reactivating this specific position has been disallowed.
+    (!this._disallowedPop ||
+      this._disallowedPop.line !== originalLine ||
+      this._disallowedPop.column !== originalColumn ||
+      this._disallowedPop.filename !== originalFilename)
+  ) {
+    this._sourcePosition.line = originalLine;
+    this._sourcePosition.column = originalColumn;
+    this._sourcePosition.filename = originalFilename;
+    this._sourcePosition.identifierName = originalIdentifierName;
+    this._sourcePosition.force = false;
+    this._disallowedPop = null;
+  }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+其实就是上面 print 方法中的 printMethod.call(this, node, parent); 这段代码，其中 printMethod 如下：
+
+const printMethod = this[node.type];
+
+// -------------我是快乐的分割线--------------
+
+// Expose the node type functions and helpers on the prototype for easy usage.
+Object.assign(Printer.prototype, generatorFunctions);
+1
+2
+3
+4
+5
+6
+此时 node 是一个变量节点，所以此时 type 就是 VariableDeclaration，这里的 this 是一个 Printer 实例，它本身并没有这个方法，而是通过原型获取的 generatorFunctions 中的方法，如下
+
+// babel-generator/src/generators/statements.ts
+
+export function VariableDeclaration(
+  this: Printer,
+  node: t.VariableDeclaration,
+  parent: t.Node,
+) {
+  if (node.declare) {
+    this.word("declare");
+    this.space();
+  }
+
+  this.word(node.kind);
+  this.space();
+
+  let hasInits = false;
+  // don't add whitespace to loop heads
+  if (!t.isFor(parent)) {
+    for (const declar of node.declarations as Array<any>) {
+      if (declar.init) {
+        // has an init so let's split it up over multiple lines
+        hasInits = true;
+      }
+    }
+  }
+
+  let separator;
+  if (hasInits) {
+    separator =
+      node.kind === "const"
+        ? constDeclarationIndent
+        : variableDeclarationIndent;
+  }
+
+  this.printList(node.declarations, node, { separator });
+
+  if (t.isFor(parent)) {
+    // don't give semicolons to these nodes since they'll be inserted in the parent generator
+    if (t.isForStatement(parent)) {
+      if (parent.init === node) return;
+    } else {
+      if (parent.left === node) return;
+    }
+  }
+
+  this.semicolon();
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+这个方法会根据节点生成对应的代码然后挂载到 _buf 上，具体如下图：
+
+
+至此 generate 逻辑执行完毕
+————————————————
+版权声明：本文为CSDN博主「东都花神」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_33988065/article/details/117395011

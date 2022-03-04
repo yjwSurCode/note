@@ -1,0 +1,71 @@
+rollup:https://juejin.cn/post/6844904058394771470#heading-61
+
+rollup commonjs esm https://github.com/Godiswill/blog/issues/6
+
+
+《模块化系列》彻底理清 AMD,CommonJS,CMD,UMD,ES6
+
+https://zhuanlan.zhihu.com/p/108217164
+esbuild:
+
+
+
+
+演示地址：https://rollupjs.org/repl/?version=2.59.0&shareable=JTdCJTIybW9kdWxlcyUyMiUzQSU1QiU3QiUyMm5hbWUlMjIlM0ElMjJtYWluLmpzJTIyJTJDJTIyY29kZSUyMiUzQSUyMiUyRiolMjBERUZBVUxUJTIwRVhQT1JUUyU1Q24lMjAlMjAlMjBEZWZhdWx0JTIwZXhwb3J0cyUyMGZyb20lMjB0aGUlMjAnZW50cnklMjBtb2R1bGUnJTIwYXJlJTVDbiUyMCUyMCUyMGV4cG9ydGVkJTIwZnJvbSUyMHRoZSUyMGJ1bmRsZSUyMColMkYlNUNuaW1wb3J0JTIwYW5zd2VyJTIwZnJvbSUyMCcuJTJGYW5zd2VyLmpzJyUzQiU1Q24lNUNuZXhwb3J0JTIwZGVmYXVsdCUyMGZ1bmN0aW9uJTIwKCklMjAlN0IlNUNuJTVDdGNvbnNvbGUubG9nKCUyMCd0aGUlMjBhbnN3ZXIlMjBpcyUyMCclMjAlMkIlMjBhbnN3ZXIlMjApJTNCJTVDbiU3RCUyMiUyQyUyMmlzRW50cnklMjIlM0F0cnVlJTdEJTJDJTdCJTIybmFtZSUyMiUzQSUyMmFuc3dlci5qcyUyMiUyQyUyMmNvZGUlMjIlM0ElMjJleHBvcnQlMjBkZWZhdWx0JTIwNDIlM0IlMjIlMkMlMjJpc0VudHJ5JTIyJTNBZmFsc2UlN0QlNUQlMkMlMjJvcHRpb25zJTIyJTNBJTdCJTIyZm9ybWF0JTIyJTNBJTIyc3lzdGVtJTIyJTJDJTIybmFtZSUyMiUzQSUyMm15QnVuZGxlJTIyJTJDJTIyYW1kJTIyJTNBJTdCJTIyaWQlMjIlM0ElMjIlMjIlN0QlMkMlMjJnbG9iYWxzJTIyJTNBJTdCJTdEJTdEJTJDJTIyZXhhbXBsZSUyMiUzQSUyMjAzJTIyJTdE
+
+CJS
+CommonJS，只能在 NodeJS 上运行，使用 require("module") 读取并加载模块。
+
+AMD
+Asynchronous Module Definition，可以看作 CJS 的异步版本，制定了一套规则使模块可以被异步 require 进来并在回调函数里继续使用，然后 require.js 等前端库也可以利用这个规则加载代码了，目前已经是时代的眼泪了。
+
+
+UMD
+Universal Module Definition，同时兼容 CJS 和 AMD，并且支持直接在前端用 <script src="lib.umd.js"></script> 的方式加载。现在还在广泛使用，不过可以想象 ESM 和 IIFE 逐渐代替它。
+
+IIFE
+Immediately Invoked Function Expression，只是一种写法，可以隐藏一些局部变量，前端人要是不懂这个可能学的是假前端。可以用来代替 UMD 作为纯粹给前端使用的写法。
+
+ESM
+ECMAScript Module，现在使用的模块方案，使用 import export 来管理依赖。由于它们只能写在所有表达式外面，所以打包器可以轻易做到分析依赖以及 Tree-Shaking。当然他也支持动态加载（import()）。
+
+通过给script添加 type = module 的属性,就可以以ESM的标准执行其中的JS代码了
+每个ESM 模块都是单独的私有作用域
+ESM 自动采用严格模式(“use strict”)内部可以不用再定义
+ESM 是通过 跨域(CORS)的方式请求外部js模块的(所以需要服务端支持跨域,普通script标签不存在跨域)
+ESM 的script标签会延迟执行脚本
+
+
+Vite（esm 的构建方式） 有什么缺点吗？
+
+目前 Vite 还是使用的 es module 模块不能直接使用生产环境（兼容性问题）。
+生产环境使用 rollup 打包会造成开发环境与生产环境的不一致。
+很多 第三方 sdk 没有产出 ems 格式的的代码，这个需要自己去做一些兼容。
+
+
+A new JSX transform
+{
+  "presets": [
+    ["@babel/preset-react", {
+      "runtime": "automatic"
+    }]
+  ]
+}
+
+
+能在生产环境中直接使用 esm 吗？
+其实目前的主要问题可能还是兼容性问题。如果你的项目不需要兼容 IE11 等低版本的浏览器，自然是可以使用的。但是更通用的方案可能还是类似 ployfill.io 的原理实现， 提前构建好 bundle.js 与 es module 两个版本的代码，根据浏览器的实际兼容性去动态选择导入哪个模块。
+
+
+
+对于一些 没有产出 commonjs 的模块，如何去兼容呢。
+首先业界是有一些如 lebab 的方法可以将 commjs 代码快速转化为 esm 的，但是对于一些格式不规范的代码，可能还是需要单独处理。
+
+
+
+
+hmr有两种解释，一种是hot module refresh，模块热更新，指的是监听文件的变化，重新编译文件然后告诉前端刷新整个页面。另一种就是我们今天说的hot module replacement，模块热替换，指的是监听文件的变化，重新编译文件，告诉前端更新的文件，重新加载此文件。
+
+
+
+vue-template-compiler	解析.vue 为 ast，vue3 用的是@vue/compiler-sfc

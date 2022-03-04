@@ -1,0 +1,136 @@
+提一下V8
+
+了解V8引擎之前我们先要知道什么是javascript引擎。简单来说，CPU并不认识我们的js代码，而不同的CPU只认识自己对应的指令集，javascript引擎将js代码编译成CPU认识的指令集，当然除了编译之外还要负责执行以及内存的管理。
+大家都知道js是解释形语言，由引擎直接读取源码，一边编译一边执行，这样效率相对较低，而编译形语言（如c++）是把源码直接编译成可直接执行的代码执行效率更高。
+
+
+
+node大致原理：https://zhuanlan.zhihu.com/p/145413875
+
+JS是脚本语言，脚本语言都需要一个解析器才能运行。对于写在HTML页面里的JS，浏览器充当了解析器的角色。而对于需要独立运行的JS，NodeJS就是一个解析器。
+
+
+node  API：：：：
+1：assert 测试断言。
+
+2：buffer 缓冲区
+JavaScript 语言自身只有字符串数据类型，没有二进制数据类型。但在处理像TCP流或文件流时，必须使用到二进制数据。因此在 Node.js中，定义了一个 Buffer 类，该类用来创建一个专门存放二进制数据的缓存区。
+const buf = Buffer.from('runoob', 'ascii');
+// 输出 72756e6f6f62
+console.log(buf.toString('hex'));
+// 输出 cnVub29i
+console.log(buf.toString('base64'));
+
+Node.js 目前支持的字符编码包括：
+ascii - 仅支持 7 位 ASCII 数据。如果设置去掉高位的话，这种编码是非常快的。
+utf8 - 多字节编码的 Unicode 字符。许多网页和其他文档格式都使用 UTF-8 。
+utf16le - 2 或 4 个字节，小字节序编码的 Unicode 字符。支持代理对（U+10000 至 U+10FFFF）。
+ucs2 - utf16le 的别名。
+base64 - Base64 编码。
+latin1 - 一种把 Buffer 编码成一字节编码的字符串的方式。
+binary - latin1 的别名。
+hex - 将每个字节编码为两个十六进制字符。
+
+3：child_process 子进程
+在node中我们常常需要在主进程之外新建一个子进程来提高程序的运行效率，这时就需要使用到node中的child_process模块。child_process 模块提供了衍生子进程的功能，在默认情况下，父进程和子进程之间会建立stdin,stdout,stderr三个管道，数据能够以非阻塞的方式流动
+
+4:集群
+Node.js 的单个实例在单个线程中运行。 为了利用多核系统，用户有时会想要启动 Node.js 进程的集群来处理负载
+
+5：crypto 加密
+const { createHmac } = await import('crypto');
+
+6：域名服务器
+
+
+
+const secret = 'abcdefg';
+const hash = createHmac('sha256', secret)
+               .update('I love cupcakes')
+               .digest('hex');
+console.log(hash);
+
+
+process.argv(commnder)
+process.env(需注意cross-env mac和windows不一样)
+process.cwd() 当前工作目录
+process.nextTick
+process.platform
+
+Buffer.isBuffer 判断是否是Buffer
+Buffer.slice
+创建buffer 并指定大小 Buffer.alloc(5)
+字符串转buffer Buffer.from(str)
+判断是否是buffer Buffer.isBuffer
+Buffer.concat
+Buffer.copy
+Buffer.toString() buffer 转字符串
+
+
+process是一个全局变量，可通过process.argv获得命令行参数。由于argv[0]固定等于NodeJS执行程序的绝对路径，argv[1]固定等于主模块的绝对路径，因此第一个命令行参数从argv[2]这个位置开始。
+
+
+fs.unlink('/tmp/shiyanlou', function(err) {   //unlink为删除文件方法
+    if (err) {
+        throw err;
+    }
+    console.log('成功删除了 /tmp/shiyanlou');
+});
+
+fs.readFile('./test.txt', function(err, data) {
+    // 读取文件失败/错误
+    if (err) {
+        throw err;
+    }
+    // 读取文件成功
+    console.log(data);
+});
+
+
+var fs = require('fs'); // 引入fs模块
+
+// 创建 newdir 目录
+fs.mkdir('./newdir', function(err) {
+    if (err) {
+        throw err;
+    }
+    console.log('make dir success.');
+});
+
+
+cooike::
+var cookieParser = require('cookie-parser');
+
+// custom log format
+if (process.env.NODE_ENV !== 'test') app.use(logger(':method :url'))
+
+// parses request cookies, populating
+// req.cookies and req.signedCookies
+// when the secret is passed, used
+// for signing the cookies.
+app.use(cookieParser('my secret here'));
+
+
+var session = require('express-session');
+
+
+
+expressAPI：：：：
+1：：app.use(express.json()); // 解析请求中的 json 数据
+2：：express.urlencoded 处理x-www-form-urlencoded形式的请求
+3：：app.use(express.static("public")); // 设置静态资源目录 ---------当浏览器访问 /home.html时，会去自动匹配public/home.html文件，并将它返回给前端。
+4：：设置 本地变量 app.locals.name = "张三";
+console.log(app.locals.name);
+/** 等价于 */
+console.log(request.app.locals.name);
+5：：本地变量 app.set("name", "zhangsan");app.get("name");  
+6：：  用于处理路径中的参数  app.param
+const app = express();
+app.param("id", (req, res, next, id) => {
+  console.log(id);
+  next();
+});
+app.get("/user/:id", (req, res, next) => {
+  res.send("1");
+});
+7：：

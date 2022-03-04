@@ -1,0 +1,128 @@
+1 鑫青盟官网：https://www.xqmcm.com/#/。
+
+react ts 类组件 redux  redux-thunk  -----------Redux store 仅支持同步数据流。使用 thunk 等中间件可以帮助在 Redux 应用中实现异步性。
+
+const mapStateToProps = (state) => ({
+  valueS: state
+})
+bar(connect(mapStateToProps, mapDispatchToProps)(home))
+
+有thunk 可以进行异步请求：：：：：：：：：：：：
+
+TodoAPIUtil
+      .fetchTodos()
+      .then(todos => dispatch(receiveTodos(todos)))
+
+
+2：教师端(公众号)：https://xqmcm.com/app/teacher/index.html 。 （https://github1s.com/gezi666/xingGouWeChat/blob/HEAD/src/router/index.js#L456）
+
+history模式配置失败的原因可能是url带参数没有用encodeURIComponent：：：：：：
+
+(要保证你的h5页面域名和公众号后台js安全域名一致）：：：：：：：
+
+微信分享到朋友圈onMenuShareTimeline成功后的回调函数不执行的问题；：：：：：：：：
+
+setTimeout(function(){undefined
+          将指定的代码移出本次执行,等到下一轮Event Loop
+     }, 500);
+
+  // 支付、购买
+    /**
+     * 购买支付-充值-向微信发起获取openid请求，请求成功后微信会将openid返给后台   --- 1   备注： 登录后查看后台返回的openid是否有值，若没有值，则向微信发送请求  (不要走接口，直接跳链接)
+     */
+    applyForOpenid(params) {
+        let serverUrl = urlencode(baseconfig.baseURL)
+        return Get(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=**yourappid**&redirect_uri=${serverUrl}/oauth/val&response_type=code&scope=snsapi_base&state=${params}#wechat_redirect`)
+    },
+    /**
+     * 购买支付-充值-从后台获取微信返回的openid   --- 2   备注：充值时先看cookie中openid是否有值，若没有值，则从后台请求openid，请求回来也要存入cookie；然后调接口获取微信支付接口所需信息--打开支付界面进行支付
+     */
+    getOpenid(params) {
+        // return Get(`/wechatusercenter/getOpenid?userid=${params.userid}`)
+        return Get(`/oauth/openidByWeb?code=${params.code}&state=${params.userid}`)
+    },
+    /**
+     * 购买支付-充值-从后台获取微信支付接口所需信息   --- 3
+     */
+    getWeChatPayInfo(params) {
+        return Post('/wechatorders/recharge',params)
+    },
+    /**
+     * 购买支付-充值-打开微信支付界面进行支付   --- 4
+     */
+
+3：团长端微信小程序。
+
+监听订单变化 单一修改 不需要批量更新：：：：：：：：：：：
+
+/** 触发*/
+this._events.emit('escrow:detail:change', detail); //3
+
+/** 监听订单状态改变 */
+	subscribeOrderDetailChange(listener: (order: IOrderPage.OrderDetail) => void): () => void {
+		//5
+		this._events.on('order:detail:change', listener);
+
+		return () => {
+			this._events.off('order:detail:change', listener);
+		};
+	}
+/** 回显*/
+useEscrowDetailChange(detail => {//4
+	});
+function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): void {
+	const cbFn = usePersistFn(cb);
+
+	useEffect(() => {
+		const unSubscribe = orderApi.subscribeEscrowDetailChange(no => { //2
+			cbFn(no);
+		});
+		return unSubscribe;
+	}, [cbFn]);
+}
+
+
+
+解锁 上锁：：：：：：：：：：：：：：：：：：：：：：：：：
+只允许一个线程写入（其他线程既不能写入也不能读取）当完成是其他的线程可以继续
+没有写入时，多个线程允许同时读（提高性能）
+
+
+
+输入框的 防流 节抖：：：：：：：：：：：：：：：：：：
+
+const debouncedValue = useDebounce(values, 200);
+
+	useDebounceFn(
+		() => {
+			alert(1111);
+		},
+		[value],
+		2000,
+	);
+
+
+4：游戏(桥接至app 支付宝小程序 微信小程序)。
+
+页面跳转：：：：:::::::::::::
+ loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');  RwMutex  writeLock
+
+登录 分享:::::::::::::::::::
+setSelectKey(_index + 1);
+子组件依赖key  
+  useEffect(() => {
+        if (selectKey !== null) {
+            handleLuckDraw(selectKey);   //这个方法又触发父组件的回调    父组件的回调中又改变selectKey
+        }
+    }, [selectKey, handleLuckDraw]);
+
+usePersistFn可以保证函数地址永远不会变化
+
+
+polyfill
+
+5：fnx react-hooks移动端组件。
+
+.umi  是可扩展的企业级前端应用框架
+gulp:gulp是一个基于流的构建工具
+lerna:Lerna - 多包存储库管理工具

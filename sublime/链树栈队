@@ -1,0 +1,265 @@
+链表：
+
+数组：内存上是连续的存储空间； 
+链表：内存地址可以是不连续的，每个链表的节点包括原来的内存和下一节点的信息（单向链表一个；双向链表两个）。
+
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = this.head;
+    this.length = 0;
+  }
+  append(value) {
+    const newNode = new Node(value);
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+    this.length++;
+  }
+
+  prepend(value) {}
+
+  insert(value, index) {}
+
+  lookup(index) {}
+
+  remove(index) {}
+
+  reverse() {}
+}
+
+let linkedList2 = new LinkedList();
+
+linkedList2.append("23");
+console.log(linkedList2, "linkedList2");
+
+
+数组优点：   1、占用内存空间少； 2、数组内的数据可以随机访问； 3、数据查找效率较高（内存连续）；
+
+链表优点：   1、方便数据的删除、插入； 2、长度可变，扩展性好； 3、内存利用率高（可以不连续）；
+
+ 
+
+二叉树：
+
+二叉树（Binary tree）是每个节点最多只有两个分支(不存在分支度大于2的节点)的树结构。通常分支被称为「左子树」和「右子树」。二叉树的分支具有左右次序，不能颠倒。
+
+特征
+(1) 若它的左子树不空，则左子树上所有结点的值均小于它的根结点的值
+(2) 若它的右子树不空，则右子树上所有结点的值均大于它的根结点的值
+(3) 它的左、右子树也分别为二叉查找树
+
+
+function BinarySearchTree(keys) {
+  //Node构造函数
+  let Node = function (key) {
+    this.key = key;
+    this.left = null;
+    this.right = null;
+  };
+
+  let root = null;
+
+  let insertNode = (node, newNode) => {
+    console.log(
+      node,
+      newNode,
+      "insertNode------node, newNode",
+      newNode.key,
+      node.key
+    );
+    if (newNode.key < node.key) {
+      if (node.left === null) {
+        node.left = newNode;
+        console.log(node, "node--left");
+      } else {
+        insertNode(node.left, newNode);
+      }
+    } else {
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        insertNode(node.right, newNode);
+      }
+    }
+  };
+
+  this.insert = (key) => {
+    let newNode = new Node(key);
+    console.log("newNode", newNode);
+    if (root === null) {
+      root = newNode;
+    } else {
+      insertNode(root, newNode);
+    }
+  };
+  keys.forEach((key) => {
+    console.log("KEY", key);
+    this.insert(key);
+  });
+  return root;
+}
+const keys = ["1", "3", "5", "4", "2"];
+BinarySearchTree(keys);
+
+console.log(BinarySearchTree(keys), "root");
+
+
+
+
+栈：
+
+栈（stack）又名堆栈，是一种遵循后进先出（LIFO）原则的有序集合
+
+新添加或待删除的元素都保存在栈的末尾，称作栈顶，另一端称作栈底
+
+
+
+function Stack() {
+  this.dataStore = []; //初始化为空
+  this.top = 0; //记录栈顶位置
+  this.pop = pop; //出栈
+  this.push = push; //入栈
+  this.peek = peek; //查看栈顶元素
+  this.length = length; //查看栈内元素总数
+  this.clear = clear; //清空栈
+
+  function push(element) {
+    this.dataStore[this.top++] = element;
+  }
+
+  //取出栈顶元素
+  function pop() {
+    return this.dataStore[--this.top];
+  }
+
+  function peek() {
+    if (this.top > 0) return this.dataStore[this.top - 1];
+    else return "Empty";
+  }
+
+  function clear() {
+    delete this.dataStore;
+    this.dataStore = [];
+    this.top = 0;
+  }
+
+  function length() {
+    return this.top;
+  }
+}
+
+var stack = new Stack();
+console.log(stack.peek());
+stack.push("111");
+console.log(stack.peek());
+
+//回文判断
+
+function isPalindrome(word) {
+  var s = new Stack();
+  for (var i = 0; i < word.length; i++) {
+    s.push(word[i]);
+  }
+
+  var rword = "";
+
+  while (s.length() > 0) {
+    // rword += s.pop();
+    rword = s.pop() + rword;
+  }
+
+  if (word === rword) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+console.log(isPalindrome("level")); // true
+
+
+队列：
+
+队列是只允许在一端进行插入操作，而在另一端进行删除操作的线性表，队列是一种先进先出的线性表，简称FIFO，允许插入的一端称为队尾（Rear），允许删除的一端称为队头(Front)。向队中插入元素称为进队，新元素进队后成为新的队尾元素；向队中删除元素称为出队，元素出队后，其后继元素就成为新的队头元素。
+
+
+
+requestAnimationFrame
+
+1、requestAnimationFrame 会把每一帧中的所有DOM操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+2、在隐藏或不可见的元素中，requestAnimationFrame将不会进行重绘或回流，这当然就意味着更少的的cpu，gpu和内存使用量。
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <style>
+        #e{
+            width: 100px;
+            height: 100px;
+            background: red;
+            position: absolute;
+            left: 0;
+            top: 0;
+            zoom: 1;
+        }
+    </style>
+</head>
+<body>
+<div id="e"></div>
+<script>
+
+
+    var e = document.getElementById("e");
+    var flag = true;
+    var left = 0;
+    var rafId = null
+
+
+    function render() {
+        if(flag == true){
+            if(left>=100){
+                flag = false
+            }
+            e.style.left = ` ${left++}px`
+        }else{
+            if(left<=0){
+                flag = true
+            }
+            e.style.left = ` ${left--}px`
+        }
+    }
+
+    //requestAnimationFrame效果
+    (function animloop(time) {
+        console.log(time,Date.now())
+        render();
+        rafId = requestAnimationFrame(animloop);
+        //如果left等于50 停止动画
+        if(left == 50){
+            cancelAnimationFrame(rafId)
+        }
+    })();
+
+    //setInterval效果
+    // setInterval(function(){
+    //     render()
+    // },1000/60)
+
+</script>
+</body>
+</html>

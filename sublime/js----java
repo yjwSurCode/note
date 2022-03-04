@@ -1,0 +1,539 @@
+export PUB_HOSTED_URL=https://pub.flutter-io.cn
+
+分词/词法分析------解析/语法分析------代码生成
+
+eval(..) 和 with 会在运行时修改或创建新的作用域，以此来欺骗其他在书写时定义的词
+法作用域。
+
+，ES6 还引入了 const，同样可以用来创建块作用域变量，但其值是固定的
+（常量）。之后任何试图修改值的操作都会引起错误。
+
+
+这个过程就好像变量和函数声明从它们在代码中出现的位置被“移动”
+到了最上面。这个过程就叫作提升。
+(只有声明本身会被提升，而赋值或其他运行逻辑会留在原地。如果提升改变了代码执行的顺序，会造成非常严重的破坏。)
+(函数声明会被提升，但是函数表达式却不会被提升。)   函数优先！！！！   再其次是变量
+
+
+for (var k in myObject) {
+console.log( k, myObject[k] );
+}
+
+
+var myArray = [ 1, 2, 3 ];
+for (var v of myArray) {
+console.log( v );
+}
+// 1
+// 2
+// 3
+
+
+var myObject = Object.create( anotherObject );
+
+ Object.defineProperty(..)（参见第 3 章）来向 myObject 添加 foo。
+anotherObject.hasOwnProperty( "a" ); 
+. class 字面语法不能声明属性（只能声明方法）
+可以通过 super(..) 来实现相对多态
+
+
+空值（null）
+• 未定义（undefined）
+• 布尔值（ boolean）
+• 数字（number）
+• 字符串（string）
+• 对象（object）
+• 符号（symbol，ES6 中新增）
+
+Alex Dorey（GitHub 用户名 @dorey）在 GitHub 上制作了一张图表
+
+
+function add(xPromise,yPromise) {
+ // Promise.all([ .. ])接受一个promise数组并返回一个新的promise，
+ // 这个新promise等待数组中的所有promise完成
+ return Promise.all( [xPromise, yPromise] )
+ // 这个promise决议之后，我们取得收到的X和Y值并加在一起
+ .then( function(values){
+ // values是来自于之前决议的promisei的消息数组
+ return values[0] + values[1];
+ } );
+}
+// fetchX()和fetchY()返回相应值的promise，可能已经就绪，
+// 也可能以后就绪
+add( fetchX(), fetchY() )
+// 我们得到一个这两个数组的和的promise
+// 现在链式调用 then(..)来等待返回promise的决议
+.then( function(sum){
+ console.log( sum ); // 这更简单！
+} ); 
+
+
+if (
+ p !== null &&
+ (
+ typeof p === "object" ||
+ typeof p === "function"
+ ) &&
+ typeof p.then === "function"
+) {
+ // 假定这是一个thenable!
+}
+else {
+ // 不是thenable
+}
+
+
+
+eg例子：：：：：：：：：：：：：
+1  7 6 8 2 4 3 5 9  10 11 12
+
+eg:  6之后执行8  是因为 6是第一个微服务 执行完微服务要执行所有的微服务
+
+eg: 2，4 ，3，5     ,,24之后要执行完这里的微服务再执行下面的微服务。下面的setimeOut是第三轮的事件循环宏服务
+
+
+console.log('1');
+setTimeout(function() {
+    console.log('2');
+    process.nextTick(function() {
+        console.log('3');
+    })
+    new Promise(function(resolve) {
+        console.log('4');
+        resolve();
+    }).then(function() {
+        console.log('5')
+    })
+})
+
+process.nextTick(function() {
+    console.log('6');
+})
+
+new Promise(function(resolve) {
+    console.log('7');
+    resolve();
+}).then(function() {
+    console.log('8')
+})
+
+setTimeout(function() {
+    console.log('9');
+    process.nextTick(function() {
+        console.log('10');
+    })
+    new Promise(function(resolve) {
+        console.log('11');
+        resolve();
+    }).then(function() {
+        console.log('12')
+    })
+})
+
+
+Promise.race或者  new promise 内部设置回调
+
+promise的信任问题：：：：
+// 不要只是这么做：
+foo( 42 )
+.then( function(v){
+ console.log( v );
+} );
+// 而要这么做：
+Promise.resolve( foo( 42 ) )
+.then( function(v){
+ console.log( v );
+} ); 
+
+
+
+call apply bind :::::
+function fruits() {}
+ 
+fruits.prototype = {
+    color: "red",
+    say: function() {
+        console.log("My color is " + this.color);
+    }
+}
+ 
+var apple = new fruits;
+apple.say();    //My color is red
+
+(call apply 本质是一样的但是接受参数的方式可能不一样--------func.call(this, arg1, arg2);func.apply(this, [arg1, arg2]))
+
+验证是否是数组：functionisArray(obj){ 
+    return Object.prototype.toString.call(obj) === '[object Array]' ;
+}
+
+var args = Array.prototype.slice.call(arguments); arguments是伪数组
+  args.unshift('(app)');
+   console.log.apply(console, args);
+
+   apply 、 call 、bind 三者都是用来改变函数的this对象的指向的；
+apply 、 call 、bind 三者第一个参数都是this要指向的对象，也就是想指定的上下文；
+apply 、 call 、bind 三者都可以利用后续参数传参；
+bind 是返回对应函数，便于稍后调用；apply 、call 则是立即调用 。
+
+
+目前不常用： 混合对象’类‘  原型  行为委托 
+
+
+
+
+
+
+// 1: 闭包和递归
+// 闭包就是能够读取其他函数内部变量的函数。
+
+// function a() {
+//   let pa = 'a的变量'
+//   const b = () => {
+//     let pb = 'b的变量'
+//   }
+// }
+
+
+// const c = a.b
+// console.log('闭包就是能够读取其他函数内部变量的函数。', c)
+
+// function fun(a) {
+
+//   function f2() {
+//     console.log(a);
+//   }
+//   return f2;
+// }
+
+// let fn = fun(1)
+// console.log(fn)
+// setTimeout(fn, 1000)
+
+
+// function f1() {
+//   var sum = 0;
+//   console.log('111sum', sum)
+//   var obj = {
+//     inc: function (e) {
+//       console.log(sum, e, 'sum')
+//       sum++;
+//       return sum;
+//     }
+//   };
+//   return obj;
+// }
+// let result = f1();
+// console.log(result.inc());//1
+// console.log(result.inc());//2
+// console.log(result.inc());//3
+
+
+// 当我们需要在模块中定义一些变量，并希望这些变量一直保存在内存中但又不会 “污染” 全局的变量时，就可以用闭包来定义这个模块。
+
+// 减少全局变量； 减少传递函数的参数量；
+
+
+
+
+
+
+// 3:webpack 运行机制与核心工作原理：
+//     通过 Loader 处理特殊类型资源的加载，例如加载样式、图片；
+//     通过 Plugin 实现各种自动化的构建任务，例如自动压缩、自动发布。
+
+// Webpack CLI 启动打包流程；
+// 载入 Webpack 核心模块，创建 Compiler 对象；
+// 使用 Compiler 对象开始编译整个项目；
+// 从入口文件开始，解析模块依赖，形成依赖关系树；
+// 递归依赖树，将每个模块交给对应的 Loader 处理；
+// 合并 Loader 处理完的结果，将打包结果输出到 dist 目录
+
+// 3.1 
+// 每个对象都有一个__proto__属性，指向了创造它的构造函数的原型对象。
+// 原型链(一种访问机制)
+
+
+// 3.2 core.js
+// core - js是我们能够使用新的API的最重要的包
+// ，然而一般情况它隐藏在webpack编译后的代码中，我们一般不会去查看，所以容易被遗忘，我们在webpack生成环境下，查看编译后的代码，可以看到例如includes就是从core - js导出到我们的代码去的
+
+
+
+
+// 3.2 css rem em vh vw 是什么 自适应怎么写
+https://blog.csdn.net/geekmubai/article/details/81152774
+// em 根据父元素的大小变化而变化 良好
+// rem  单位是根据根节点的大小来设置的，也就是根据 html 的大小来设置的，跟父元素没有关系 IE9+、火狐 3.6+、 safari5.0+
+// vw   相对于视口的宽度， 视口被均分为 100 单位的vw  高版本浏览器均支持
+// vh   相对于视口的宽度， 视口被均分为 100 单位的vh  高版本浏览器均支持
+// 通过js来实现自适应
+
+
+// 4： v-modal的原理
+
+// 重点
+
+// 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
+
+// 算法基础知识-http://www.360doc.com/content/21/0518/19/37113458_977788938.shtml
+
+//call bind apply https://zhuanlan.zhihu.com/p/82340026
+//  const obj = {
+//     x: 10
+//   }
+//   function fn() {
+//     console.log(this)
+//   }
+//   fn.call(obj)      //obj
+//   fn.apply(obj) //obj
+//   fn.bind(obj)() //obj
+
+
+// 4.1: 判断类型
+// Object.prototype.toString.call(null); // "[object Null]"
+// Object.prototype.toString.call(undefined); // "[object Undefined]"
+// Object.prototype.toString.call(“abc”);// "[object String]"
+// Object.prototype.toString.call(123);// "[object Number]"
+// Object.prototype.toString.call(true);// "[object Boolean]"
+// Object.prototype.toString.call(new Date()); // "[object Date]"
+// Object.prototype.toString.call([1,2,3]); // "[object Array]"
+
+
+//简洁---复用
+// 5: HOC高阶组件
+// const HOC = (Com) => {
+//     return class tar extends Component<IProps, IState> {
+//         constructor(props: IProps) {
+//             super(props);
+//         }
+//         render() {
+//             return <div>
+//                 <Com  {...this.props}  > </Com>
+//             </div>
+//         }
+//     }
+// }
+
+//调用:
+// HOC(组件名)
+
+
+
+// constructor ------   useState
+// getDerivedStateFromProps --------    useState 里面 update 函数
+// shouldComponentUpdate ------ useMemo
+// render ------    函数本身
+// componentDidMount ------ useEffect
+// componentDidUpdate ------    useEffect
+// componentWillUnmount ------  useEffect 里面返回的函数
+// componentDidCatch ------ 无
+// getDerivedStateFromError ------  无
+
+
+
+
+// 6:v2.x 与 vue3.0之间的区别:
+// 基于 Proxy 观察者机制以满足全语言覆盖以及更好的性能；
+// 放弃 Object.defineProperty ，使用更快的原生 Proxy；
+// 　　beforeCreate -> 请使用 setup()
+// 　　created -> 请使用 setup()
+// 　　beforeMount -> onBeforeMount
+// 　　mounted -> onMounted
+// 　　beforeUpdate -> onBeforeUpdate
+// 　　updated -> onUpdated
+// 　　beforeDestroy -> onBeforeUnmount
+// 　　destroyed -> onUnmounted
+
+// vue2知识点：
+// 自定义指令
+//  <h1 v-highlight="red">这是一串被高亮为红色的字h1>
+// Vue.directive('highlight', {
+//   bind(el, binding, vnode) {
+//     el.style.background = binding.value;
+//   }
+// }); 
+// 自定义指令
+// Vue.directive('my-directive', {
+//   bind: function () {},
+//   inserted: function () {},
+//   update: function () {},
+//   componentUpdated: function () {},
+//   unbind: function () {}
+// })
+
+
+
+// Vue3新特性:
+// import { nextTick } from 'vue'
+
+// <template>
+//     <div v-if >
+//         优先级提升比v-for大
+//     </div>
+//     <input type="text" name="" id="" v-focus></input>
+// </template>
+// export default {
+//     components: {
+//         Testd,
+//         Testdd,
+//     },
+//     props: {
+//         msg: String,
+//         propsMsg: "propsMsg",
+//     },
+//     directives: {
+//         focus: {
+//             // 参数 el, binding, vnode, oldVnode
+//             mounted: function (el) {
+//                 el.focus()
+//             }
+//         }
+//     },
+//     setup(props) {
+//         const repositories = ref < string | null > ([]) // 定义一个变量
+//         repositories.value = newContent;
+//         const getUserRepositories = async () => { // 定义一个方法
+//             await api()
+//         }
+//         const img = computed(() => {
+//             return (props.type && IMG.get(props.type)) || defaultImg;
+//         });
+//         const stated = reactive({ allPageLength: 0, moreText: "加载更多" });
+//         onMounted(() => {
+//             getUserRepositories,// 生命周期钩子 当实例mounted后调用getUserRepositories方法
+//                 nextTick(() => {
+// ----------------------------------一些和DOM有关的东西
+//                 })
+//         })
+//         return {
+//             img,
+//             repositories, // 返回一个data
+//             ...toRefs(stated),
+//             getUserRepositories // 返回一个method
+//         }
+//     }
+// }
+
+
+// 异步组件
+// const AsyncCategory = defineAsyncComponent(() => import("./AsyncCategory.vue"))
+
+//   import Loading from './Loading.vue';
+
+//   const AsyncCategory = defineAsyncComponent({
+//     loader: () => import("./AsyncCategory.vue"),
+//     loadingComponent: Loading,  占位组件，当AsyncCategory还没加载出来时候，显示这个组件
+//     errorComponent: 当AsyncCategory加载失败出现
+//     delay: 2000, 在显示loadingComponent组件之前, 等待多长时间
+//     /**
+//      * err: 错误信息,
+//      * retry: 函数, 调用retry尝试重新加载
+//      * attempts: 记录尝试的次数
+//      */
+//     onError: function(err, retry, attempts) {
+//     }
+//   })
+
+
+
+//内置组件  defalult可以显示 不可以显示就显示fallback
+// < suspense >
+{/* <template #default>
+    <async-category></async-category>
+  </template>
+  <template #fallback>
+    <loading></loading>
+  </template>
+</ > */}
+
+
+
+
+// 6:React SSR + express 构建简单服务端渲染Demo      https://juejin.cn/post/6844903990497378318
+
+
+
+
+// uploader上传文件  测试用例
+
+// 受控组件
+
+// eventBus
+
+// Inter section Observer  visibilitychange
+
+// naticeBar-----回流与重绘
+// if (playing % 2 === 0) {
+//   setTransitionDuration(0);
+//   setOffset(wrapperWidth);
+//   doubleRaf(() => setPlaying(nextPlaying));
+//   return;
+// }
+// double raf for animation
+// export function doubleRaf(fn: FrameRequestCallback): void {
+//   raf(() => raf(fn));
+//   requestAnimationFrame
+// }
+
+// 优化
+// useState
+// useReducer
+
+// seState 就是用 useReducer 实现的，useState 返回的函数内部封装了一个 dispatch。
+// 那就是 useState 不对状态做浅层合并了，而 useReducer 会合并
+
+
+// 手机输入框
+
+
+
+reduce 高级用法：https://juejin.cn/post/6844903669977055239
+
+
+扩展：
+Promise
+
+
+扩展：函数柯里化：：
+function curry(fn, args) {
+  var length = fn.length;
+  args = args || [];
+  return function(...rest) {
+    var _args = [...args, ...rest];
+    return _args.length < length
+      ? curry.call(this, fn, _args)
+    : fn.apply(this, _args);
+  }
+}
+var fn = curry(function(a, b, c) {
+  console.log(a + b + c);
+});
+fn('a', 'b', 'c'); // abc
+fn('a', 'b')('c'); // abc
+fn('a')('b')('c'); // abc
+
+
+
+
+在 pending 状态，promise 可以切换到 fulfilled 或 rejected。
+在 fulfilled 状态，不能迁移到其它状态，必须有个不可变的 value。
+在 rejected 状态，不能迁移到其它状态，必须有个不可变的 reason。
+
+
+
+33个基本知识：
+
+调用堆栈：
+
+
+执行上下文是评估和执行 JavaScript 代码的环境的抽象概念
+
+执行栈，也就是在其它编程语言中所说的“调用栈”，是一种拥有 LIFO（后进先出）数据结构的栈，被用来存储代码运行时创建的所有执行上下文。
+
+
+（1）值类型（基本类型）：字符串（string）、数值（number）、布尔值（boolean）、undefined、null  （这5种基本数据类型是按值访问的，因为可以操作保存在变量中的实际的值）(ECMAScript 2016新增了一种基本数据类型：symbol http://es6.ruanyifeng.com/#docs/symbol )
+
+（2）引用类型：对象（Object）、数组（Array）、函数（Function）
+
+
+

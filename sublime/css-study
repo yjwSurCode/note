@@ -1,0 +1,374 @@
+
+浮动(float)与绝对定位(position:absolute/fixed)之间的区别就是
+(1)浮动会使元素脱离文档流,但是不会脱离文本流,在于其他盒子的文本内容计算布局的时候,还是占位置的。
+(2)绝对定位会使元素脱离文档流,同时也会脱离文本流, 在于其他盒子的文本内容计算布局的时候,不占位置。
+
+设置float属性之后，父元素的高度为0，这就是所谓的高度塌陷
+
+清除浮动： 
+clear: both;
+父元素  overflow: auto;
+父级 div 定义 伪类 :after 和 zoom 。
+
+.container::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+标准（W3C）盒子模型：width = 内容宽度（content） + border + padding + margin
+
+低版本IE盒子模型： width = 内容宽度（content + border + padding）+ margin
+
+5.box-sizing是什么
+设置CSS盒模型为标准模型或IE模型。标准模型的宽度只包括content，二IE模型包括border和padding
+
+box-sizing属性可以为三个值之一：
+
+content-box，默认值，只计算内容的宽度，border和padding不计算入width之内
+padding-box，padding计算入宽度内
+border-box，border和padding计算入宽度之内
+
+
+vertical-align 只应用于 行内元素和替换元素（不影响块级元素的内容对齐 但是影响表元素的垂直对齐）
+只能应用于内联元素以及 display 值为 table-cell 的元素。
+
+text-align:center 这个只对行内元素有效，所以我们要使用 text-align:center 就必须将子元素设置为 display: inline; 或者 display: inline-block;；
+
+ first-line、:first-letter、:before、:after 伪元素
+ ::after生成的内容也比::before生成的内容靠后。  伪类
+
+
+有无继承性的属性：：：：：：：：：：：：：：：
+继承： 字体 文本 列表
+
+input, textarea, img, video, object {
+ box-sizing: border-box;
+} 
+
+全屏幕居中弹窗：https://demo.cssworld.cn/5/3-10.php
+
+全屏显示 100vh 
+&::before {
+    content: '';
+    height: 0.5px;
+    display: block;
+  }
+
+
+水平垂直居中：：：：：：：：
+1: position:reletive 对应的子元素要设置 position:absolute，然后使用 top:50%;left:50%
+2: line-height  text-aglin：center
+3: flex +margin：auto
+4: 负margin 和 transform and  magin:0 auto
+5:文档fixed+ :after {
+  content: "";
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+6:display: grid; place-content: center;
+7: display: table/table-cell + vertical-align: middle 不限定宽高
+8:伪元素 父级after {
+    content:'';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+9： position: absolute; top: 50%; margin-top: -50px;  /* margin-top值为自身高度的一半 宽度同理*/
+
+
+
+GRID布局：：：：：：：：：：：：：：：：：：：：：：：：
+
+两栏布局(一侧固定，一侧自适应)
+.container{
+  display: grid;
+  grid-template-columns: 100px auto; // 或者 100px 1fr
+}
+
+十二网格布局：
+.container{
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}
+
+自适应两端对齐：
+#container{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-auto-rows: minmax(100px, auto);
+  gap: 30px;
+}
+
+基于网格线布局：
+.wrapper {
+  display: grid;
+  grid-gap: 17px;
+  grid-template-columns: auto 100px auto;
+}
+.a {
+  grid-column: 1 / 3;
+  grid-row: 1;
+}
+.b {
+  grid-column: 3 ;
+  grid-row: 1 / 3;
+}
+.c {
+  grid-column: 1 ;
+  grid-row: 2 ;
+}
+.d {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+
+图片和文字垂直居中：：：：：：：：
+display: inline-block;
+vertical-align: middle;
+
+圣杯布局：：：：：：：：
+float + 左元素margin-left:-100%;+右元素 margin-left:`width`px
+flex + flex：1
+
+
+BFC 规范（块级格式化上下文：blockformattingcontext）：：：：：：：：
+（1）根元素或包含根元素的元素
+（2）浮动元素float＝left|right或inherit（≠none）
+（3）绝对定位元素position＝absolute或fixed
+（4）display＝inline-block|flex|inline-flex|table-cell或table-caption
+（5）overflow＝hidden|auto或scroll(≠visible)
+
+BFC指的是块级格式化上下文，一个元素形成了BFC之后，那么它内部元素产生的布局不会影响到外部元素，外部元素的布局也
+不会影响到BFC中的内部元素。一个BFC就像是一个隔离区域，和其他区域互不影响。
+
+
+使用transform描绘1px边框:::::
+&.normal {
+    border: 1px solid #f66;
+  }
+  &.thin {
+    position: relative;
+    &::after {
+      position: absolute;
+      left: 0;
+      top: 0;
+      border: 1px solid #f66;
+      width: 200%;
+      height: 200%;
+      content: "";
+      transform: scale(.5);
+      transform-origin: left top;
+    }
+
+
+使用max-height切换自动高度
+
+
+
+设备像素指的是物理像素，一般手机的分辨率指的就是设备像素，一个设备的设备像素是不可变的。
+
+css像素和设备独立像素是等价的，不管在何种分辨率的设备上，css像素的大小应该是一致的，css像素是一个相对单位，它是相
+对于设备像素的，一个css像素的大小取决于页面缩放程度和dpr的大小。
+
+dpr指的是设备像素和设备独立像素的比值，一般的pc屏幕，dpr=1。在iphone4时，苹果推出了retina屏幕，它的dpr
+为2。屏幕的缩放会改变dpr的值。
+
+ppi指的是每英寸的物理像素的密度，ppi越大，屏幕的分辨率越大
+
+EG:::::
+
+.box {
+ height: 160px;
+ padding: 30px;
+ box-sizing: border-box;
+ background-color: #beceeb;
+}
+.child {
+ height: 100%;
+ background-color: #cd0000;
+}
+.box {
+ height: 160px;
+ padding: 30px;
+ box-sizing: border-box;
+ background-color: #beceeb;
+ position: relative;
+}
+.child {
+ height: 100%; width: 100%;
+ background-color: #cd0000;
+ position: absolute;
+}
+可以看到，非定位元素的宽高百分比计算不会将 padding 计算在内，
+
+
+
+EG::::
+.element {
+ max-height: 0;
+ overflow: hidden;
+ transition: max-height .25s;
+}
+.element.active {
+ max-height: 666px; /* 一个足够大的最大高度值 */
+} 
+
+
+
+eg::::
+<button id="btn"></button>
+<label for="btn">按钮</label>
+button {
+ position: absolute;
+ clip: rect(0 0 0 0);
+}
+label {
+ display: inline-block;
+ line-height: 20px;
+ padding: 10px;
+}
+
+
+
+eg:::::::
+等高布局
+.column-box {
+ overflow: hidden;
+}
+.column-left,
+.column-right {
+ margin-bottom: -9999px;
+ padding-bottom: 9999px;
+} .column-box {
+ overflow: hidden;
+}
+.column-left,
+.column-right {
+ margin-bottom: -9999px;
+ padding-bottom: 9999px;
+} 
+2：
+.box {
+ border-left: 150px solid #333;
+ background-color: #f0f3f9;
+}
+.box > nav {
+ width: 150px;
+ margin-left: -150px;
+ float: left;
+}
+.box > section {
+ overflow: hidden;
+} 
+
+
+
+
+EG：：：：：：多行文字居中
+.box {
+ line-height: 120px;
+ background-color: #f0f3f9;
+}
+.content {
+ display: inline-block;
+ line-height: 20px;
+ margin: 0 20px;
+ vertical-align: middle;
+}
+<div class="box">
+ <div class="content">基于行高实现的...</div>
+</div>
+
+EG：：：：：自适应高宽
+.square {
+  width: 30%;
+  overflow: hidden;
+  background: yellow;
+}
+
+.square::after {
+  content: "";
+  display: block;
+  margin-top: 100%;
+}
+
+
+css知识点：：：https://juejin.cn/post/6844904185847087111#heading-104 
+
+css加载不会阻塞DOM树的解析
+css加载会阻塞DOM树的渲染
+css加载会阻塞后面js语句的执行
+
+
+CSS选择符：：：：
+（1）id选择器（#myid）
+（2）类选择器（.myclassname）
+（3）标签选择器（div,h1,p）
+（4）后代选择器（h1p）
+（5）相邻后代选择器（子）选择器（ul>li）
+（6）兄弟选择器（li~a）
+（7）相邻兄弟选择器（li+a）
+（8）属性选择器（a[rel="external"]）
+（9）伪类选择器（a:hover,li:nth-child）
+（10）伪元素选择器（::before、::after）
+（11）通配符选择器（*）
+
+input:not([type="submit"]){
+  border:1px solid red;
+} 使type不是submit的input边框变化
+
+:empty  空元素
+
+elem:first-of-type选中父元素下第一个elem类型元素。
+
+
+CSS书写顺序::
+1.位置属性(position, top, right, z-index,display, float等)　
+2.大小(width, height, padding, margin)　
+3.文字系列(font, line-height, letter-spacing,color- text-align等)
+4.背景(background, border等)　
+5.其他(animation, transitions等)
+
+
+
+伪类 伪元素：：：：   https://juejin.cn/post/6844903654756089864
+
+伪类：其实是弥补了CSS选择器的不足，用来更方便地获取信息。
+伪元素：本质上是创建了一个虚拟容器(元素)，我们可以在其中添加内容或样式
+
+.after:hover:before {
+    opacity: 1;
+}
+
+
+
+-moz代表firefox浏览器私有属性
+-ms代表IE浏览器私有属性
+-webkit代表chrome、safari私有属性
+-o代表opera私有属性
+
+
+eg:
+ -webkit-transform:rotate(-3deg); /*为Chrome/Safari*/ 
+ -moz-transform:rotate(-3deg); /*为Firefox*/ 
+ -ms-transform:rotate(-3deg); /*为IE*/ 
+ -o-transform:rotate(-3deg); /*为Opera*/ 
+ transform:rotate(-3deg);
+ （自动化插件Autoprefixer）
+
+正则表达式：https://juejin.cn/post/6844903430637486088
+
+
+css 性能优化：：：：
+首次有效绘制（First Meaningful Paint，简称FMP）
+文件压缩
+去除无用CSS
+优化重排与重绘   https://csstriggers.com/
+使用 fontmin-webpack 插件对字体文件进行压缩
+
+
+
+滚动条：npm i perfect-scrollbar

@@ -1,0 +1,415 @@
+  // 规范:
+  // 1: 提交之前审核是否代码功能出错
+  // 2: 避免出现 console.log alert 未删除
+  // 3: 提交备注 功能
+  // 4: 定义变量 不可以大写  类名不可以随便定义
+  // 5: 变量的类型需要定义规范
+  // 6: scss less 需要统一规范
+  // 7: 样式一定要考虑兼容性---(后台数据出错 造成样式错乱)
+  // 8: 定义方法 命名一定要规范 ---->用你的命名来描述功能--在命名对象、函数和实例时使用驼峰命名法（camelCase
+  // 9: 定义未使用的变量和方法要删除
+  // 10:接口 IntserFace 类 首开头要大写------帕斯卡拼命名法
+  // 11:编写样式 什么页面就是什么 page 注意命名规范 注意行间距
+  // 12:setTimeout 结束之后需要清除
+  // 13:undendfind null  ''  合理使用
+  // 14:定义组件命名需要大写
+  // 15: 考虑接口的复用
+
+  // 1: 可以复用 第三方的库------直接搬源码
+  // 2: 可以使用 ahooks 自己搬源码-直接封装方法
+
+支付宝的坑：
+H5 页面相关
+页面访问受限/报错/无法跳转的原因以及处理方法
+• 不支持在小程序内加载 scheme 链接，scheme 链接无法被配置为业务域名。
+• 不支持在小程序内加载支付宝官方 H5 链接，Alipay 的域名无法被配置为业务域名。
+• 添加域名后需重新提交审核后发布才会生效。
+• 域名仅支持 https 开头的链接，格式支持英文大小写字母、数字、及“-”，不支持 IP 地址及端口号。
+• 配置域名后，请重新设置体验版或者推送真机预览。
+• 需下载校验文件，并放置于配置域名的根目录下。
+• 不支持 H5 页面为重定向页。
+• 没有配置 H5 域名白名单，请参照 配置 H5 域名 完成配置，如遇白名单添加后仍然显示页面受限问题，请参见 web-view 调试报错页面访问受限处理方法。
+• 支付宝 App 版本过低导致，升级至最新版本即可。
+
+
+
+发布流程：
+
+第一步： 切换正确分支
+
+修改代码：
+
+提交代码到分支
+
+合并到beta
+
+先改beta  提交  然后 去gitlab 点击发布   然后地址验证
+
+beta 然后merge到 preview 然后  去gitlab 点击发布   然后地址验证
+
+beta merge 到 master 然后去gitlab 然后手动发布   然后去online地址验证
+
+
+
+yun-pos项目  
+
+beta   需要 yarn build  yarn deploy 
+
+preview   直接merge就可以了
+
+online  需要将代码提交到 master分支  然后去gitlab 然后手动发布 
+
+
+
+
+
+charles key
+
+什么是ssl 什么是证书    开启SSL代理，并添加信任地址  手机下载证书
+
+连接手机 https://juejin.cn/post/6844903733478817800
+
+
+charles的Map Remote（请求重定向）功能，说白了就是你本来要请求A接口拿数据，重定向后，你实际请求的是B接口，拿到的是B接口返回的数据。
+
+
+charles的Map Local（请求重定向到本地文件）功能，说白了就是你本来要请求A接口拿数据，重定向本地文件后，你实际请求的是A接口，拿到的是本地文件返回的数据。
+
+
+微信调试：  第一步需要beta版本的调试
+
+
+第一步：： 先获取guid  获取不到guid 就去登录
+
+{
+  "entry": "card-game",
+  "pathname": "youxian",
+  "params": {
+    "ROUTE_ENTRY": "card-game",
+    "ROUTE_PATHNAME": "youxian",
+    "activityId": "705",
+    "storeCode": "4012",
+    "inviterGuid": "415C3465-9202-880B-6AAC-D9FCC9518119?aid=705",
+    "sid": "4012",
+    "sdType": "1",
+    "t": "bcc619cefe57d14ac1fc83b11dba48f3",
+    "guid": "",
+    "owx": "{\"udid\":\"RYz3cwKT4pKzNRUFEDRTi8AOzPAs923WRX4S\",\"sessionId\":\"2iZyrRoeyuBOCkpLJG47a9a3FDaNuoDt\",\"memGuid\":\"\",\"version\":\"1.5.1\",\"network\":\"wifi\",\"gps\":\"114.23001861572266,30.621536254882812\",\"area_code\":\"4012\",\"udid_first_time\":\"1637803974124\",\"terminal_os\":\"ios\"}"
+  }
+} locloc---
+
+
+if (env === RunningEnv.Android || env === RunningEnv.Ios) {
+				const cookies = await NATIVE_BRIDGE.getNativeCookies();
+				guid = cookies.yx_guid;
+
+				if (cookies.yx_storecode) {
+					storeCode = cookies.yx_storecode;
+				}
+			} else if (env === RunningEnv.WeApp) {
+				guid = loc.params.guid;
+			}
+
+			if (!guid) {
+				return errRes('need-login');
+			}
+
+小程序端获取guid：：：
+
+guid = loc.params.guid;
+
+
+app端获取guid：：：
+
+
+const cookies = await NATIVE_BRIDGE.getNativeCookies();
+				guid = cookies.yx_guid;
+
+	/**
+	 * 获取 Cookies 信息
+	 *
+	 * @returns Cookies 信息
+	 */
+	async getNativeCookies(): Promise<NativeCookies> {
+		return new Promise<NativeCookies>((resolve) => {
+			if (iosBridge || androidBridge) {
+				this.invokeBridge('getCookie', null, (nativeCookies: string) => {
+					let cookies: NativeCookies = {};
+
+					if (nativeCookies) {
+						if (nativeCookies.substring(0, 1) === '"') {
+							nativeCookies = nativeCookies.substring(1, nativeCookies.length - 1);
+						}
+
+						cookies = new Function(`return ${nativeCookies}`)();
+					} else {
+						cookies = {};
+					}
+
+					// 格式化 cookies
+					const newCookies: NativeCookies = {};
+
+					// 重新种入 cookies
+					for (const key of Object.keys(cookies)) {
+						const value = (cookies as any)[key];
+
+						if (value != null && value !== '') {
+							(newCookies as any)[key] = value;
+						}
+					}
+
+					resolve(newCookies);
+				});
+			} else {
+				const cookies = Cookie.get();
+				resolve(cookies);
+			}
+		});
+	}
+
+
+登录 app端 ：
+
+PLATFORM_BRIDGE.jumpLogin({ url: window.location.href });
+		
+		jumpLogin app端登录判断：
+		if (env === RunningEnv.Ios || env === RunningEnv.Android) {
+			window.location.href = `fnfresh://login?${stringifyQuery({ url: params.url })}`;
+			return;
+		}
+
+
+
+小程序端 授权登录：（不可以重定向）
+
+运行小程序代码  添加编译模式   
+
+f=http%3A%2F%2F10.211.242.183%3A3000%2F%3FROUTE_ENTRY%3Dannual%26ROUTE_PATHNAME%3Dyouxian%26activityId%3D719%26storeCode%3D1002&aid=yx&sid=1001
+
+	
+
+<Button
+					color="#e80313"
+					block
+					className={bem('login-btn')}
+					onClick={() => PLATFORM_BRIDGE.jumpLogin({ url: window.location.href })}
+				>
+					去登陆1
+				</Button>
+
+	/**
+	 * 跳转登录（只支持微信小程序、APP）
+	 * @param params 参数
+	 */
+	async jumpLogin(params: { url: string }): Promise<void> {
+		const env = await this.getRunningEnv();  判断环境（代码下面）
+		console.log('envenv', env, encodeURIComponent(params.url));
+
+		jumpLogin 小程序端登录判断：
+		if (env === RunningEnv.WeApp) {
+			return this._jumpToWeApp(`/pages/www/authorization?${encodeURIComponent(params.url)}`); //跳转登录验证页面
+		}
+
+		_jumpToWeApp api 详情：
+		protected _jumpToWeApp(url: string) {
+		const win: any = window;
+		win.wx.miniProgram.navigateTo({ url });
+	    }
+
+		if (env === RunningEnv.Ios || env === RunningEnv.Android) {
+			window.location.href = `fnfresh://login?${stringifyQuery({ url: params.url })}`;
+			return;
+		}
+	}
+
+	async loadAlipaySdk(): Promise<void> {
+		return loadScript('https://appx/web-view.min.js');
+	}
+
+	async loadWechatSdk(): Promise<void> {
+		return loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');
+	}
+
+/AlipayClient/i.test(navigator.userAgent)  // 支付宝小程序判断环境
+
+/MicroMessenger/i.test(navigator.userAgent)  //微信判断环境
+
+
+
+分享 app端:::::::::
+
+分享个人
+NATIVE_BRIDGE.setNavWechatShare(shareInfo);
+
+	/**
+	 * 设置顶部导航微信分享（进页面调用）
+	 *
+	 * @param shareInfo
+	 * @returns
+	 */
+	async setNavWechatShare(shareInfo: NativeWechatShareInfo): Promise<void> {
+		this.invokeBridge('setNavWechatShare', shareInfo);
+	}
+
+
+分享朋友圈：
+NATIVE_BRIDGE.wechatShare({
+						...shareInfo,
+						shareTarget: 'frineds',
+					});
+
+小程序端 分享：：：：
+
+PLATFORM_BRIDGE.postMessage({
+						title: '翻牌集卡有机会赢1111元喔，一起来玩吧~',
+						src: appendQuery('pages/www/cms', {
+							f: url,
+							aid: actInfo.id,
+							sid: storeCode,
+						}),
+					});
+	/**
+	 * 发送数据（只支持微信小程序）
+	 * @param params 参数
+	 */
+	async postMessage(params: any): Promise<void> {
+		const env = await this.getRunningEnv();
+
+		if (env === RunningEnv.WeApp) {
+			const win: any = window;
+			win.wx.miniProgram.postMessage({ data: params });
+		}
+	}
+
+桥接:::::::
+
+获取cookies
+
+const cookies = await NATIVE_BRIDGE.getNativeCookies();
+
+
+
+分享微信朋友圈和微信朋友
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+  "data": function({
+    _req,
+    Mock
+  }) {
+    if (!_req.body.phone) {
+      return [{
+        "code": 1,
+        "msg": "error"
+      }]
+    }
+      return [
+        //   {
+        //   "id": 1,
+        //   "product_id": "A001",
+        //   "poster_url": "https://i1.mifile.cn/a1/pms_1550642182.7527088!220x220.jpg",
+        //   "description": "骁龙855，索尼4800万超广角微距三摄",
+        //   "title": "小米9 6GB+128GB",
+        //   "price": 2999
+        // }, {
+        //   "id": 2,
+        //   "product_id": "A002",
+        //   "poster_url": "https://i1.mifile.cn/a1/pms_1545457719.47232999!220x220.png",
+        //   "description": "5.84\"小水滴全面屏，后置1200万 AI 双摄",
+        //   "title": "小米Play 4GB+64GB",
+        //   "price": 1099
+        // }, {
+        //   "id": 3,
+        //   "product_id": "A003",
+        //   "poster_url": "https://i1.mifile.cn/a1/pms_1537324004.08544830!220x220.jpg",
+        //   "description": "潮流镜面渐变色，2400万自拍旗舰",
+        //   "title": "小米8青春版6GB+64GB",
+        //   "price": 1499
+        // }
+        {
+          "code": "200",
+          "msg": "验证码已通过短信发送至您的手机，请注意查收",
+          "ok": true
+
+        }
+      ]
+   
+  }
+}
+
+
+
+
+format	指定使用的条形码类型	“auto”	String	auto 就是使用CODE128
+width	指定条形码中单条竖线的宽度	2	Number	并不是整个条形码的宽度
+height	指定条形码高度	100	Number	
+displayValue	指定是否显示条形码文本	true	Boolean	
+fontOptions	设置条形码文本的粗体和斜体样式	“”	String	bold / italic / bold italic
+font	设置条形码文本的字体	monospace	String	
+fontSize	设置条形码文本的字体大小	16	Number	
+textAlign	设置条形码文本的水平对齐方向	center	String	left / center / right
+textPosition	设置条形码文本的位置	bottom	String	bottom / top
+textMargin	设置条形码文本和条形码间的距离	2	Number	存在bug：当textPosition设置为top时，如果textMargin设置过大会导致条形码文本超出边框而消失或部分显示
+background	设置整个条形码容器的背景颜色	#ffffff	String	
+lineColor	设置条形码及其文本的颜色	#000000	String	
+margin	设置条形码和条形码文本组合体的外边距	10	Number	设置的并不是整个条形码容器的外边距，反而可以理解成是整个条形码的内边距，也可以单独设置某一个边距，marginTop、marginRight、marginBottom、marginLeft
+valid	执行生成条形码过程后的回调函数	function (valid){}	Function	接收一个参数valid，表示条形码生成是否成功，一般是指是否受支持的条形码文本，如果是因为传入不支持的条形码类型会直接报错
+————————————————
+版权声明：本文为CSDN博主「philipzone」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/philipzone/article/details/106858349
+
+
+
+
+设备的根字体大小 * 全屏比例值 =  设备的宽度
+
+设计稿的根字体大小 * 全屏比例值 = 设计稿的宽度
+
+这两个等式中的全屏比例值相等的条件下，在真实设备上可以高保真地还原设计稿。
+
+
+
+1英寸 = 2.54 厘米
+
+屏幕分辨率
+屏幕分辨率指一个屏幕具体由多少个像素点组成
+
+
+
+设备像素比(DPR) = 设备像素个数 / 理想视口CSS像素个数(device-width) ，则：
+
+750/
+
+CSS像素 = 设计稿像素/dpr。
+
+
+
+假设元素宽度300px
+X=(300px(设计稿元素大小)/750px(设计稿宽度))*10rem
+
+图片分辨率其实是指图片含有的像素数
+
+
+2.容易跟dpr(设备像素比)混淆在一起，牵强地解释根字体的计算，有碍对根字体计算的理解。dpr是逻辑像素和真实物理设备像素之间的对应关系，dpr引发的问题是在css中明明写的边距宽度是1px, 在设备上看起来比较粗，好像有2~3px那么宽。可通过脚本设置dpr或者transform: scale+伪元素的方式修正。
+
+
+
+
+
+
+
+

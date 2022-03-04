@@ -1,0 +1,537 @@
+
+export function render(
+  element: React$Element<any>,
+  container: Container, 
+  callback: ?Function,
+) {
+
+const internalContainerInstanceKey = '__reactContainer$' + randomKey;
+
+
+
+
+function legacyRenderSubtreeIntoContainer(
+    parentComponent: ? React$Component < any, any > ,
+    children : ReactNodeList,
+    container: Container,
+    forceHydrate: boolean,
+    callback: ? Function,
+) {
+
+    let fiberRoot: FiberRoot;
+
+
+
+    function FiberRootNode(containerInfo, tag, hydrate) {
+    this.tag = tag;
+    this.containerInfo = containerInfo;
+    this.pendingChildren = null;
+    this.current = null;
+    this.pingCache = null;
+    this.finishedWork = null;
+    this.timeoutHandle = noTimeout;
+    this.context = null;
+    this.pendingContext = null;
+    this.isDehydrated = hydrate;
+    this.callbackNode = null;
+    this.callbackPriority = NoLane;
+    this.eventTimes = createLaneMap(NoLanes);
+    this.expirationTimes = createLaneMap(NoTimestamp);
+
+    this.pendingLanes = NoLanes; //二进制
+    this.suspendedLanes = NoLanes;
+    this.pingedLanes = NoLanes;
+    this.expiredLanes = NoLanes;
+    this.mutableReadLanes = NoLanes;
+    this.finishedLanes = NoLanes;
+
+    this.entangledLanes = NoLanes;
+    this.entanglements = createLaneMap(NoLanes);
+
+
+function mountEffect(
+  create: () => (() => void) | void,
+  deps: Array<mixed> | void | null,
+): void {
+
+  if (__DEV__) {
+    // $FlowExpectedError - jest isn't a global, and isn't recognized outside of tests
+    if ('undefined' !== typeof jest) {
+      warnIfNotCurrentlyActingEffectsInDEV(currentlyRenderingFiber);
+    }
+  }
+  if (
+    __DEV__ &&
+    enableStrictEffects &&
+    (currentlyRenderingFiber.mode & StrictEffectsMode) !== NoMode
+  ) {
+    return mountEffectImpl(
+      MountPassiveDevEffect | PassiveEffect | PassiveStaticEffect,
+      HookPassive,
+      create,
+      deps,
+    );
+  } else {
+    return mountEffectImpl(
+      PassiveEffect | PassiveStaticEffect,
+      HookPassive,
+      create,
+      deps,
+    );
+  }
+}  // 判断条件后执行mountEffectImpl
+
+function mountEffectImpl(fiberFlags, hookFlags, create, deps): void {
+  const hook = mountWorkInProgressHook();
+  const nextDeps = deps === undefined ? null : deps;
+  currentlyRenderingFiber.flags |= fiberFlags;
+  hook.memoizedState = pushEffect(
+    HookHasEffect | hookFlags,
+    create,    //相当于第一参数
+    undefined,
+    nextDeps,  //相当于依赖项
+  );
+}
+
+
+function mountRef<T>(initialValue: T): {|current: T|} {
+  const hook = mountWorkInProgressHook();
+  if (enableUseRefAccessWarning) {
+    if (__DEV__) {
+      // Support lazy initialization pattern shown in docs.
+      // We need to store the caller stack frame so that we don't warn on subsequent renders.
+      let hasBeenInitialized = initialValue != null;
+      let lazyInitGetterStack = null;
+      let didCheckForLazyInit = false;
+
+      // Only warn once per component+hook.
+      let didWarnAboutRead = false;
+      let didWarnAboutWrite = false;
+
+      let current = initialValue;
+      const ref = {
+        get current() {
+          if (!hasBeenInitialized) {
+            didCheckForLazyInit = true;
+            lazyInitGetterStack = getCallerStackFrame();
+          } else if (currentlyRenderingFiber !== null && !didWarnAboutRead) {
+            if (
+              lazyInitGetterStack === null ||
+              lazyInitGetterStack !== getCallerStackFrame()
+            ) {
+              didWarnAboutRead = true;
+              console.warn(
+                '%s: Unsafe read of a mutable value during render.\n\n' +
+                  'Reading from a ref during render is only safe if:\n' +
+                  '1. The ref value has not been updated, or\n' +
+                  '2. The ref holds a lazily-initialized value that is only set once.\n',
+                getComponentNameFromFiber(currentlyRenderingFiber) || 'Unknown',
+              );
+            }
+          }
+          return current;
+        },
+        set current(value) {
+          if (currentlyRenderingFiber !== null && !didWarnAboutWrite) {
+            if (
+              hasBeenInitialized ||
+              (!hasBeenInitialized && !didCheckForLazyInit)
+            ) {
+              didWarnAboutWrite = true;
+              console.warn(
+                '%s: Unsafe write of a mutable value during render.\n\n' +
+                  'Writing to a ref during render is only safe if the ref holds ' +
+                  'a lazily-initialized value that is only set once.\n',
+                getComponentNameFromFiber(currentlyRenderingFiber) || 'Unknown',
+              );
+            }
+          }
+
+          hasBeenInitialized = true;
+          current = value;
+        },
+      };
+      Object.seal(ref);
+      hook.memoizedState = ref;
+      return ref;
+    } else {
+      const ref = {current: initialValue};
+      hook.memoizedState = ref;
+      return ref;
+    }
+  } else {
+    const ref = {current: initialValue};
+    hook.memoizedState = ref;
+    return ref;
+  }
+}
+
+function updateRef<T>(initialValue: T): {|current: T|} {
+  const hook = updateWorkInProgressHook();
+  return hook.memoizedState;
+}
+
+
+function mountMemo<T>(
+  nextCreate: () => T,   //对应第一个参数
+  deps: Array<mixed> | void | null,  //对应依赖项
+): T {
+  const hook = mountWorkInProgressHook();
+  const nextDeps = deps === undefined ? null : deps;
+  const nextValue = nextCreate();   // 执行一遍函数 返回执行后的结果进行一次处理
+  hook.memoizedState = [nextValue, nextDeps];
+  return nextValue;
+}
+
+
+function updateMemo<T>(
+  nextCreate: () => T,
+  deps: Array<mixed> | void | null,
+): T {
+  const hook = updateWorkInProgressHook();
+  const nextDeps = deps === undefined ? null : deps;
+  const prevState = hook.memoizedState;
+  if (prevState !== null) {
+    // Assume these are defined. If they're not, areHookInputsEqual will warn.
+    if (nextDeps !== null) {
+      const prevDeps: Array<mixed> | null = prevState[1];
+      if (areHookInputsEqual(nextDeps, prevDeps)) {  //进行一次浅比较
+        return prevState[0];
+      }
+    }
+  }
+  const nextValue = nextCreate();
+  hook.memoizedState = [nextValue, nextDeps];
+  return nextValue;
+}
+
+
+function mountCallback<T>(callback: T, deps: Array<mixed> | void | null): T {
+  const hook = mountWorkInProgressHook();
+  const nextDeps = deps === undefined ? null : deps;
+  hook.memoizedState = [callback, nextDeps];
+  return callback;
+}
+
+
+function updateCallback<T>(callback: T, deps: Array<mixed> | void | null): T {
+  const hook = updateWorkInProgressHook();
+  const nextDeps = deps === undefined ? null : deps;
+  const prevState = hook.memoizedState;
+  if (prevState !== null) {
+    if (nextDeps !== null) {
+      const prevDeps: Array<mixed> | null = prevState[1];
+      if (areHookInputsEqual(nextDeps, prevDeps)) {
+        return prevState[0];
+      }
+    }
+  }
+  hook.memoizedState = [callback, nextDeps];
+  return callback;
+}
+
+
+
+异步调用  //useEffect
+同步调用  //useLayoutEffect
+
+
+   useImperativeHandle<T>(
+      ref: {|current: T | null|} | ((inst: T | null) => mixed) | null | void,
+      create: () => T,
+      deps: Array<mixed> | void | null,
+    ): void {
+      currentHookNameInDev = 'useImperativeHandle';
+      mountHookTypesDev();
+      checkDepsAreArrayDev(deps);
+      return mountImperativeHandle(ref, create, deps);
+    },
+
+
+function mountImperativeHandle<T>(
+  ref: {|current: T | null|} | ((inst: T | null) => mixed) | null | void,
+  create: () => T,
+  deps: Array<mixed> | void | null,
+): void {
+  if (__DEV__) {
+    if (typeof create !== 'function') {
+      console.error(
+        'Expected useImperativeHandle() second argument to be a function ' +
+          'that creates a handle. Instead received: %s.',
+        create !== null ? typeof create : 'null',
+      );
+    }
+  }
+
+  // TODO: If deps are provided, should we skip comparing the ref itself?
+  const effectDeps =
+    deps !== null && deps !== undefined ? deps.concat([ref]) : null;
+
+  let fiberFlags: Flags = UpdateEffect;
+  if (enableSuspenseLayoutEffectSemantics) {
+    fiberFlags |= LayoutStaticEffect;
+  }
+  if (
+    __DEV__ &&
+    enableStrictEffects &&
+    (currentlyRenderingFiber.mode & StrictEffectsMode) !== NoMode
+  ) {
+    fiberFlags |= MountLayoutDevEffect;
+  }
+  return mountEffectImpl(
+    fiberFlags,
+    HookLayout,
+    imperativeHandleEffect.bind(null, create, ref),
+    effectDeps,
+  );
+}
+
+
+例子：
+    const checkboxRef = useMemo<CheckboxRef>(() => {
+        return {
+            root: rootRef.current,
+            toggle: handleToggle,
+        };
+    }, [handleToggle]);
+
+    useImperativeHandle<CheckboxRef, CheckboxRef>(ref, () => checkboxRef, [
+        checkboxRef,
+    ]);
+
+
+
+fiber diff:::::::::::
+
+调度阶段（reconciliation）：在这个阶段 React 会更新数据生成新的 Virtual DOM，然后通过Diff算法（深度优先算法）（ChildReconciler  return reconcileChildFibers ），快速找出需要更新的元素，放到更新队列中去，得到新的更新队列。
+
+function reconcileChildFibers(
+    returnFiber: Fiber,
+    currentFirstChild: Fiber | null,
+    newChild: any,
+    lanes: Lanes,   //react 17 优化
+    //React16的expirationTimes模型只能区分是否>=expirationTimes决定节点
+    //否更新。React17的lanes模型可以选定一个更新区间，并且动态的向区间中增减
+    //优先级，可以处理更细粒度的更新。
+  ): Fiber | null {}
+
+
+  function reconcileChildrenArray(
+    returnFiber: Fiber,
+    currentFirstChild: Fiber | null,
+    newChildren: Array<*>,
+    lanes: Lanes,
+): Fiber | null {
+    // returnFiber：currentFirstChild的父级fiber节点
+    // currentFirstChild：当前执行更新任务的WIP（fiber）节点
+    // newChildren：组件的render方法渲染出的新的ReactElement节点
+    // lanes：优先级相关
+    
+    
+    // resultingFirstChild是diff之后的新fiber链表的第一个fiber。
+    let resultingFirstChild: Fiber | null = null;
+    // resultingFirstChild是新链表的第一个fiber。
+
+    // previousNewFiber用来将后续的新fiber接到第一个fiber之后
+    let previousNewFiber: Fiber | null = null;
+    
+    // oldFiber节点，新的child节点会和它进行比较
+    let oldFiber = currentFirstChild;
+
+    // 存储固定节点的位置
+    let lastPlacedIndex = 0;
+
+    // 存储遍历到的新节点的索引
+    let newIdx = 0;
+
+    // 记录目前遍历到的oldFiber的下一个节点
+    let nextOldFiber = null;
+    
+    // 该轮遍历来处理节点更新，依据节点是否可复用来决定是否中断遍历
+    for (; oldFiber !== null && newIdx < newChildren.length; newIdx++) {
+        // newChildren遍历完了，oldFiber链没有遍历完，此时需要中断遍历
+        if (oldFiber.index > newIdx) {
+            nextOldFiber = oldFiber; oldFiber = null;
+        } else {
+            // 用nextOldFiber存储当前遍历到的oldFiber的下一个节点
+            nextOldFiber = oldFiber.sibling;
+        }
+        // 生成新的节点，判断key与tag是否相同就在updateSlot中
+        // 对DOM类型的元素来说，key 和 tag都相同才会复用oldFiber
+        // 并返回出去，否则返回null
+        const newFiber = updateSlot(
+            returnFiber,
+            oldFiber,
+            newChildren[newIdx],
+            lanes,
+        );
+        
+        // newFiber为 null说明 key 或 tag 不同，节点不可复用，中断遍历
+        if (newFiber === null) {
+            if (oldFiber === null) {
+            // oldFiber 为null说明oldFiber此时也遍历完了
+            // 是以下场景，D为新增节点
+            // 旧 A - B - C 
+            // 新 A - B - C - D oldFiber = nextOldFiber;
+            }
+            break;
+        }
+        if (shouldTrackSideEffects) {
+            // shouldTrackSideEffects 为true表示是更新过程
+            if (oldFiber && newFiber.alternate === null) {
+                // newFiber.alternate 等同于 oldFiber.alternate 
+                // oldFiber为WIP节点，它的alternate 就是 current节点
+                // oldFiber存在，并且经过更新后的新fiber节点它还没有current节点,
+                // 说明更新后展现在屏幕上不会有current节点，而更新后WIP
+                // 节点会称为current节点，所以需要删除已有的WIP节点
+                deleteChild(returnFiber, oldFiber);
+                }
+            }
+            // 记录固定节点的位置
+            lastPlacedIndex = placeChild(newFiber, lastPlacedIndex, newIdx);
+            // 将新fiber连接成以sibling为指针的单向链表
+            if (previousNewFiber === null) {
+                resultingFirstChild = newFiber;
+            } else {
+                previousNewFiber.sibling = newFiber;
+            }
+            previousNewFiber = newFiber;
+            // 将oldFiber节点指向下一个，与newChildren的遍历同步移动
+            oldFiber = nextOldFiber;
+         }
+         
+        // 处理节点删除。新子节点遍历完，说明剩下的oldFiber都是没用的了，可以删除.
+        if (newIdx === newChildren.length) {
+            // newChildren遍历结束，删除掉oldFiber链中的剩下的节点
+            deleteRemainingChildren(returnFiber, oldFiber);
+            return resultingFirstChild;
+        }
+        
+        // 处理新增节点。旧的遍历完了，能复用的都复用了，所以意味着新的都是新插入的了
+        if (oldFiber === null) {
+            for (; newIdx < newChildren.length; newIdx++) {
+            
+                // 基于新生成的ReactElement创建新的Fiber节点
+                const newFiber = createChild(returnFiber, newChildren[newIdx], lanes);
+                if (newFiber === null) {
+                    continue;
+                }
+                // 记录固定节点的位置lastPlacedIndex
+                lastPlacedIndex = placeChild(newFiber, lastPlacedIndex, newIdx); 
+                // 将新生成的fiber节点连接成以sibling为指针的单向链表
+                if (previousNewFiber === null) {
+                    resultingFirstChild = newFiber;
+                } else {
+                    previousNewFiber.sibling = newFiber; 
+                }
+                previousNewFiber = newFiber;
+            }
+            return resultingFirstChild;
+        }
+        // 执行到这是都没遍历完的情况，把剩余的旧子节点放入一个以key为键,值为oldFiber节点的map中
+        // 这样在基于oldFiber节点新建新的fiber节点时，可以通过key快速地找出oldFiber
+        const existingChildren = mapRemainingChildren(returnFiber, oldFiber);
+        
+        // 节点移动
+        for (; newIdx < newChildren.length; newIdx++) {
+            // 基于map中的oldFiber节点来创建新fiber
+            const newFiber = updateFromMap( existingChildren, returnFiber, newIdx, newChildren[newIdx], lanes, ); 
+            if (newFiber !== null) {
+                if (shouldTrackSideEffects) {
+                    if (newFiber.alternate !== null) {
+                        // 因为newChildren中剩余的节点有可能和oldFiber节点一样,只是位置换了，
+                        // 但也有可能是是新增的.
+                        
+                        // 如果newFiber的alternate不为空，则说明newFiber不是新增的。
+                        // 也就说明着它是基于map中的oldFiber节点新建的,意味着oldFiber已经被使用了,所以需
+                        // 要从map中删去oldFiber
+                        existingChildren.delete(
+                            newFiber.key === null ? newIdx : newFiber.key,
+                        );
+                     }
+                  }
+                  
+                 // 移动节点，多节点diff的核心，这里真正会实现节点的移动
+                 lastPlacedIndex = placeChild(newFiber, lastPlacedIndex, newIdx);
+                 // 将新fiber连接成以sibling为指针的单向链表
+                if (previousNewFiber === null) {
+                    resultingFirstChild = newFiber;
+                } else {
+                    previousNewFiber.sibling = newFiber; 
+                }
+                previousNewFiber = newFiber;
+            }
+         }
+        if (shouldTrackSideEffects) {
+           // 此时newChildren遍历完了，该移动的都移动了，那么删除剩下的oldFiber
+           existingChildren.forEach(child => deleteChild(returnFiber, child));
+        }
+        return resultingFirstChild;
+ }
+
+
+
+
+
+调度阶段（reconciliation）：在这个阶段 React 会更新数据生成新的 Virtual DOM，然后通过Diff算法，快速找出需要更新的元素，放到更新队列中去，得到新的更新队列。
+渲染阶段（commit）：这个阶段 React 会遍历更新队列，将其所有的变更一次性更新到DOM上。
+
+
+
+ Reconciler采用递归的方式创建虚拟DOM，递归过程是不能中断的。如果组件树的层级很深，递归会占用线程很多时间，递归更新时间超过了16ms，用户交互就会卡顿。
+（ Fiber Reconciler 用链表遍历的方式替代了 React 16 之前的栈递归方案）
+
+1：Scheduler（调度器）—— 调度任务的优先级，高优任务优先进入Reconciler；
+2：Reconciler（协调器）——负责找出变化的组件：更新工作从递归变成了可以中断的循环过程Reconciler内部采用了Fiber的架构。
+3：Renderer（渲染器）—— 负责将变化的组件渲染到页面上。
+
+
+！！！！！！！！！！
+接受输入事件
+执行事件回调
+开始一帧
+执行 RAF (RequestAnimationFrame)
+页面布局，样式计算
+绘制渲染
+执行 RIC (RequestIdelCallback)
+
+第七步的 RIC 事件不是每一帧结束都会执行，只有在一帧的 16.6ms 中做完了前面 6 件事儿且还有剩余时间，才会执行。如果一帧执行结束后还有时间执行 RIC 事件，那么下一帧需要在事件执行结束才能继续渲染，所以 RIC 执行不要超过 30ms，如果长时间不将控制权交还给浏览器，会影响下一帧的渲染，导致页面出现卡顿和事件响应不及时。
+
+基于以上原因，在React中实现了功能更完备的requestIdleCallbackpolyfill，这就是Scheduler。
+
+
+Concurrent Mode 指的就是 React 利用上面 Fiber 带来的新特性的开启的新模式 (mode)。 react17开始支持concurrent mode，这种模式的根本目的是为了让应用保持cpu和io的快速响应，它是一组新功能，包括Fiber、Scheduler、Lane，可以根据用户硬件性能和网络状况调整应用的响应速度，核心就是为了实现异步可中断的更新。concurrent mode也是未来react主要迭代的方向。
+
+
+
+ref：：：：
+当这个reactElement开始挂载时会先将他包装成一个ReactComponent。（没错，惊喜不惊喜，以外不意外，你随便写的一div,input标签都是先被封装成组件再挂载。）（instantiateReactComponent）
+
+
+链表
+
+    hooks 
+    代数效应
+
+    
+    const HooksDispatcherOnMount: Dispatcher = {
+
+
+    const HooksDispatcherOnUpdate: Dispatcher = {
+
+
+
+
+下一代路由：：：reach router
+
+
+
+react 性能优化：在 HTML 内实现 Loading 态或者骨架屏；
+去掉外联 css；
+缓存基础框架；
+使用动态 polyfill；
+使用 SplitChunksPlugin 拆分公共代码；
+正确地使用 Webpack 4.0 的 Tree Shaking；
+使用动态 import，切分页面代码，减小首屏 JS 体积；
+编译到 ES2015+，提高代码运行效率，减小体积；
+使用 lazyload 和 placeholder 提升加载体验。
