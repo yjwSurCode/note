@@ -5,6 +5,26 @@ react ts 类组件 redux  redux-thunk  -----------Redux store 仅支持同步数
 const mapStateToProps = (state) => ({
   valueS: state
 })
+
+<Provider store={ store }>
+
+const store =  createStore(reducers, {     //合并多个 reducer     reducers就是操作数据的方法
+    countReducer:initialState,
+    countReducer1:initialState1
+}, applyMiddleware(thunk));
+
+
+export  function  mapDispatchToProps(dispath:any){
+  
+    return{
+
+            // derM:()=>{  console.log(999); dispath(actions.decrementCount) }
+               derM:()=> dispath(actions.decrementCount('ni')),
+               todoM:()=>dispath(actions.todolistAction(1) )       // 在这里定义  就要在 render 里面 实现
+
+    }
+}
+
 bar(connect(mapStateToProps, mapDispatchToProps)(home))
 
 有thunk 可以进行异步请求：：：：：：：：：：：：
@@ -26,7 +46,7 @@ setTimeout(function(){undefined
           将指定的代码移出本次执行,等到下一轮Event Loop
      }, 500);
 
-  // 支付、购买
+支付、购买：：：：：：：：：：：：
     /**
      * 购买支付-充值-向微信发起获取openid请求，请求成功后微信会将openid返给后台   --- 1   备注： 登录后查看后台返回的openid是否有值，若没有值，则向微信发送请求  (不要走接口，直接跳链接)
      */
@@ -50,6 +70,7 @@ setTimeout(function(){undefined
     /**
      * 购买支付-充值-打开微信支付界面进行支付   --- 4
      */
+
 
 3：团长端微信小程序。
 
@@ -87,7 +108,8 @@ function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): v
 只允许一个线程写入（其他线程既不能写入也不能读取）当完成是其他的线程可以继续
 没有写入时，多个线程允许同时读（提高性能）
 
-
+案例：：：：：接口如何防刷 
+同一客户端次数限制。这个前端的一般使用是给接口调用加锁，在返回结果或者一定时间之后解锁。
 
 输入框的 防流 节抖：：：：：：：：：：：：：：：：：：
 
@@ -108,6 +130,19 @@ const debouncedValue = useDebounce(values, 200);
  loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');  RwMutex  writeLock
 
 登录 分享:::::::::::::::::::
+const env = await PLATFORM_BRIDGE.getRunningEnv();
+微信环境：ios的 ua 中无 miniProgram，很坑爹,但都有 MicroMessenger（表示是微信浏览器）
+
+安卓ios：webview
+async setNavWechatShare(shareInfo: NativeWechatShareInfo): Promise<void> {
+		this.invokeBridge('setNavWechatShare', shareInfo);
+	}
+const iosBridge = win.webkit && win.webkit.messageHandlers && win.webkit.messageHandlers.FNJSBridge;
+const androidBridge = win.FNJSBridge;
+
+iosBridge.postMessage(msg);
+androidBridge.callHandler(method, param ? JSON.stringify(param) : '', id);
+
 setSelectKey(_index + 1);
 子组件依赖key  
   useEffect(() => {
@@ -117,11 +152,14 @@ setSelectKey(_index + 1);
     }, [selectKey, handleLuckDraw]);
 
 usePersistFn可以保证函数地址永远不会变化
+useRef
 
 
 polyfill
 
 5：fnx react-hooks移动端组件。
+
+rafPolyfill  raf
 
 .umi  是可扩展的企业级前端应用框架
 gulp:gulp是一个基于流的构建工具

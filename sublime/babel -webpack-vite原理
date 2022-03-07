@@ -98,11 +98,16 @@ Webpack是一种前端资源构建工具，一个静态模块打包器
 
 文章地址：https://zhuanlan.zhihu.com/p/363928061
 
-webpack-dev-server
+介绍下 webpack 热更新原理：：：：：：：
+HMR Server 使用webSocket通知HMR runtime 需要更新，HMR运行时通过HTTP请求更新jsonp；
+5.HMR运行时替换更新中的模块，如果确定这些模块无法更新，则触发整个页面刷新。
 
-先build——>bubdle(内存)——>启动（web server）
+打包流程：：：：：
 
-vite--->启动 web server ————编译请求的文件到浏览器
+webpack打包流程：vite：先build——>bubdle(内存)——>启动（web server）
+vite打包流程：vite--->启动 web server ————编译请求的文件到浏览器
+
+
 
 但是webpack 这类工具的做法是将所有模块提前编译、打包进bundle里，换句话说，不管模块是否会被执行，都要被编译和打包到bundle里。随着项目越来越大，打包后的bundle也越来越大，打包的速度自然会越来越慢。
 
@@ -114,7 +119,7 @@ Webpack
 浏览器环境并不支持模块化
 零散模块文件会产生大量的http请求（大量请求在浏览器端会出现并发请求资源的问题）
 
-而vite的打包原理是基于es新特性 Dynamic imports 实现的，那对老浏览器必然会有兼容问题 处理方案还是用大剑熟悉的 Polyfill。
+而vite的打包原理是基于es新特性 Dynamic imports 实现的，那对老浏览器必然会有兼容问题 处理方案还是用大剑熟悉的Polyfill。
 
 npm install dynamic-import-polyfill
 

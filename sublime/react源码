@@ -1,3 +1,14 @@
+react是同步还是异步：：：：：：：：：
+
+这里所说的同步异步， 并不是真正的同步异步， 它还是同步执行的。
+这里的异步指的是多个state会合成到一起进行批量更新。
+
+ES5 ES6继承的区别
+function class  
+super 
+class 声明内部会启用严格模式。
+
+
 
 export function render(
   element: React$Element<any>,

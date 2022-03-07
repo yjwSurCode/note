@@ -144,6 +144,9 @@ BFC 规范（块级格式化上下文：blockformattingcontext）：：：：：
 BFC指的是块级格式化上下文，一个元素形成了BFC之后，那么它内部元素产生的布局不会影响到外部元素，外部元素的布局也
 不会影响到BFC中的内部元素。一个BFC就像是一个隔离区域，和其他区域互不影响。
 
+IFC（Inline formatting contexts）：内联格式上下文
+
+FFC（Flex formatting contexts）:自适应格式上下文
 
 使用transform描绘1px边框:::::
 &.normal {

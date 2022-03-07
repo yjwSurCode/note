@@ -147,7 +147,7 @@ Promise.resolve( foo( 42 ) )
 
 
 
-call apply bind :::::
+call apply bind：：：：：：：：：：：：：：
 function fruits() {}
  
 fruits.prototype = {
@@ -170,17 +170,10 @@ var args = Array.prototype.slice.call(arguments); arguments是伪数组
   args.unshift('(app)');
    console.log.apply(console, args);
 
-   apply 、 call 、bind 三者都是用来改变函数的this对象的指向的；
+apply 、 call 、bind 三者都是用来改变函数的this对象的指向的；
 apply 、 call 、bind 三者第一个参数都是this要指向的对象，也就是想指定的上下文；
 apply 、 call 、bind 三者都可以利用后续参数传参；
 bind 是返回对应函数，便于稍后调用；apply 、call 则是立即调用 。
-
-
-目前不常用： 混合对象’类‘  原型  行为委托 
-
-
-
-
 
 
 // 1: 闭包和递归
@@ -269,15 +262,12 @@ https://blog.csdn.net/geekmubai/article/details/81152774
 // 通过js来实现自适应
 
 
-// 4： v-modal的原理
-
-// 重点
-
 // 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
 
 // 算法基础知识-http://www.360doc.com/content/21/0518/19/37113458_977788938.shtml
 
 //call bind apply https://zhuanlan.zhihu.com/p/82340026
+
 //  const obj = {
 //     x: 10
 //   }
@@ -329,122 +319,6 @@ https://blog.csdn.net/geekmubai/article/details/81152774
 // componentDidCatch ------ 无
 // getDerivedStateFromError ------  无
 
-
-
-
-// 6:v2.x 与 vue3.0之间的区别:
-// 基于 Proxy 观察者机制以满足全语言覆盖以及更好的性能；
-// 放弃 Object.defineProperty ，使用更快的原生 Proxy；
-// 　　beforeCreate -> 请使用 setup()
-// 　　created -> 请使用 setup()
-// 　　beforeMount -> onBeforeMount
-// 　　mounted -> onMounted
-// 　　beforeUpdate -> onBeforeUpdate
-// 　　updated -> onUpdated
-// 　　beforeDestroy -> onBeforeUnmount
-// 　　destroyed -> onUnmounted
-
-// vue2知识点：
-// 自定义指令
-//  <h1 v-highlight="red">这是一串被高亮为红色的字h1>
-// Vue.directive('highlight', {
-//   bind(el, binding, vnode) {
-//     el.style.background = binding.value;
-//   }
-// }); 
-// 自定义指令
-// Vue.directive('my-directive', {
-//   bind: function () {},
-//   inserted: function () {},
-//   update: function () {},
-//   componentUpdated: function () {},
-//   unbind: function () {}
-// })
-
-
-
-// Vue3新特性:
-// import { nextTick } from 'vue'
-
-// <template>
-//     <div v-if >
-//         优先级提升比v-for大
-//     </div>
-//     <input type="text" name="" id="" v-focus></input>
-// </template>
-// export default {
-//     components: {
-//         Testd,
-//         Testdd,
-//     },
-//     props: {
-//         msg: String,
-//         propsMsg: "propsMsg",
-//     },
-//     directives: {
-//         focus: {
-//             // 参数 el, binding, vnode, oldVnode
-//             mounted: function (el) {
-//                 el.focus()
-//             }
-//         }
-//     },
-//     setup(props) {
-//         const repositories = ref < string | null > ([]) // 定义一个变量
-//         repositories.value = newContent;
-//         const getUserRepositories = async () => { // 定义一个方法
-//             await api()
-//         }
-//         const img = computed(() => {
-//             return (props.type && IMG.get(props.type)) || defaultImg;
-//         });
-//         const stated = reactive({ allPageLength: 0, moreText: "加载更多" });
-//         onMounted(() => {
-//             getUserRepositories,// 生命周期钩子 当实例mounted后调用getUserRepositories方法
-//                 nextTick(() => {
-// ----------------------------------一些和DOM有关的东西
-//                 })
-//         })
-//         return {
-//             img,
-//             repositories, // 返回一个data
-//             ...toRefs(stated),
-//             getUserRepositories // 返回一个method
-//         }
-//     }
-// }
-
-
-// 异步组件
-// const AsyncCategory = defineAsyncComponent(() => import("./AsyncCategory.vue"))
-
-//   import Loading from './Loading.vue';
-
-//   const AsyncCategory = defineAsyncComponent({
-//     loader: () => import("./AsyncCategory.vue"),
-//     loadingComponent: Loading,  占位组件，当AsyncCategory还没加载出来时候，显示这个组件
-//     errorComponent: 当AsyncCategory加载失败出现
-//     delay: 2000, 在显示loadingComponent组件之前, 等待多长时间
-//     /**
-//      * err: 错误信息,
-//      * retry: 函数, 调用retry尝试重新加载
-//      * attempts: 记录尝试的次数
-//      */
-//     onError: function(err, retry, attempts) {
-//     }
-//   })
-
-
-
-//内置组件  defalult可以显示 不可以显示就显示fallback
-// < suspense >
-{/* <template #default>
-    <async-category></async-category>
-  </template>
-  <template #fallback>
-    <loading></loading>
-  </template>
-</ > */}
 
 
 
