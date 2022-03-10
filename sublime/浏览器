@@ -1,7 +1,8 @@
 https://developers.google.com/web/updates/2018/09/inside-browser-part1
 
 从输入 URL 到页面加载完成的过程中都发生了什么事情？（https://fex.baidu.com/blog/2014/05/what-happen）
-1. 构建请求------查找强缓存----DNS解析------建立 TCP 连接（Chrome 在同一个域名下要求同时最多只能有 6 个 TCP 连接，超过 6 个的话剩下的请求就得等待---发送 HTTP 请求-----网络响应
+1. 构建请求------查找强缓存----DNS解析------建立 TCP 连接（Chrome 在同一个域名下要求同时最多只能有 6 个 TCP 连接,超过 6 个的话剩下的请求就得等待）
+4：发送 HTTP 请求-----网络响应
 5：浏览器将获取的HTML文档由HTML解析器解析成DOM树（Document Object Model）。
 6：同时由CSS解析器将CSS样式解析成CSS规则树（CSS Rule Tree）。
 7：将生成的DOM树和CSS规则树合并生成渲染树（Rendering Tree）。
@@ -65,10 +66,14 @@ scrollTo()
  css 加载会造成阻塞吗 ？:::::::::::::::::::::::::::::::::::::::::::::
  DOM 和 CSSOM 通常是并行构建的,所以 CSS 加载不会阻塞 DOM 的解析。
  然而,由于 Render Tree 是依赖于 DOM Tree 和 CSSOM Tree 的,所以他必须等待到 CSSOM Tree 构建完成,也就是 CSS 资源加载完成(或者 CSS 资源加载失败)后,才能开始渲染。
-因此,CSS 加载会阻塞 Dom 的渲染。
+ 因此,CSS 加载会阻塞 Dom 的渲染。
 
 谈一谈你对requestAnimationFrame（rAF）理解::::::::::::::::::
+window.requestAnimationFrame() 告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。
+该方法需要传入一个回调函数作为参数，该回调函数会在浏览器下一次重绘之前执行------cancelAnimationFrame(requestId)
+
 每一帧要在 16.7ms (16.7 = 1000/60) 内完成渲染
+
 rAF 的执行步伐跟着系统的绘制频率走。它能保证回调函数在屏幕每一次的绘制间隔中只被执行一次(上一个知识点刚刚梳理完「函数节流」)，这样就不会引起丢帧现象，也不会导致动画出现卡顿的问题。
 
 
@@ -76,6 +81,7 @@ rAF 的执行步伐跟着系统的绘制频率走。它能保证回调函数在�
 浏览器处于安全方面的考虑,只允许本域名下的接口交互,不同源的客户端脚本,在没有明确授权的情况下,不能读写对方的资源。
 
 解决跨域：Node中间件代理(两次跨域)  document.domain + iframe   location.hash + iframe
+Proxy代理跨域
 
 浏览器兼容性问题：：：：：：：：：：：
 
@@ -95,7 +101,7 @@ web安全：：：：：：：：：：：
 
 1 XSS 攻击的本质是将用户数据当成了 HTML 代码一部分来执行，从而混淆原本的语义，产生新的语义。
 2 CSRF 英文全称是 Cross-site request forgery，所以又称为“跨站请求伪造”，是指黑客引诱用户打开黑客的网站，在黑客的网站中，利用用户的登录状态发起的跨站请求。简单来讲，「CSRF 攻击就是黑客利用了用户的登录状态，并通过第三方的站点来做一些坏事。」
-
+https://juejin.cn/post/6844903842635579405#heading-5
 
 
 GET 和 POST 的区别::::

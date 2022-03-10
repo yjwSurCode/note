@@ -46,6 +46,7 @@ setTimeout(function(){undefined
           将指定的代码移出本次执行,等到下一轮Event Loop
      }, 500);
 
+
 支付、购买：：：：：：：：：：：：
     /**
      * 购买支付-充值-向微信发起获取openid请求，请求成功后微信会将openid返给后台   --- 1   备注： 登录后查看后台返回的openid是否有值，若没有值，则向微信发送请求  (不要走接口，直接跳链接)
@@ -91,6 +92,7 @@ this._events.emit('escrow:detail:change', detail); //3
 /** 回显*/
 useEscrowDetailChange(detail => {//4
 	});
+/** fc*/
 function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): void {
 	const cbFn = usePersistFn(cb);
 
@@ -111,8 +113,9 @@ function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): v
 案例：：：：：接口如何防刷 
 同一客户端次数限制。这个前端的一般使用是给接口调用加锁，在返回结果或者一定时间之后解锁。
 
-输入框的 防流 节抖：：：：：：：：：：：：：：：：：：
 
+
+输入框的 防流 节抖：：：：：：：：：：：：：：：：：：
 const debouncedValue = useDebounce(values, 200);
 
 	useDebounceFn(
@@ -137,12 +140,14 @@ const env = await PLATFORM_BRIDGE.getRunningEnv();
 async setNavWechatShare(shareInfo: NativeWechatShareInfo): Promise<void> {
 		this.invokeBridge('setNavWechatShare', shareInfo);
 	}
+
 const iosBridge = win.webkit && win.webkit.messageHandlers && win.webkit.messageHandlers.FNJSBridge;
 const androidBridge = win.FNJSBridge;
 
 iosBridge.postMessage(msg);
 androidBridge.callHandler(method, param ? JSON.stringify(param) : '', id);
 
+/** usePersistFn可以保证函数地址永远不会变化*/：：：：：：：：：：：
 setSelectKey(_index + 1);
 子组件依赖key  
   useEffect(() => {
@@ -151,11 +156,10 @@ setSelectKey(_index + 1);
         }
     }, [selectKey, handleLuckDraw]);
 
-usePersistFn可以保证函数地址永远不会变化
-useRef
+usePersistFn可以保证函数地址永远不会变化(useRef)
 
-
-polyfill
+web-animations-js polyfill：：：：：：：：：
+没有找到 window.requestAnimationFrame 
 
 5：fnx react-hooks移动端组件。
 

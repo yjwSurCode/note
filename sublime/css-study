@@ -371,7 +371,25 @@ css 性能优化：：：：
 去除无用CSS
 优化重排与重绘   https://csstriggers.com/
 使用 fontmin-webpack 插件对字体文件进行压缩
+有选择地使用选择器（CSS选择器的匹配是从右向左进行的）
 
+
+
+// 3.2 css rem em vh vw 是什么 自适应怎么写
+https://blog.csdn.net/geekmubai/article/details/81152774
+// em 根据父元素的大小变化而变化 良好
+// rem  单位是根据根节点的大小来设置的，也就是根据 html 的大小来设置的，跟父元素没有关系 IE9+、火狐 3.6+、 safari5.0+
+// vw   相对于视口的宽度， 视口被均分为 100 单位的vw  高版本浏览器均支持
+// vh   相对于视口的宽度， 视口被均分为 100 单位的vh  高版本浏览器均支持
+// 通过js来实现自适应
 
 
 滚动条：npm i perfect-scrollbar
+
+
+
+
+改变主题：html{filter: invert(1) hue-rotate(180deg)} 
+img {
+    filter: invert(1) hue-rotate(180deg);
+  }

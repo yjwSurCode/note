@@ -1,13 +1,177 @@
-react是同步还是异步：：：：：：：：：
+基础包结构：：：：
+react 
+react-dom
+react-reconciler
+scheduler
 
+两大循环：：：：：：：
+任务调度循环------scheduler中
+fiber构造循环-----react-reconciler中
+
+react-reconciler作用：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+1：输入: 暴露api函数(如: scheduleUpdataOnFiber), 供给其他包(如react包)调用.
+2：注册调度任务: 与调度中心(scheduler包)交互, 注册调度任务task, 等待任务回调.
+3：执行任务回调: 在内存中构造出fiber树, 同时与与渲染器(react-dom)交互, 在内存中创建出与fiber对应的DOM节点.
+4：输出: 与渲染器(react-dom)交互, 渲染DOM节点.
+
+react应用的启动过程：：：：：：：：：：：：：：：：：：：：
+// 1. 创建ReactDOMRoot对象
+const reactDOMRoot = ReactDOM.createRoot(document.getElementById('root'));
+// 2. 调用render
+reactDOMRoot.render(<App />); // 不支持回调
+
+React 中的优先级管理：：：：：：：：：：：：：：：：
+可中断渲染,
+时间切片(time slicing),
+异步渲染(suspense)等特性, 在源码中得以实现都依赖于优先级管理.
+
+调度实现：：：：：：：：：：：：：：：：：：：：：：：：
+export let requestHostCallback; // 请求及时回调: port.postMessage
+export let cancelHostCallback; // 取消及时回调: scheduledHostCallback = null
+export let requestHostTimeout; // 请求延时回调: setTimeout
+export let cancelHostTimeout; // 取消延时回调: cancelTimeout
+export let shouldYieldToHost; // 是否让出主线程(currentTime >= deadline && needsPaint): 让浏览器能够执行更高优先级的任务(如ui绘制, 用户输入等)
+export let requestPaint; // 请求绘制: 设置 needsPaint = true
+export let getCurrentTime; // 获取当前时间
+export let forceFrameRate; // 强制设置 yieldInterval (让出主线程的周期). 这个函数虽然存在, 但是从源码来看, 几乎没有用到
+
+fiber 树构造：：：：：：：：：：：：：：：：：：：：：
+初次创建：
+FiberNode{
+tag: 1
+key: null
+elementType: ƒ Content() {}
+type: ƒ Content() {}
+stateNode: Content
+return: FiberNode
+child: FiberNode
+sibling: null
+index: 1
+ref: null
+pendingProps: Object
+memoizedProps: Object
+}
+对比更新：
+FiberNode {
+tag: 1
+key: null
+elementType: ƒ App() {}
+type: ƒ App() {}
+stateNode: App
+return: FiberNode
+child: FiberNode
+sibling: null
+index: 0
+ref: null
+pendingProps: Object
+memoizedProps: Object
+updateQueue: Object
+memoizedState: Object
+dependencies: null
+mode: 8
+flags: 5
+nextEffect: null
+firstEffect: null
+lastEffect: null
+lanes: 1
+childLanes: 0
+alternate: FiberNode                  
+actualDuration: 3.700000047683716}
+
+初次创建时fiber节点没有比较对象, 所以在向下生成子节点的时候没有任何多余的逻辑, 只管创建就行.
+对比更新时需要把ReactElement对象与旧fiber对象进行比较, 来判断是否需要复用旧fiber对象. alternate更新的fliber有值
+
+fiber 树渲染：：：：：：：：：：：：：：：：：：
+整个渲染逻辑都在commitRoot 函数
+
+
+React 算法之深度优先遍历：：：：：：：：：：：：：：：：：：：：
+
+
+React 算法之调和diff算法：：：：：：：：：：：：：：：：：：：：
+比较oldfiber.key 
+如 key 相同, 进一步比较fiber.elementType与newChild.type
+如 type 相同, 调用useFiber, 创建oldFiber.alternate,（老节点的链表头）并返回
+如 type 不同, 调用createFiber创建新的fiber
+
+react是同步还是异步：：：：：：：：：：：：：：：：：：：：：：：
 这里所说的同步异步， 并不是真正的同步异步， 它还是同步执行的。
 这里的异步指的是多个state会合成到一起进行批量更新。
 
-ES5 ES6继承的区别
+ES5 ES6继承的区别：：：：：：：：：：：：：：：
 function class  
 super 
 class 声明内部会启用严格模式。
 
+
+React Hooks 在每次组件渲染时都会调用，通过隐式地将状态挂载在当前的内部组件节点上，在下一次渲染时根据调用顺序取出。
+而 Vue 的响应式机制使 setup() 只需要在初始化时调用一次，状态通过引用储存在 setup() 的闭包内。这也是vue不受调用顺序限制的原因。
+
+
+
+调度阶段（reconciliation）：在这个阶段 React 会更新数据生成新的 Virtual DOM，然后通过Diff算法，快速找出需要更新的元素，放到更新队列中去，得到新的更新队列。
+渲染阶段（commit）：这个阶段 React 会遍历更新队列，将其所有的变更一次性更新到DOM上。
+
+
+
+ Reconciler采用递归的方式创建虚拟DOM，递归过程是不能中断的。如果组件树的层级很深，递归会占用线程很多时间，递归更新时间超过了16ms，用户交互就会卡顿。
+（ Fiber Reconciler 用链表遍历的方式替代了 React 16 之前的栈递归方案）
+
+1：Scheduler（调度器）—— 调度任务的优先级，高优任务优先进入Reconciler；
+2：Reconciler（协调器）——负责找出变化的组件：更新工作从递归变成了可以中断的循环过程Reconciler内部采用了Fiber的架构。
+3：Renderer（渲染器）—— 负责将变化的组件渲染到页面上。
+
+
+！！！！！！！！！！
+接受输入事件
+执行事件回调
+开始一帧
+执行 RAF (RequestAnimationFrame)
+页面布局，样式计算
+绘制渲染
+执行 RIC (RequestIdelCallback)
+
+第七步的 RIC 事件不是每一帧结束都会执行，只有在一帧的 16.6ms 中做完了前面 6 件事儿且还有剩余时间，才会执行。如果一帧执行结束后还有时间执行 RIC 事件，那么下一帧需要在事件执行结束才能继续渲染，所以 RIC 执行不要超过 30ms，如果长时间不将控制权交还给浏览器，会影响下一帧的渲染，导致页面出现卡顿和事件响应不及时。
+
+基于以上原因，在React中实现了功能更完备的requestIdleCallbackpolyfill，这就是Scheduler。
+
+
+Concurrent Mode 指的就是 React 利用上面 Fiber 带来的新特性的开启的新模式 (mode)。 react17开始支持concurrent mode，这种模式的根本目的是为了让应用保持cpu和io的快速响应，它是一组新功能，包括Fiber、Scheduler、Lane，可以根据用户硬件性能和网络状况调整应用的响应速度，核心就是为了实现异步可中断的更新。concurrent mode也是未来react主要迭代的方向。
+
+
+
+ref：：：：
+当这个reactElement开始挂载时会先将他包装成一个ReactComponent。（没错，惊喜不惊喜，以外不意外，你随便写的一div,input标签都是先被封装成组件再挂载。）（instantiateReactComponent）
+
+
+链表
+
+    hooks 
+    代数效应
+
+    
+    const HooksDispatcherOnMount: Dispatcher = {
+
+
+    const HooksDispatcherOnUpdate: Dispatcher = {
+
+
+
+
+下一代路由：：：reach router
+
+
+
+react 性能优化：：：：：：：：：：：：：：：：：：：：：：：：：：：
+在 HTML 内实现 Loading 态或者骨架屏；
+去掉外联 css；
+缓存基础框架；
+使用动态 polyfill；
+使用 SplitChunksPlugin 拆分公共代码；
+正确地使用 Webpack 4.0 的 Tree Shaking；
+使用动态 import，切分页面代码，减小首屏 JS 体积；
+编译到 ES2015+，提高代码运行效率，减小体积；
+使用 lazyload 和 placeholder 提升加载体验。
 
 
 export function render(
@@ -20,7 +184,6 @@ const internalContainerInstanceKey = '__reactContainer$' + randomKey;
 
 
 
-
 function legacyRenderSubtreeIntoContainer(
     parentComponent: ? React$Component < any, any > ,
     children : ReactNodeList,
@@ -30,8 +193,6 @@ function legacyRenderSubtreeIntoContainer(
 ) {
 
     let fiberRoot: FiberRoot;
-
-
 
     function FiberRootNode(containerInfo, tag, hydrate) {
     this.tag = tag;
@@ -481,68 +642,3 @@ function reconcileChildFibers(
  }
 
 
-
-
-
-调度阶段（reconciliation）：在这个阶段 React 会更新数据生成新的 Virtual DOM，然后通过Diff算法，快速找出需要更新的元素，放到更新队列中去，得到新的更新队列。
-渲染阶段（commit）：这个阶段 React 会遍历更新队列，将其所有的变更一次性更新到DOM上。
-
-
-
- Reconciler采用递归的方式创建虚拟DOM，递归过程是不能中断的。如果组件树的层级很深，递归会占用线程很多时间，递归更新时间超过了16ms，用户交互就会卡顿。
-（ Fiber Reconciler 用链表遍历的方式替代了 React 16 之前的栈递归方案）
-
-1：Scheduler（调度器）—— 调度任务的优先级，高优任务优先进入Reconciler；
-2：Reconciler（协调器）——负责找出变化的组件：更新工作从递归变成了可以中断的循环过程Reconciler内部采用了Fiber的架构。
-3：Renderer（渲染器）—— 负责将变化的组件渲染到页面上。
-
-
-！！！！！！！！！！
-接受输入事件
-执行事件回调
-开始一帧
-执行 RAF (RequestAnimationFrame)
-页面布局，样式计算
-绘制渲染
-执行 RIC (RequestIdelCallback)
-
-第七步的 RIC 事件不是每一帧结束都会执行，只有在一帧的 16.6ms 中做完了前面 6 件事儿且还有剩余时间，才会执行。如果一帧执行结束后还有时间执行 RIC 事件，那么下一帧需要在事件执行结束才能继续渲染，所以 RIC 执行不要超过 30ms，如果长时间不将控制权交还给浏览器，会影响下一帧的渲染，导致页面出现卡顿和事件响应不及时。
-
-基于以上原因，在React中实现了功能更完备的requestIdleCallbackpolyfill，这就是Scheduler。
-
-
-Concurrent Mode 指的就是 React 利用上面 Fiber 带来的新特性的开启的新模式 (mode)。 react17开始支持concurrent mode，这种模式的根本目的是为了让应用保持cpu和io的快速响应，它是一组新功能，包括Fiber、Scheduler、Lane，可以根据用户硬件性能和网络状况调整应用的响应速度，核心就是为了实现异步可中断的更新。concurrent mode也是未来react主要迭代的方向。
-
-
-
-ref：：：：
-当这个reactElement开始挂载时会先将他包装成一个ReactComponent。（没错，惊喜不惊喜，以外不意外，你随便写的一div,input标签都是先被封装成组件再挂载。）（instantiateReactComponent）
-
-
-链表
-
-    hooks 
-    代数效应
-
-    
-    const HooksDispatcherOnMount: Dispatcher = {
-
-
-    const HooksDispatcherOnUpdate: Dispatcher = {
-
-
-
-
-下一代路由：：：reach router
-
-
-
-react 性能优化：在 HTML 内实现 Loading 态或者骨架屏；
-去掉外联 css；
-缓存基础框架；
-使用动态 polyfill；
-使用 SplitChunksPlugin 拆分公共代码；
-正确地使用 Webpack 4.0 的 Tree Shaking；
-使用动态 import，切分页面代码，减小首屏 JS 体积；
-编译到 ES2015+，提高代码运行效率，减小体积；
-使用 lazyload 和 placeholder 提升加载体验。

@@ -1,12 +1,3 @@
-1:ref
-
-2:reactive
-
-3:computed
-
-4:slot
-
-
 
 忽略.vue后缀
 export default defineConfig({
@@ -15,15 +6,7 @@ export default defineConfig({
   }
 })
 
-
-
-
-
 参考链接：https://juejin.cn/post/6986838175062687752	
-
-
-
-
 
 
 
@@ -106,11 +89,6 @@ watcher 订阅者 oserver compile之间通信的桥梁
 mvvm
 数据绑定的入口 整合三者 通过observer监听modal数据的变化 通过compile来解析编译模板的指令 watcher 数据变化----》视图更新----》视图交互变化
 
-
-
-
-
-
 // 6:v2.x 与 vue3.0之间的区别:
 // 基于 Proxy 观察者机制以满足全语言覆盖以及更好的性能；
 // 放弃 Object.defineProperty ，使用更快的原生Proxy；
@@ -142,7 +120,11 @@ mvvm
 
 
 
-// Vue3新特性:
+// Vue3新特性:：：：：：：：：：：：：：：：：：：：：：：
+
+通过10个实例小练习https://github.com/biaochenxuying/blog/issues/63
+
+
 // import { nextTick } from 'vue'
 
 // <template>
@@ -192,6 +174,12 @@ mvvm
 //         }
 //     }
 // }
+
+
+computed watch 区别：：：：：：：：：：
+computed  是计算属性,依赖其它属性值，并且 computed 的值有缓存,只有它依赖的属性值发生改变,下一次获取 computed 的值时才会重新计算 computed  的值；
+watch 更多的是「观察」的作用,类似于某些数据的监听回调 ,每当监听的数据变化时都会执行回调进行后续操作；
+
 
 
 // 异步组件

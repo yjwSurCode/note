@@ -50,7 +50,6 @@ beta 然后merge到 preview 然后  去gitlab 点击发布   然后地址验证
 beta merge 到 master 然后去gitlab 然后手动发布   然后去online地址验证
 
 
-
 yun-pos项目  
 
 beta   需要 yarn build  yarn deploy 

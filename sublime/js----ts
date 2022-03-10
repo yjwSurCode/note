@@ -3,11 +3,8 @@ export PUB_HOSTED_URL=https://pub.flutter-io.cn
 分词/词法分析------解析/语法分析------代码生成
 
 eval(..) 和 with 会在运行时修改或创建新的作用域，以此来欺骗其他在书写时定义的词
-法作用域。
-
-，ES6 还引入了 const，同样可以用来创建块作用域变量，但其值是固定的
+法作用域。ES6 还引入了 const,同样可以用来创建块作用域变量,但其值是固定的
 （常量）。之后任何试图修改值的操作都会引起错误。
-
 
 这个过程就好像变量和函数声明从它们在代码中出现的位置被“移动”
 到了最上面。这个过程就叫作提升。
@@ -24,10 +21,6 @@ var myArray = [ 1, 2, 3 ];
 for (var v of myArray) {
 console.log( v );
 }
-// 1
-// 2
-// 3
-
 
 var myObject = Object.create( anotherObject );
 
@@ -37,13 +30,27 @@ anotherObject.hasOwnProperty( "a" );
 可以通过 super(..) 来实现相对多态
 
 
-空值（null）
+• 空值（null）
 • 未定义（undefined）
 • 布尔值（ boolean）
 • 数字（number）
 • 字符串（string）
 • 对象（object）
-• 符号（symbol，ES6 中新增）
+• 符号（symbol，ES6 中新增）------- 一个 symbol 实例可以被赋值到一个左值变量，还可以通过标识符检查类型 （可以非常有效的消除magic string和magic number）
+
+eg例子：：：：：：：：：：：：：
+var identity = Symbol()
+var obj = {
+    name : 'john',
+    [identity] : 'hero'
+}
+obj.name   //'john'
+obj[name]  //'john'
+obj.identity   //undefined
+obj[identity]  //'hero'
+//当我们使用.来访问时，因为不存在这个key，所以就会返回undefined，也符合上方所写的
+
+
 
 Alex Dorey（GitHub 用户名 @dorey）在 GitHub 上制作了一张图表
 
@@ -133,7 +140,7 @@ setTimeout(function() {
 
 Promise.race或者  new promise 内部设置回调
 
-promise的信任问题：：：：
+promise的信任问题：：：：：：：：：：：：：：
 // 不要只是这么做：
 foo( 42 )
 .then( function(v){
@@ -146,21 +153,71 @@ Promise.resolve( foo( 42 ) )
 } ); 
 
 
+Promise.all() 允许同时执行所有的异步函数：：：：：：：：：
 
-call apply bind：：：：：：：：：：：：：：
-function fruits() {}
- 
-fruits.prototype = {
-    color: "red",
-    say: function() {
-        console.log("My color is " + this.color);
-    }
+扩展：
+Promise
+在 pending 状态，promise 可以切换到 fulfilled 或 rejected。
+在 fulfilled 状态，不能迁移到其它状态，必须有个不可变的 value。
+在 rejected 状态，不能迁移到其它状态，必须有个不可变的 reason。
+
+
+Async/Await - 定义异步函数
+自动把函数转换为 Promise
+当调用异步函数时，函数返回值会被 resolve 处理
+异步函数内部可以使用 await
+
+EG：：：：：：
+多个异步函数同时执行时，需要借助 Promise.all
+await 把异步变成了同步。
+async function getABC() {
+  let A = await getValueA(); // getValueA 花费 2 秒
+  let B = await getValueB(); // getValueA 花费 4 秒
+  let C = await getValueC(); // getValueA 花费 3 秒
+
+  return A*B*C;  //总花费9秒
+
+  return await Promise.all([ getValueA, getValueB, getValueC ]); 总花费4秒
 }
- 
-var apple = new fruits;
-apple.say();    //My color is red
 
-(call apply 本质是一样的但是接受参数的方式可能不一样--------func.call(this, arg1, arg2);func.apply(this, [arg1, arg2]))
+
+
+
+
+
+call bind apply：：：：：：：：：：： https://zhuanlan.zhihu.com/p/82340026
+
+call：：：：：：：：：：：
+(function(name) {
+        //
+    })("aa");
+    //等价于
+    (function(name) {
+        //
+    }).call(window, "aa");
+
+函数作为对象的方法被调用（那么this就是这对象）：：：：：：：：：：：：：：：：
+
+function hellofn(thing) {
+  console.log(this + " says hello " + thing);
+}
+
+let person = { name: "caibirdme" };
+person.hellofn = hellofn;
+person.hellofn("world");//[object Object] says hello world
+//相当于person.hellofn(person,"world")
+
+person.innerobj = {
+    name: "innerobjname",
+    f: function(){ console.log(this.name); }
+}
+person.innerobj.f(); // 相当于obj.innerobj.f.call(obj.innerobj)
+// ==> innerobjname
+
+
+(call apply 本质是一样的但是接受参数的方式可能不一样：：：：：：：：：：：：
+func.call(this, arg1, arg2)
+func.apply(this, [arg1, arg2]))
 
 验证是否是数组：functionisArray(obj){ 
     return Object.prototype.toString.call(obj) === '[object Array]' ;
@@ -175,10 +232,29 @@ apply 、 call 、bind 三者第一个参数都是this要指向的对象，也�
 apply 、 call 、bind 三者都可以利用后续参数传参；
 bind 是返回对应函数，便于稍后调用；apply 、call 则是立即调用 。
 
+//  const obj = {
+//     x: 10
+//   }
+//   function fn() {
+//     console.log(this)
+//   }
+//   fn.call(obj)      //obj
+//   fn.apply(obj) //obj
+//   fn.bind(obj)() //obj
 
-// 1: 闭包和递归
+// 4.1: 判断类型
+// Object.prototype.toString.call(null); // "[object Null]"
+// Object.prototype.toString.call(undefined); // "[object Undefined]"
+// Object.prototype.toString.call(“abc”);// "[object String]"
+// Object.prototype.toString.call(123);// "[object Number]"
+// Object.prototype.toString.call(true);// "[object Boolean]"
+// Object.prototype.toString.call(new Date()); // "[object Date]"
+// Object.prototype.toString.call([1,2,3]); // "[object Array]"
+
+
+// 1: 闭包和递归：：：：：：：：：：：：：：：：：：：：：：：
+
 // 闭包就是能够读取其他函数内部变量的函数。
-
 // function a() {
 //   let pa = 'a的变量'
 //   const b = () => {
@@ -220,6 +296,11 @@ bind 是返回对应函数，便于稍后调用；apply 、call 则是立即调�
 // console.log(result.inc());//2
 // console.log(result.inc());//3
 
+闭包使用场景：：：：：：：：：：：：：：：：：
+1：setTimeout 原生的setTimeout传递的第一个函数不能带参数，通过闭包可以实现传参效果
+2：回调
+3：函数防抖 返回一个函数 参数是函数
+4：封装私有变量 创建一个计数器
 
 // 当我们需要在模块中定义一些变量，并希望这些变量一直保存在内存中但又不会 “污染” 全局的变量时，就可以用闭包来定义这个模块。
 
@@ -227,67 +308,25 @@ bind 是返回对应函数，便于稍后调用；apply 、call 则是立即调�
 
 
 
+递归：：：：：：：：：：：：：：：：：：：：
+const multiply = (A, B) => {
+   if (A === 1) {
+      return B;
+    } else {
+      return B + multiply(A - 1, B);
+    }
+  };
 
 
 
-// 3:webpack 运行机制与核心工作原理：
-//     通过 Loader 处理特殊类型资源的加载，例如加载样式、图片；
-//     通过 Plugin 实现各种自动化的构建任务，例如自动压缩、自动发布。
+forEach、map、filter、reduce、every、some的区别联系：：：：：：：：：：：
 
-// Webpack CLI 启动打包流程；
-// 载入 Webpack 核心模块，创建 Compiler 对象；
-// 使用 Compiler 对象开始编译整个项目；
-// 从入口文件开始，解析模块依赖，形成依赖关系树；
-// 递归依赖树，将每个模块交给对应的 Loader 处理；
-// 合并 Loader 处理完的结果，将打包结果输出到 dist 目录
-
-// 3.1 
-// 每个对象都有一个__proto__属性，指向了创造它的构造函数的原型对象。
-// 原型链(一种访问机制)
-
-
-// 3.2 core.js
-// core - js是我们能够使用新的API的最重要的包
-// ，然而一般情况它隐藏在webpack编译后的代码中，我们一般不会去查看，所以容易被遗忘，我们在webpack生成环境下，查看编译后的代码，可以看到例如includes就是从core - js导出到我们的代码去的
-
-
-
-
-// 3.2 css rem em vh vw 是什么 自适应怎么写
-https://blog.csdn.net/geekmubai/article/details/81152774
-// em 根据父元素的大小变化而变化 良好
-// rem  单位是根据根节点的大小来设置的，也就是根据 html 的大小来设置的，跟父元素没有关系 IE9+、火狐 3.6+、 safari5.0+
-// vw   相对于视口的宽度， 视口被均分为 100 单位的vw  高版本浏览器均支持
-// vh   相对于视口的宽度， 视口被均分为 100 单位的vh  高版本浏览器均支持
-// 通过js来实现自适应
-
-
-// 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
-
-// 算法基础知识-http://www.360doc.com/content/21/0518/19/37113458_977788938.shtml
-
-//call bind apply https://zhuanlan.zhihu.com/p/82340026
-
-//  const obj = {
-//     x: 10
-//   }
-//   function fn() {
-//     console.log(this)
-//   }
-//   fn.call(obj)      //obj
-//   fn.apply(obj) //obj
-//   fn.bind(obj)() //obj
-
-
-// 4.1: 判断类型
-// Object.prototype.toString.call(null); // "[object Null]"
-// Object.prototype.toString.call(undefined); // "[object Undefined]"
-// Object.prototype.toString.call(“abc”);// "[object String]"
-// Object.prototype.toString.call(123);// "[object Number]"
-// Object.prototype.toString.call(true);// "[object Boolean]"
-// Object.prototype.toString.call(new Date()); // "[object Date]"
-// Object.prototype.toString.call([1,2,3]); // "[object Array]"
-
+forEach：  让数组中的每一项做一件事
+map： 让数组的通过某种计算产生一个新的数组  
+filter： 筛选出数组符合条件的项 组成一个新数组
+reduce： 让数组的前项和后项做某种计算 并累计最终值   //[1,2,3,4,5].reduce((prev,next)=>return prev+next)
+every： 检测数组的每一项是否符合条件 全部符合就是true
+some： 检测数组中的某一项是否符合条件 一项符合即可
 
 //简洁---复用
 // 5: HOC高阶组件
@@ -364,8 +403,6 @@ https://blog.csdn.net/geekmubai/article/details/81152774
 reduce 高级用法：https://juejin.cn/post/6844903669977055239
 
 
-扩展：
-Promise
 
 
 扩展：函数柯里化：：
@@ -389,9 +426,7 @@ fn('a')('b')('c'); // abc
 
 
 
-在 pending 状态，promise 可以切换到 fulfilled 或 rejected。
-在 fulfilled 状态，不能迁移到其它状态，必须有个不可变的 value。
-在 rejected 状态，不能迁移到其它状态，必须有个不可变的 reason。
+
 
 
 
@@ -409,5 +444,106 @@ fn('a')('b')('c'); // abc
 
 （2）引用类型：对象（Object）、数组（Array）、函数（Function）
 
+显式类型转换与隐式类型转换：：：：：：：：：：：：：：
+
+'1' * 'a' //NaN
+console.log([] == []) // false
+console.log([] == ![]) // true
+console.log([] !== [])  // true
+console.log(NaN != NaN) // true
+console.log(null == undefined) // true
+console.log(null === undefined) // false
+
+显式类型：Number()、parseInt()、parseFloat()
 
 
+typeOf用法：：：：：：：：：：：：：：：：：
+
+Undefined	“undefined”
+Null	“object”
+布尔值	“boolean”
+数值	“number”
+字符串	“string”
+Symbol (ECMAScript 6 新增)	“symbol”
+宿主对象(JS环境提供的，比如浏览器)	Implementation-dependent
+函数对象	“function”
+任何其他对象	“object”
+
+instanceof用法：instanceof运算符可以用来判断某个构造函数的prototype属性是否存在于另外一个要检测对象的原型链上。
+
+
+
+
+eventBus：：：：：：：：：：：：：：：：：：：：：：：
+
+
+export function eventBus() {
+	const all: Dictionary<Array<Function>> = Object.create(null);
+
+	return {
+		/**
+		 * Register an event handler for the given type.
+		 *
+		 * @param type	Type of event to listen for, or `"*"` for all events
+		 * @param handler Function to call in response to given event
+		 */
+		on(type: string, handler: (event?: any) => void) {
+			(all[type] || (all[type] = [])).push(handler);
+		},
+
+		/**
+		 * Remove an event handler for the given type.
+		 *
+		 * @param type	Type of event to unregister `handler` from, or `"*"`
+		 * @param handler Handler function to remove
+		 */
+		off(type: string, handler: (event?: any) => void) {
+			if (all[type]) {
+				all[type].splice(all[type].indexOf(handler) >>> 0, 1);
+			}
+		},
+
+		/**
+		 * Invoke all handlers for the given type.
+		 * If present, `"*"` handlers are invoked after type-matched handlers.
+		 *
+		 * Note: Manually firing "*" handlers is not supported.
+		 *
+		 * @param type  The event type to invoke
+		 * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
+		 */
+		emit(type: string, evt: any) {
+			(all[type] || []).slice().map(handler => {
+				handler(evt);
+			});
+			(all['*'] || []).slice().map(handler => {
+				handler(type, evt);
+			});
+		},
+	};
+}
+
+
+// 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
+
+// 算法基础知识-http://www.360doc.com/content/21/0518/19/37113458_977788938.shtml
+
+
+
+
+
+
+
+
+
+ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+
+接口iterface 和 类型别名type 的关联和区别：：：
+1：都可以描述 对象和函数
+interface SetSister {
+  name: string;
+  (name: string, age: number): void;
+}
+2： 都可以扩展 但是 type是& interface是extends
+3： interface扩展是不可以重复

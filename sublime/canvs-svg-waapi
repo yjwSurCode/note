@@ -1,5 +1,9 @@
-canvas:
-
+区别：：：：：；：：：
+1：Canvas是基于像素的位图，而SVG却是基于矢量图形
+2：从结构上说，Canvas没有图层的概念，所有的修改整个画布都要重新渲染，而SVG则可以对单独的标签进行修改。
+3：Canvas是基于HTML canvas标签，通过宿主提供的Javascript API对整个画布进行操作的，而SVG则是基于XML元素的。
+4： svg可以直接嵌入html代码 
+canvas:基于像素的位图
 
 1:var ctx = canvas.getContext('2d');
 2:var myGradient = ctx.createLinearGradient(0, 0, 0, 160); createLinearGradient方法用来设置渐变色。

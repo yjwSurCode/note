@@ -5,5 +5,7 @@ git branch -M beta
 git remote add origin https://github.com/yjwSurCode/note.git
 git push -u origin beta
 
-
+知识点：
 https://github.com/biaochenxuying/blog/blob/master/interview/fe-interview.md
+
+https://github.com/stephentian/33-js-concepts#3-%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B
