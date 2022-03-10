@@ -18,6 +18,15 @@ babel的常用插件：：：：：：：：：：：：：：：：：：：：
 @babel/plugin-proposal-class-properties
 (该插件可以让你在类中书写初始化字段)
 
+@babel-plugin-transform-remove-console
+（打包后移除console.log）
+
+@babel/plugin-transform-runtime
+（语法转码后生成的代码 有太多冗余的代码，插件可以把重复的函数声明代码集中在一个文件）
+
+@babel-plugin-import
+(组件库按需导入--在babel转码的时候，把整个库‘antd’的引用，变为’antd/lib/button’具体模块的引用。这样webpack收集依赖module就不是整个antd，而是里面的button)。
+
 @babel/plugin-proposal-function-bind
 (该插件可以让你轻松的为某个方法绑定this)
 
@@ -25,27 +34,10 @@ example:
 function Print() {
     console.log(this.loginId);
 }
-
 const obj = {
     loginId: "abc"
 };
-
 obj::Print(); //相当于：Print.call(obj);
-
-
-babel-plugin-transform-remove-console（打包后移除console.log）
-
-
-import "core-js/stable";
-import "regenerator-runtime/runtime";
-
-
-
-
-@babel/plugin-transform-runtime（语法转码后生成的代码 有太多冗余的代码，插件可以把重复的函数声明代码集中在一个文件）
-
-@babel-plugin-import
-(组件库按需导入--在babel转码的时候，把整个库‘antd’的引用，变为’antd/lib/button’具体模块的引用。这样webpack收集依赖module就不是整个antd，而是里面的button)。
 
 example：
 plugins: [
@@ -70,8 +62,7 @@ core-js polyfill的类库
 代码案例演示：https://astexplorer.net/#/KJ8AjD6maa
 
 
-
-Webpack：：：：：：：：：：：：：：：：：：：：：：：：：
+Webpack：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 
 Webpack是一种前端资源构建工具，一个静态模块打包器
 (将各种类型的资源，包括图片、css、js等，转译、组合、拼接、生成 JS 格式的 bundler 文件)
@@ -145,11 +136,8 @@ vite打包流程：vite--->启动 web server ————编译请求的文件�
 1:webpack 会需要打包一个一个大体积的bundle.js？ 之前会产生打包需求的主要原因：
 浏览器环境并不支持模块化零散模块文件会产生大量的http请求（大量请求在浏览器端会出现并发请求资源的问题）
 而vite的打包原理是基于es新特性 Dynamic imports 实现的，那对老浏览器必然会有兼容问题 处理方案还是用大剑熟悉的Polyfill。
-
-npm install dynamic-import-polyfill
-
+(npm install dynamic-import-polyfill)
 import dynamicImportPolyfill from 'dynamic-import-polyfill';
-
 // This needs to be done before any dynamic imports are used.
 dynamicImportPolyfill.initialize({
   modulePath: '/public', // Defaults to '.'
@@ -158,20 +146,25 @@ dynamicImportPolyfill.initialize({
 
 vite源码分析::https://juejin.cn/post/6968793122029436959
 
-vite
-常见的模块规范
-commonjs
-amd
-umd
-ESM
 
-vite 在构建过程中使用esbuild进行构建，esbuild 是一个新的代码构建工具，近来构建速度及其迅猛，圈粉速度也很疯狂，它可以将 CommonJS / UMD 转换为 ESM 格式，转换ts, tsx文件等，它使用go编写，并编译成了机器码，利用paralleljs 的高并行优势，具有大量的并行算法
+vite 在构建过程中使用esbuild进行构建，esbuild 是一个新的代码构建工具，近来构建速度及其迅猛，圈粉速度也很疯狂，它可以将 CommonJS / UMD 转换为 ESM 格式,
+转换ts, tsx文件等文件转化成浏览器可以识别的js文件,
+它使用go编写,并编译成了机器码,利用paralleljs 的高并行优势,具有大量的并行算法
 
-使用esbuild 将 .tsx .jsx .vue 等文件转化成浏览器可以识别的js文件
-
-vite 的作用就是体现在了这里，vite的任务就是用koa起一个http请求，然后利用拦截器去拦截修改这些请求内容
+vite 的作用就是体现在了这里,vite的任务就是用koa起一个http请求,然后利用拦截器去拦截修改这些请求内容
 
 
+gulp构建工具：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+gulp是一个基于流的构建工具
+Gulp严格上讲,它旨在规范前端开发流程,不包括模块化功能。
+
+gulp是基于Nodejs,自动化地完成 javascript、coffee、sass、less、html/image、css 等文件的测试、检查、合并、压缩、格式化、浏览器自动刷新、部署文件生成
+并监听文件在改动后重复指定的这些步骤。借鉴了Unix操作系统的管道(pipe)思想,前一级的输出,直接变成后一级的输入,使得在操作上非常简单。
+流,Node将几乎所有IO操作都抽象成了stream的操作,简单来说就是建立在面向对象基础上的一种抽象的处理数据的工具。
+特点：压缩资源文件,实页面响应速度提升。自动构建。
+
+webpack--gulp区别与联系：：：：：：：：：：：：：：：：：：：：
+https://juejin.cn/post/6959721156350296095
 
 Lerna 是一个管理工具，用于管理包含多个软件包（package）的 JavaScript 项目
 
