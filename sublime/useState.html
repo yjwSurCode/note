@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button class="btn" onclick="schedule().onClick()">13F</button>
+    <div class="text" id="iidd">数值</div>
+    <script>
+      let isMount = true; //判断是不是首次render
+
+      let workInProgressHook = null;
+
+      // 作为静态的数据结构来说，每个Fiber节点对应一个React element，保存了该组件的类型（函数组件/类组件/原生组件…）、对应的DOM 节点等信息。
+      // 作为动态的工作单元来说，每个Fiber 节点保存了本次更新中该组件改变的状态、要执行的工作（需要被删除/被插入页面中/被更新…）。
+      //fiberNode源码：https://github.com/facebook/react/blob/1fb18e22ae66fdb1dc127347e169e73948778e5a/packages/react-reconciler/src/ReactFiber.new.js#L117
+      //fiber介绍：https://github.com/acdlite/react-fiber-architecture
+      const fiber = {
+        stateNode: UseState, //3
+        memoizeState: null, //作用：保存值。 useState需要保存num值 这里就需要保存在fiber上的memoizeState  （ 相当于hooks对应的fiber）
+        // {
+        //     memoizeState: initialSate,
+        //     next: null, //需要一个指针指向下一个hooks
+        //     queue: {
+        //       //这是一个队列
+        //       pending: null,
+        //     }, //保存传入改变的状态  num = num + 1
+        //   };
+        // ？？？？  很多的hooks 就是很多seState 怎么办
+        // result: schedule的时候保存处理的hooks----workInProgressHook
+      };
+
+      // 作用：使代码运行起来
+      //架构的驱动力 —— Scheduler（调度器）
+      //https://github.com/facebook/react/tree/main/packages/scheduler
+      function schedule() {
+        //1
+        // console.log("schedule");
+        workInProgressHook = fiber.memoizeState; // 很多的hooks 我们要知道当前执行的是哪一个hooks  （重新指向第一个hooks 也就是正在执行的hooks）
+        const app = fiber.stateNode(); //2  使组件render
+        isMount = false;
+        return app; //4
+      }
+
+      function useState(initialSate) {
+        //1：判断对应哪一个hooks   就是对应哪一次useState
+        let hook; //一条链表
+
+        //2: 是否首次加载
+        if (isMount) {
+          hook = {
+            memoizeState: initialSate,
+            next: null, //需要一个指针指向下一个hooks
+            queue: {
+              //这是一个队列
+              pending: null,
+            }, //保存传入改变的状态  num = num + 1
+          };
+
+          if (!fiber.memoizeState) {
+            //判断是第一次吗 是第一次就把当前的hook给fiber的memoizeState
+            fiber.memoizeState = hook;
+
+            workInProgressHook = hook; //？？？  正在执行的hook
+          } else {
+            // 当调用 第二个useState-hooks
+            workInProgressHook.next = hook;
+          }
+        } else {
+          // 这里就是update时  通过上面的我们知道现在hook链表是存在值的
+
+          hook = workInProgressHook;
+          workInProgressHook = workInProgressHook.next;
+        }
+
+        //dispatchAction 之前 todo
+
+        let baseState = hook.memoizeState;
+
+        if (hook.queue.pending) {
+          let firstUpdate = hook.queue.pending.next;
+
+          do {
+            const action = firstUpdate.action;
+            baseState = action(baseState);
+
+            firstUpdate = firstUpdate.next;
+          } while (firstUpdate !== hook.queue.pending.next);
+
+          hook.queue.pending = null;
+        }
+
+        hook.memoizeState = baseState;
+
+        return [baseState, dispatchAction.bind(null, hook.queue)];
+      }
+
+      function dispatchAction(queue, action) {
+        // 问题？？   这里的dispatchAction 对应的是哪一个 useState
+
+        const update = {
+          //这里的链表是没有优先级的 react中的有优先级 比如 用户点击》服务端请求
+          //  也是一条链表（环状）  创建一种数据结构
+          action,
+          next: null,
+        };
+
+        if (queue.pending == null) {
+          update.next = update;
+        } else {
+          //u1->u0->u1
+          update.next = queue.pending.next;
+          queue.pending.next = update;
+          // update = update.next
+        }
+
+        queue.pending = update;
+
+        schedule();
+      }
+
+      function UseState() {
+        // console.log("a---UseState");
+        const [num, setNum] = useState(0);
+        const [nums, setNums] = useState(0);
+
+        console.log("isMount?", isMount, workInProgressHook);
+        console.log("num", num, nums);
+
+        setTimeout(() => {
+          console.log("setTimeout", num, nums);
+        }, 500);
+
+        // return (<div onClick={() => setNum(num = num + 1)} >点击</div>)
+
+        return {
+          onClick() {
+            // console.log("a---onClick");
+            setNum((num) => num + 1);
+            // setNums((nums) => nums + 1);
+          },
+          num,
+          nums,
+        };
+      }
+
+      // window.onclick = schedule();
+      // document.getElementsByClassName(".text")[0].click = schedule(); //直接定义失败
+      //   console.log(
+      //     schedule(),
+      //     UseState,
+      //     UseState().num,
+      //     document.getElementsByClassName(".text"),
+      //     document.getElementById("iidd")
+      //   );
+
+      document.getElementById("iidd").innerHTML = UseState().num;
+    </script>
+  </body>
+</html>
