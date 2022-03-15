@@ -2,6 +2,12 @@
 
 数组：内存上是连续的存储空间； 
 链表：内存地址可以是不连续的，每个链表的节点包括原来的内存和下一节点的信息（单向链表一个；双向链表两个）。
+双向链表：每个节点都包含下一个节点和上一个节点的指针，所以从双向链表的任意节点开始，都能很方便访问他的前驱结点和后继节点。
+
+
+数组优点：   1、占用内存空间少； 2、数组内的数据可以随机访问； 3、数据查找效率较高（内存连续）；
+链表优点：   1、方便数据的删除、插入； 2、长度可变，扩展性好； 3、内存利用率高（可以不连续）；
+
 
 class Node {
   constructor(value) {
@@ -45,9 +51,6 @@ linkedList2.append("23");
 console.log(linkedList2, "linkedList2");
 
 
-数组优点：   1、占用内存空间少； 2、数组内的数据可以随机访问； 3、数据查找效率较高（内存连续）；
-
-链表优点：   1、方便数据的删除、插入； 2、长度可变，扩展性好； 3、内存利用率高（可以不连续）；
 
  
 
@@ -125,7 +128,6 @@ console.log(BinarySearchTree(keys), "root");
 新添加或待删除的元素都保存在栈的末尾，称作栈顶，另一端称作栈底
 
 
-
 function Stack() {
   this.dataStore = []; //初始化为空
   this.top = 0; //记录栈顶位置
@@ -165,8 +167,7 @@ console.log(stack.peek());
 stack.push("111");
 console.log(stack.peek());
 
-//回文判断
-
+回文判断：：：：：：：：：：：：：：：：：：：：：：：：：：
 function isPalindrome(word) {
   var s = new Stack();
   for (var i = 0; i < word.length; i++) {
