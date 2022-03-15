@@ -133,6 +133,15 @@ vertical-align: middle;
 float + 左元素margin-left:-100%;+右元素 margin-left:`width`px
 flex + flex：1
 
+扩展：：：：：：：：
+flex:1是： flex-grow, flex-shrink 和 flex-basis的简写
+相当于：
+{
+    flex-grow: 1;  // flex-grow 定义项目的放大比例，默认为0，即如果存在剩余空间，也不放大
+    flex-shrink: 1;  // flex-shrink 定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小
+    flex-basis: 0%;   //flex-basis给上面两个属性分配多余空间之前, 计算项目是否有多余空间, 默认值为 auto, 即项目本身的大小
+}
+
 
 BFC 规范（块级格式化上下文：blockformattingcontext）：：：：：：：：
 （1）根元素或包含根元素的元素

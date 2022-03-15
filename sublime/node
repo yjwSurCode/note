@@ -7,12 +7,11 @@
 
 node大致原理：https://zhuanlan.zhihu.com/p/145413875
 
-JS是脚本语言，脚本语言都需要一个解析器才能运行。对于写在HTML页面里的JS，浏览器充当了解析器的角色。而对于需要独立运行的JS，NodeJS就是一个解析器。
+JS是脚本语言,脚本语言都需要一个解析器才能运行。对于写在HTML页面里的JS，浏览器充当了解析器的角色。而对于需要独立运行的JS，NodeJS就是一个解析器。
 
 
-node  API：：：：
+node  API：：：：：：：：：： http://nodejs.cn/api/
 1：assert 测试断言。
-
 2：buffer 缓冲区
 JavaScript 语言自身只有字符串数据类型，没有二进制数据类型。但在处理像TCP流或文件流时，必须使用到二进制数据。因此在 Node.js中，定义了一个 Buffer 类，该类用来创建一个专门存放二进制数据的缓存区。
 const buf = Buffer.from('runoob', 'ascii');
@@ -21,7 +20,7 @@ console.log(buf.toString('hex'));
 // 输出 cnVub29i
 console.log(buf.toString('base64'));
 
-Node.js 目前支持的字符编码包括：
+Node.js 目前支持的字符编码包括：：：
 ascii - 仅支持 7 位 ASCII 数据。如果设置去掉高位的话，这种编码是非常快的。
 utf8 - 多字节编码的 Unicode 字符。许多网页和其他文档格式都使用 UTF-8 。
 utf16le - 2 或 4 个字节，小字节序编码的 Unicode 字符。支持代理对（U+10000 至 U+10FFFF）。
@@ -115,16 +114,16 @@ var session = require('express-session');
 
 
 
-expressAPI：：：：
-1：：app.use(express.json()); // 解析请求中的 json 数据
-2：：express.urlencoded 处理x-www-form-urlencoded形式的请求
-3：：app.use(express.static("public")); // 设置静态资源目录 ---------当浏览器访问 /home.html时，会去自动匹配public/home.html文件，并将它返回给前端。
-4：：设置 本地变量 app.locals.name = "张三";
+expressAPI：：：：：：：：：：：：：：：：：：：：   https://www.expressjs.com.cn/4x/api.html
+1：app.use(express.json()); // 解析请求中的 json 数据
+2：express.urlencoded 处理x-www-form-urlencoded形式的请求
+3：app.use(express.static("public")); // 设置静态资源目录 ---------当浏览器访问 /home.html时，会去自动匹配public/home.html文件，并将它返回给前端。
+4：设置 本地变量 app.locals.name = "张三";
 console.log(app.locals.name);
 /** 等价于 */
 console.log(request.app.locals.name);
-5：：本地变量 app.set("name", "zhangsan");app.get("name");  
-6：：  用于处理路径中的参数  app.param
+5：本地变量 app.set("name", "zhangsan");app.get("name");  
+6：用于处理路径中的参数  app.param
 const app = express();
 app.param("id", (req, res, next, id) => {
   console.log(id);
@@ -133,4 +132,4 @@ app.param("id", (req, res, next, id) => {
 app.get("/user/:id", (req, res, next) => {
   res.send("1");
 });
-7：：
+7：

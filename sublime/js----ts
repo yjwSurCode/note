@@ -539,11 +539,108 @@ export function eventBus() {
 ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 
-接口iterface 和 类型别名type 的关联和区别：：：
+接口iterface 和 类型别名type 的关联和区别：：：：：：：：：
 1：都可以描述 对象和函数
 interface SetSister {
   name: string;
   (name: string, age: number): void;
 }
-2： 都可以扩展 但是 type是& interface是extends
+2： 都可以扩展 但是 type是&--------interface是extends
 3： interface扩展是不可以重复
+4: type可以并用两个接口,而接口不可以并用接口
+interface Admin {
+  name: string;
+  privileges: string[];
+}
+interface Employee {
+  name: string;
+  startDate: Date;
+}
+type UnknownEmployee = Employee | Admin;
+
+implements与extends的区别：：：：：：：：：：：：：：：：
+
+extends继承，一个新的接口或者类，从父类或者接口继承所有的属性和方法，不可以重写属性，但可以重写方法
+implements是对某个接口或者类型的实现继承，必须满足接口的类型规范。
+
+
+泛型（Generics）是允许同一个函数接受不同类型参数的一种模板：：：：：：：：：：
+T （Type）
+K（Key）：表示对象中的键类型；
+V（Value）：表示对象中的值类型；
+E（Element）：表示元素类型。
+
+1：function aname<T>(value: T): T {
+	return value;
+}
+2：function identity <T, U>(value: T, message: U) : T {
+  console.log(message);
+  return value;
+}
+3：const bname = <T>(x: T): T => {
+	return x;
+};
+/**  Record<string, unknown> 相当于{} */
+4：const cname = <T extends Record<string, unknown>>(x: T): T => x;
+5：const dname =
+	<T1 extends Record<string, unknown>>(arg1: T1) =>
+	<T2 extends Record<string, unknown>>(arg2: T2) => {
+		return { arg1, arg2 };
+	};
+
+字符串枚举+常量枚举=异构枚举
+类型断言： <string>someValue =====  someValue as any 
+Partial<T> 的作用就是将某个类型或者接口里的属性全部变为可选项 ?
+
+JSON数据格式转ts接口： http://ww7.jsontots.com/
+
+高级类型技巧： https://juejin.cn/post/6994102811218673700#heading-6
+
+
+
+ class Greeter {
+  // 静态属性
+  static cname: string = "Greeter";
+  // 成员属性
+  greeting: string;
+
+  // 构造函数 - 执行初始化操作
+  constructor(message: string) {
+    this.greeting = message;
+  }
+
+  // 静态方法
+  static getClassName() {
+    return "Class name is Greeter";
+  }
+
+  // 成员方法
+  greet() {
+    return "Hello, " + this.greeting;
+  }
+}
+
+let greeter = new Greeter("world");
+
+
+编译成ES5代码：：：：：：：：：：：：：：：：：：：
+
+"use strict";
+var Greeter = /** @class */ (function () {
+    // 构造函数 - 执行初始化操作
+    function Greeter(message) {
+      this.greeting = message;
+    }
+    // 静态方法
+    Greeter.getClassName = function () {
+      return "Class name is Greeter";
+    };
+    // 成员方法
+    Greeter.prototype.greet = function () {
+      return "Hello, " + this.greeting;
+    };
+    // 静态属性
+    Greeter.cname = "Greeter";
+    return Greeter;
+}());
+var greeter = new Greeter("world");

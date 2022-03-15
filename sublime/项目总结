@@ -167,4 +167,8 @@ rafPolyfill  raf
 
 .umi  是可扩展的企业级前端应用框架
 gulp:gulp是一个基于流的构建工具
-lerna:Lerna - 多包存储库管理工具
+lerna：是一个专门用于管理带有多个包的JavaScript项目的工具，可以帮助进行npm发布及git上传
+
+1：lerna init 生成 packages
+2：yarn dev---------------- lerna exec -- [..args] # 在所有包中运行该命令    "dev": "lerna exec --scope fnx-ui yarn dev",
+3:项目使用vite构建
