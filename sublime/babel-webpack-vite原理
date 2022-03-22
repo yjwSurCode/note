@@ -153,6 +153,11 @@ vite 在构建过程中使用esbuild进行构建，esbuild 是一个新的代码
 
 vite 的作用就是体现在了这里,vite的任务就是用koa起一个http请求,然后利用拦截器去拦截修改这些请求内容
 
+问题：：：：：：：：：：
+不能识别md文件？
+为什么webpack可以引入loader的方式加载md文件？
+如何编写vite插件？
+vite不是基于webpack 为什么不可以引入loader 怎么写插件解决 ？
 
 gulp构建工具：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 擅长：前端开发流程规范管理。不包括模块化功能。
@@ -217,7 +222,7 @@ module.exports = {
 }
 
 
-http://www.guofeian.cn/article_details/647258913514991616
+vite插件大全：http://www.guofeian.cn/article_details/647258913514991616
 
 
 

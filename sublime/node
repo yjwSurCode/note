@@ -133,3 +133,16 @@ app.get("/user/:id", (req, res, next) => {
   res.send("1");
 });
 7：
+
+
+
+
+
+
+
+REDIS缓存：
+可视化工具：https://juejin.cn/post/7072537112834211847
+
+消息队列：
+
+回流：

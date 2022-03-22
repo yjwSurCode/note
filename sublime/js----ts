@@ -261,19 +261,15 @@ bind 是返回对应函数，便于稍后调用；apply 、call 则是立即调�
 //     let pb = 'b的变量'
 //   }
 // }
-
-
 // const c = a.b
 // console.log('闭包就是能够读取其他函数内部变量的函数。', c)
 
 // function fun(a) {
-
 //   function f2() {
 //     console.log(a);
 //   }
 //   return f2;
 // }
-
 // let fn = fun(1)
 // console.log(fn)
 // setTimeout(fn, 1000)
@@ -296,13 +292,16 @@ bind 是返回对应函数，便于稍后调用；apply 、call 则是立即调�
 // console.log(result.inc());//2
 // console.log(result.inc());//3
 
+
 闭包使用场景：：：：：：：：：：：：：：：：：
 1：setTimeout 原生的setTimeout传递的第一个函数不能带参数，通过闭包可以实现传参效果
 2：回调
 3：函数防抖 返回一个函数 参数是函数
 4：封装私有变量 创建一个计数器
+5：当我们需要在模块中定义一些变量，并希望这些变量一直保存在内存中但又不会 “污染” 全局的变量时，就可以用闭包来定义这个模块。
 
-// 当我们需要在模块中定义一些变量，并希望这些变量一直保存在内存中但又不会 “污染” 全局的变量时，就可以用闭包来定义这个模块。
+MVVM，理解闭包的艺术：：：：：：：：：：：：：：：：：
+https://juejin.cn/post/6844903619808985095
 
 // 减少全局变量； 减少传递函数的参数量；
 
@@ -347,9 +346,9 @@ some： 检测数组中的某一项是否符合条件 一项符合即可
 // HOC(组件名)
 
 
-
+react类组件和hooks对比：：：：：：：：：：：：：：：：：：：：：：：：：：
 // constructor ------   useState
-// getDerivedStateFromProps --------    useState 里面 update 函数
+// getDerivedStateFromProps --------  useState 里面 update 函数
 // shouldComponentUpdate ------ useMemo
 // render ------    函数本身
 // componentDidMount ------ useEffect
@@ -358,11 +357,71 @@ some： 检测数组中的某一项是否符合条件 一项符合即可
 // componentDidCatch ------ 无
 // getDerivedStateFromError ------  无
 
+命令式 VS 声明式
+去生命周期化
+去 this 化
+编译和压缩----对于构建工具来说，class 不能很好的压缩并且会使热重载出现不稳定的情况
+性能  hook完成时间短
+
+new WeakMap用法：：：：：：：：：：：：：：：：：：：：：：
+WeakMap的作用就是可以更有效的垃圾回收、释放内存。
+let myWm = new WeakMap()
+// 删除键
+myWm.delete(key);
+// 设置键和值------------key只能是对象 myWm.set(()=>{}, 1) myWm.set(new Date(), '鑫空间');
+myWm.set(key, value);
+// 是否包含某键
+myWm.has(key);
+// 获取键对应的值
+myWm.get(key);
 
 
+ 6:React SSR + express 构建简单服务端渲染Demo      https://juejin.cn/post/6844903990497378318
 
 
-// 6:React SSR + express 构建简单服务端渲染Demo      https://juejin.cn/post/6844903990497378318
+如何让localStorage支持过期时间设置：：：：：：：：：：：：：：  https://juejin.cn/post/7040671388025225229
+
+const store = {
+  // 存储过期时间映射
+  setExpireMap: (key, expire) => {
+    const expireMap = localStorage.getItem("EXPIRE_MAP") || "{}";
+    localStorage.setItem(
+      "EXPIRE_MAP",
+      JSON.stringify({
+        ...JSON.parse(expireMap),
+        key: expire,
+      })
+    );
+  },
+  setItem: (key, value, expire) => {
+    store.setExpireMap(key, expire);
+    localStorage.setItem(key, value);
+  },
+  getItem: (key) => {
+    // 在取值之前先判断是否过期
+    const expireMap = JSON.parse(localStorage.getItem("EXPIRE_MAP") || "{}");
+    if (expireMap[key] && expireMap[key] < Date.now()) {
+      return localStorage.getItem(key);
+    } else {
+      localStorage.removeItem(key);
+      return null;
+    }
+  },
+};
+
+222222222222222222222222222222222222
+import { store } from "xijs";
+// 设置带有过期时间的key
+store.set("name", "dooring", Date.now() + 1000);
+console.log(store.get("name"));
+setTimeout(() => {
+  console.log(store.get("name"));
+}, 1000);
+
+// 设置成功后的回调
+store.set("dooring", "xuxiaoxi", Date.now() + 1000, (status, key, value) => {
+  console.log("success");
+});
 
 
 

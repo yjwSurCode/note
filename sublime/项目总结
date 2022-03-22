@@ -1,4 +1,4 @@
-1 鑫青盟官网：https://www.xqmcm.com/#/。
+1：鑫青盟官网：https://www.xqmcm.com/#/。
 
 react ts 类组件 redux  redux-thunk  -----------Redux store 仅支持同步数据流。使用 thunk 等中间件可以帮助在 Redux 应用中实现异步性。
 
@@ -129,14 +129,14 @@ const debouncedValue = useDebounce(values, 200);
 
 4：游戏(桥接至app 支付宝小程序 微信小程序)。
 
-页面跳转：：：：:::::::::::::
- loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');  RwMutex  writeLock
+页面跳转:::::::::::::::::::::::::
+loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');  RwMutex  writeLock
 
-登录 分享:::::::::::::::::::
+登录 分享::::::::::::::::::::::::
 const env = await PLATFORM_BRIDGE.getRunningEnv();
-微信环境：ios的 ua 中无 miniProgram，很坑爹,但都有 MicroMessenger（表示是微信浏览器）
+微信环境----ios的 ua 中无 miniProgram，很坑爹,但都有 MicroMessenger（表示是微信浏览器）
 
-安卓ios：webview
+安卓ios-----webview
 async setNavWechatShare(shareInfo: NativeWechatShareInfo): Promise<void> {
 		this.invokeBridge('setNavWechatShare', shareInfo);
 	}
@@ -161,14 +161,18 @@ usePersistFn可以保证函数地址永远不会变化(useRef)
 web-animations-js polyfill：：：：：：：：：
 没有找到 window.requestAnimationFrame 
 
+
+
 5：fnx react-hooks移动端组件。
 
 rafPolyfill  raf
 
-.umi  是可扩展的企业级前端应用框架
-gulp:gulp是一个基于流的构建工具
-lerna：是一个专门用于管理带有多个包的JavaScript项目的工具，可以帮助进行npm发布及git上传
+.umi   是可扩展的企业级前端应用框架
+gulp   gulp是一个基于流的构建工具
+lerna  是一个专门用于管理带有多个包的JavaScript项目的工具，可以帮助进行npm发布及git上传
 
 1：lerna init 生成 packages
 2：yarn dev---------------- lerna exec -- [..args] # 在所有包中运行该命令    "dev": "lerna exec --scope fnx-ui yarn dev",
-3:项目使用vite构建
+3：项目使用vite构建
+4：开发一个符合公司的脚手架
+

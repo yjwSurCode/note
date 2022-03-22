@@ -1,13 +1,12 @@
 
 忽略.vue后缀
-export default defineConfig({
+export default defineConfig({     // vite umi??
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   }
 })
 
 参考链接：https://juejin.cn/post/6986838175062687752	
-
 
 
 // class Dep {
@@ -76,53 +75,38 @@ export default defineConfig({
 // history.replaceState = addHistoryMethod("replaceState");
 
 
+6:v2.x 与 vue3.0之间的区别:
+基于 Proxy 观察者机制以满足全语言覆盖以及更好的性能；
+放弃 Object.defineProperty ，使用更快的原生Proxy；
+beforeCreate -> 请使用 setup()
+created -> 请使用 setup()
+beforeMount -> onBeforeMount
+mounted -> onMounted
+beforeUpdate -> onBeforeUpdate
+updated -> onUpdated
+beforeDestroy -> onBeforeUnmount
+destroyed -> onUnmounted
 
 
-
-
-v-modal 发布者 订阅者
+v-modal 发布者 订阅者 ：：：：：：：：：：：：：：：：：：：：：
 Object.defindProperty
-
 observer.js 数据劫持  geter seter
 compile.js 判断元素  添加监听数据的订阅者 数据变化 更新试图
 watcher 订阅者 oserver compile之间通信的桥梁
 mvvm
 数据绑定的入口 整合三者 通过observer监听modal数据的变化 通过compile来解析编译模板的指令 watcher 数据变化----》视图更新----》视图交互变化
 
-// 6:v2.x 与 vue3.0之间的区别:
-// 基于 Proxy 观察者机制以满足全语言覆盖以及更好的性能；
-// 放弃 Object.defineProperty ，使用更快的原生Proxy；
-// 　　beforeCreate -> 请使用 setup()
-// 　　created -> 请使用 setup()
-// 　　beforeMount -> onBeforeMount
-// 　　mounted -> onMounted
-// 　　beforeUpdate -> onBeforeUpdate
-// 　　updated -> onUpdated
-// 　　beforeDestroy -> onBeforeUnmount
-// 　　destroyed -> onUnmounted
+Object.defindProperty对比proxy：：：：：：：：：：：：：：：：：：：：：：：  https://juejin.cn/post/6844904150560423950
+不需要递归遍历每个属性，添加劫持，深层对象属性只有在访问的时候才转换成 Proxy
+对新增的属性不需要另外做劫持处理
+不需要对数组的方法进行重定义
+缺点：不兼容 ie
 
-// vue2知识点：
-// 自定义指令
-//  <h1 v-highlight="red">这是一串被高亮为红色的字h1>
-// Vue.directive('highlight', {
-//   bind(el, binding, vnode) {
-//     el.style.background = binding.value;
-//   }
-// }); 
-// 自定义指令
-// Vue.directive('my-directive', {
-//   bind: function () {},
-//   inserted: function () {},
-//   update: function () {},
-//   componentUpdated: function () {},
-//   unbind: function () {}
-// })
+Vue3新特性:：：：：：：：：：：：：：：：：：：：：：：
 
+vue3通过10个实例小练习https://github.com/biaochenxuying/blog/issues/63
 
-
-// Vue3新特性:：：：：：：：：：：：：：：：：：：：：：：
-
-通过10个实例小练习https://github.com/biaochenxuying/blog/issues/63
+vben的vue3源码 :https://github1s.com/anncwb/vue-vben-admin
 
 
 // import { nextTick } from 'vue'
@@ -181,7 +165,6 @@ computed  是计算属性,依赖其它属性值，并且 computed 的值有缓�
 watch 更多的是「观察」的作用,类似于某些数据的监听回调 ,每当监听的数据变化时都会执行回调进行后续操作；
 
 
-
 // 异步组件
 // const AsyncCategory = defineAsyncComponent(() => import("./AsyncCategory.vue"))
 
@@ -226,3 +209,18 @@ actions: {
       context.commit('increment')
     }
   }
+
+
+
+浅析vue-cli脚手架@vue/cli-service源码：：：：：：：：：：：：：：：：：：
+
+vue-cli使用指南：https://cli.vuejs.org/zh/dev-guide/plugin-dev.html
+
+vue create vue-cli-app ------ vue-cli-service build
+
+使用npm run script 命令时，直接会找到node_modules/.bin下面对应的脚本，windows系统对应vue-cli-service.cmd命令，类unix系统是/bin/sh命令
+开始执行vue-cli-service.js
+Service实例化后，又到vue-cli-service.js中，执行service run方法
+config 下的base.js css.js 等webpack配置模块都会执行chainWebpack方法，以base模块为例
+build方法会根据命令行参数，加载不同的模块来处理webpack配置
+

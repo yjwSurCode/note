@@ -123,9 +123,49 @@ console.log(BinarySearchTree(keys), "root");
 
 栈：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 
-栈（stack）又名堆栈，是一种遵循后进先出（LIFO）原则的有序集合
+栈（stack）为自动分配的内存空间，它由系统自动释放；而堆（heap）则是动态分配的内存，大小不定也不会自动释放。
 
-新添加或待删除的元素都保存在栈的末尾，称作栈顶，另一端称作栈底
+引用类型（object）是存放在堆内存中的，变量实际上是一个存放在栈内存的指针，这个指针指向堆内存中的地址。每个空间大小不一样，要根据情况开进行特定的分配，例如。
+
+var person1 = {name:'jozo'};     （栈区）(person1---堆内存地址1)-----》object1(堆区)
+
+
+js 深拷贝vs浅拷贝：：：：：：：：：：：：
+注意：
+基本数据类型的特点：直接存储在栈(stack)中的数据 ---------------(String, Number, Boolean, Null, Undefined，Symbol)
+引用数据类型的特点：存储的是该对象在栈中引用，真实的数据存放在堆内存里---------------(Object,Array,function...)
+
+1: var a=1  b=a a=2 ----console.log(b) //1
+2： var a = {
+        name:'weiwei'
+    }; 
+    var b = a; // 新建一个b对象，地址指向a指向的堆 --------------引用类型的赋值是传址。只是改变指针的指向
+    a.name='ww' console.log(b.name); // 'ww' 
+
+浅拷贝方法：JSON.parse(JSON.stringify())----------------这种方法虽然可以实现数组或对象深拷贝,但不能处理函数
+
+深拷贝方法：
+function clone(target, map = new Map()) {
+    if (typeof target === 'object') {
+        let cloneTarget = Array.isArray(target) ? [] : {}; //考虑到数组情况了
+        //解决循环引用问题
+        if (map.get(target)) {
+            return map.get(target);
+        }
+        map.set(target, cloneTarget);
+
+        for (const key in target) {
+            cloneTarget[key] = clone(target[key]);
+        }
+        console.log('执行')
+        return cloneTarget;
+
+    } else {
+        return target;
+    }
+};
+
+栈（stack）又名堆栈，是一种遵循后进先出（LIFO）原则的有序集合,新添加或待删除的元素都保存在栈的末尾，称作栈顶，另一端称作栈底
 
 
 function Stack() {
@@ -187,73 +227,17 @@ function isPalindrome(word) {
     return false;
   }
 }
-
 console.log(isPalindrome("level")); // true
 
 
 队列：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
-
-队列是只允许在一端进行插入操作，而在另一端进行删除操作的线性表，队列是一种先进先出的线性表，简称FIFO，允许插入的一端称为队尾（Rear），允许删除的一端称为队头(Front)。向队中插入元素称为进队，新元素进队后成为新的队尾元素；向队中删除元素称为出队，元素出队后，其后继元素就成为新的队头元素。
-
-
-
-<!doctype html>
-<html lang="en">
-<head>
-    <title>Document</title>
-    <style>
-        #e{
-            width: 100px;
-            height: 100px;
-            background: red;
-            position: absolute;
-            left: 0;
-            top: 0;
-            zoom: 1;
-        }
-    </style>
-</head>
-<body>
-<div id="e"></div>
-<script>
+队列是只允许在一端进行插入操作,而在另一端进行删除操作的线性表
+队列是一种先进先出的线性表,简称FIFO-------允许插入的一端称为队尾(Rear)允许删除的一端称为队头(Front)。
 
 
-    var e = document.getElementById("e");
-    var flag = true;
-    var left = 0;
-    var rafId = null
+浏览器执行顺序：执行栈在执行完同步任务之后，如果执行栈为空，
+就会去检查微任务（MicroTask）队列是否为空------------如果为空的话,就会去执行宏任务队列（MacroTask）
+                                      --------------如果不为空的话,就会一次性执行完所有的微任务队列
 
 
-    function render() {
-        if(flag == true){
-            if(left>=100){
-                flag = false
-            }
-            e.style.left = ` ${left++}px`
-        }else{
-            if(left<=0){
-                flag = true
-            }
-            e.style.left = ` ${left--}px`
-        }
-    }
-
-    //requestAnimationFrame效果
-    (function animloop(time) {
-        console.log(time,Date.now())
-        render();
-        rafId = requestAnimationFrame(animloop);
-        //如果left等于50 停止动画
-        if(left == 50){
-            cancelAnimationFrame(rafId)
-        }
-    })();
-
-    //setInterval效果
-    // setInterval(function(){
-    //     render()
-    // },1000/60)
-
-</script>
-</body>
-</html>
+扁平数据结构转tree：https://juejin.cn/post/6983904373508145189
