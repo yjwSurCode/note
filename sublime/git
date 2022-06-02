@@ -1,0 +1,220 @@
+// 原理：git ls-files --stage
+// index文件git暂存区存放index文件中，所以我们把暂存区有时也叫作索引（index）。索引是一个二进制格式的文件，里面存放了与当前暂存内容相关的信息，包括暂存的文件名、文件内容的SHA1哈希串值和文件访问权限。
+// 暂存区是贯穿于整个Git使用流程的重要概念，所以index文件就很重要。由于是二进制所以我们无法查看具体内容，但是可以用git ls-files --stage 命令查看暂存区里面的文件
+// objects目录
+// Git对象(blob,tree,commit,tag)都保存在objects目录里面，所以objects目录就是真正的仓库。objects里面的目录结构组织的很有特点，是以SHA值的前2位作为目录，后38位作为这个目录下的文件名。
+
+// Tree 对象
+// 一个tree对象有一串(bunch)指向blob对象或是其它tree对象的指针，它一般用来表示内容之间的目录层次关系。
+// git ls-tree 或 git cat-file -p 命令还可以用来查看tree对象，现在我们查看刚刚最新提交对应的Tree对象 我们可以像下面一样来查看它：
+
+// 将本地仓库与远程仓库建立联系
+// 命令：git remote add origin 项目地址
+
+//查看远程地址 git remote -v
+
+// 从命令的角度来看，git add 可以分两条底层命令实现:
+
+// git hash-object<file>
+// git update-index --add<file>
+
+// HEAD：当前提交你的回购。大多数时候都  HEAD 指向分支中的最新提交，但情况并非如此。 HEAD 真的只是意味着“我的回购目前指向的是什么”。
+// master：git在首次创建repo时为您创建的默认分支的名称。在大多数情况下，“主”意味着“主要分支”。大多数商店都有人推动掌握，而主人被认为是回购的最终观点。但是发布分支也很常见，因为发布分支是由master发布的。您的本地仓库有自己的主分支，几乎总是跟随远程仓库的主人。
+// origin：git为主远程仓库提供的默认名称。你的盒子有自己的仓库，你最有可能推出一些你和你的同事所推动的远程仓库。这个远程仓库几乎总是被称为原产地，但并非必须如此。
+
+
+// git push origin master
+// 解决办法：强行让本地分支覆盖远程分支git push origin master -f
+// git push的一般形式为 git push <远程主机名> <本地分支名>  <远程分支名>  eg:git push origin master：refs/for/master 
+// 1.1 git push origin master
+// 如果远程分支被省略，如上则表示将本地分支推送到与之存在追踪关系的远程分支（通常两者同名），如果该远程分支不存在，则会被新建
+// 1.2 git push origin ：refs /for/master 
+// 如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支，等同于 git push origin--delete master
+
+// git stash save '备注信息'
+// 贮藏修改，就要用到git stash.网址：https://git-scm.com/docs/git-stash
+// 先git stash，本地工作区备分，放入git栈中。然后，工作区内容恢复到仓库head最后一次提交的内容。
+// 然后git pull.
+// 最后，git stash pop,这个过程自动合并。如果成功，则自动此备分从git stash中删除。如果有冲突，则你需要手动解决冲突。然后git stash drop
+
+// 问题:不建议在没有为偏离分支指定合并策略时执行pull操作
+// 原文链接：https://blog.csdn.net/wq6ylg08/article/details/114106272
+
+// git cherry-pick可以选择某一个分支中的一个或几个commit(s)来进行操作。
+// 例如，假设我们有个稳定版本的分支，叫v2.0，另外还有个开发版本的分支v3.0，我们不能直接把两个分支合并，这样会导致稳定版本混乱，但是又想增加一个v3.0中的功能到v2.0中，这里就可以使用cherry-pick了。
+
+
+// git log-------查看 commit
+
+// commit 150f539d430015ba682a3dd95d4f68937eb6533b
+// Author: 贾季帮 <1424800753@qq.com>
+// Date:   Mon Jul 5 15:22:26 2021 +0800
+
+// git show  150f539d430015ba682a3dd95d4f68937eb6533b
+
+// 问题: 撤销 git commit
+
+// git reset  HEAD~1
+// git reset--soft HEAD~2   撤销两次 可以包括commit push
+
+// Git撤销对远程仓库的push & commit提交::!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//     撤销push
+// 1. 执行 git log查看日志， 获取需要回退的版本号
+// commit 986 a582b88f7c8a9830a916f09d48f476ea84265
+// Author: Rockcookies < hqy321 @gmail.com >
+//     Date: Fri Oct 22 20: 29: 36 2021 + 0800
+
+// 2. 执行 git reset– - soft < 版本号 > ，如 git reset --soft  c59c91158d6b08fc457032073eb26a8d00228b48 重置至指定版本的提交， 达到撤销提交的目的 !!!!!!!!!!!!!!!!
+
+// 然后执行 git log 查看 此时， 已重置至指定版本的提交， log中已经没有了需要撤销的提交
+
+// git reset 命令分为两种： git reset– - soft 与 git reset– - hard， 区别是：
+
+// 前者表示只是改变了HEAD的指向， 本地代码不会变化， 我们使用git status依然可以看到， 同时也可以git commit提交。 后者直接回改变本地源码， 不仅仅指向变化了， 代码也回到了那个版本时的代码。
+
+// 3. 执行 git push origin 分支名– - force， 强制提交当前版本号。 !!!!!!!!!!
+
+// exeample: git push origin master --force
+
+
+// git reset--soft HEAD~2    去上一个版本
+
+// git revert ec5be      回滚
+
+// 使用“git revert -n 版本号”反做，并使用“git commit -m 版本名”提交：
+
+
+//提交中间的某一次commit
+
+
+//问题: 撤销 git pull
+// 1: git reflog
+// 2:  git reset --hard 6ca3754  
+
+// git stash暂存修改  
+// git stash list
+// 常用git stash命令：
+// （1）git stash save "save message"  : 执行存储时，添加备注，方便查找，只有git stash 也要可以的，但查找时不方便识别。
+// （2）git stash list  ：查看stash了哪些存储
+// （3）git stash show ：显示做了哪些改动，默认show第一个存储,如果要显示其他存贮，后面加stash@{$num}，比如第二个 git stash show stash@{1}
+// （4）git stash show -p : 显示第一个存储的改动，如果想显示其他存存储，命令：git stash show  stash@{$num}  -p ，比如第二个：git stash show  stash@{1}  -p
+// （5）git stash apply :应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即stash@{0}，如果要使用其他个，git stash apply stash@{$num} ， 比如第二个：git stash apply stash@{1} 
+// （6）git stash pop ：命令恢复之前缓存的工作目录，将缓存堆栈中的对应stash删除，并将对应修改应用到当前的工作目录下,默认为第一个stash,即stash@{0}，如果要应用并删除其他stash，命令：git stash pop stash@{$num} ，比如应用并删除第二个：git stash pop stash@{1}
+// （7）git stash drop stash@{$num} ：丢弃stash@{$num}存储，从列表中删除这个存储
+// （8）git stash clear ：删除所有缓存的stash
+
+
+// git rebase -i  HEAD~3
+
+// git rebase --abort 会放弃合并，回到rebase操作之前的状态，之前的提交的不会丢弃；
+// git rebase --skip 则会将引起冲突的commits丢弃掉（慎用！！）；
+// git rebase --continue 合并冲突，结合"git add 文件"命令一起用与修复冲突，提示开发者，一步一步地有没有解决冲突。（fix conflicts and then run “git rebase --continue”）
+
+// git pull --rebase      不会产生新的节点
+// 不带任何选项的git pull命令：先尝试快进合并，如果不行再进行正常合并生成一个新的提交。
+// git pull --ff-only命令：只尝试快进合并，如果不行则终止当前合并操作。
+// git pull --no-ff命令：禁止快进合并，即不管能不能快进合并，最后都会进行正常合并生成一个新的提交。
+// git pull --rebase命令：先尝试快进合并，如果不行再进行变基合并。
+
+
+//问题: error: 您尚未结束您的合并（存在 MERGE_HEAD）。
+// 提示：请在合并前先提交您的修改。
+// fatal: 因为存在未完成的合并而退出
+
+// 解决方法:
+// git merge --abort
+// git reset --merge
+
+//提交指定的commit
+https: //blog.csdn.net/u013068502/article/details/85399806?utm_term=%E5%8F%AA%E6%8F%90%E4%BA%A4%E6%9C%AC%E5%9C%B0%E6%8C%87%E5%AE%9A%E7%9A%84commit&utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~sobaiduweb~default-0-85399806&spm=3001.4430
+
+
+
+
+
+// feat： 新增 feature
+// fix: 修复 bug
+// docs: 仅仅修改了文档，比如 README, CHANGELOG, CONTRIBUTE等等
+// style: 仅仅修改了空格、格式缩进、逗号等等，不改变代码逻辑
+// refactor: 代码重构，没有加新功能或者修复 bug
+// perf: 优化相关，比如提升性能、体验
+// test: 测试用例，包括单元测试、集成测试等
+// chore: 改变构建流程、或者增加依赖库、工具等
+// revert: 回滚到上一个版本
+
+// 创建新的分支：git branch gh-dev（分支名字）   
+// 删除branch：git branch -d 名称
+// git branch -r ，查看远程的分支名   git branch -a
+//切换分支 git checkout preview
+
+//  git checkout -b  test master 在master分支上创建一个test分支
+
+// 删除远程分支 Chapater6
+// git push origin--delete Chapater6
+
+// 删除本地分支 Chapater6
+// git branch -d Chapater6
+
+// 如果您想要为此分支创建跟踪信息，您可以执行：
+//git branch --set-upstream-to=origin/<分支> test
+// git branch --set-upstream-to=origin/test  test
+
+
+// git push - u origin dev
+// 想将 dev 分支合并到 master 分支，操作如下：
+// 1、首先切换到master分支上
+// git checkout master
+// 2、如果是多人开发的话 需要把远程master上的代码pull下来
+// git pull origin master
+//如果是自己一个开发就没有必要了，为了保险期间还是 pull
+// 3、然后我们把dev分支的代码合并到master上----就是使master上面的代码和dev上面的代码一样
+// git merge dev
+
+// 前提是我现在在master分支上
+// git merge dev （这句话的意思就是使现在的master分支和dev分支一样了） (这样 master分支就和dev分支一样了)
+// eg: master 分支是主分支  dev分支是次分支 然后合并 流程：在dev分支上执行 git merge master
+// 4、然后查看状态及执行提交命令
+
+
+
+example:
+// 不小心merge怎么办!!!!!!!
+// 1: git log
+// git reset--hard 01a39de3d84d5bf8139a52def7b02ac1ca67d044
+// https://blog.csdn.net/weixin_41282397/article/details/82805313?utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-1.control&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-1.control
+
+
+example:
+// fatal: 似乎已有一个 rebase-merge 目录，我怀疑您正处于另外一个变基操作过程中。
+// 如果是这样，请执行
+//         git rebase (--continue | --abort | --skip)
+// 如果不是这样，请执行
+//         rm -fr ".git/rebase-merge"
+// 然后再重新执行。 为避免丢失重要数据，我已经停止当前操作。
+
+
+example:
+// 您的分支和 'origin/master' 出现了偏离，
+// 并且分别有 1 和 1 处不同的提交。
+// （使用 "git pull" 来合并远程分支）
+// 假如你想要丢弃你所有的本地改动与提交，可以到服务器上获取最新的版本并将你本地主分支指向到它：
+// git fetch origin
+// git reset --hard origin/master
+
+example:
+// 问题：您当前不在一个分支上。请指定您要变基到哪一个分支。
+// git pull < 远程 > <分支>
+// git pull --rebase origin master
+
+
+example:
+// 第一次提交A 第二次提交B   vs code 我push B ，A也会提交上去
+// 第一次提交A 第二次提交B   vs code 我push A ，B也就是第二次的不会被提交上去
+
+
+
+{
+    /* git原理
+    https://www.zhihu.com/search?type=content&q=git%20%E5%8E%9F%E7%90%86
+    https://zhuanlan.zhihu.com/p/66506485 */
+}

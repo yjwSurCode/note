@@ -1,4 +1,4 @@
-1：鑫青盟官网：https://www.xqmcm.com/#/。
+1：：：：：：：：：：：鑫青盟官网：https://www.xqmcm.com/#/。
 
 react ts 类组件 redux  redux-thunk  -----------Redux store 仅支持同步数据流。使用 thunk 等中间件可以帮助在 Redux 应用中实现异步性。
 
@@ -13,12 +13,8 @@ const store =  createStore(reducers, {     //合并多个 reducer     reducers�
     countReducer1:initialState1
 }, applyMiddleware(thunk));
 
-
 export  function  mapDispatchToProps(dispath:any){
-  
     return{
-
-            // derM:()=>{  console.log(999); dispath(actions.decrementCount) }
                derM:()=> dispath(actions.decrementCount('ni')),
                todoM:()=>dispath(actions.todolistAction(1) )       // 在这里定义  就要在 render 里面 实现
 
@@ -34,20 +30,18 @@ TodoAPIUtil
       .then(todos => dispatch(receiveTodos(todos)))
 
 
-2：教师端(公众号)：https://xqmcm.com/app/teacher/index.html 。 （https://github1s.com/gezi666/xingGouWeChat/blob/HEAD/src/router/index.js#L456）
+2：：：：：：：：：：：：：：：教师端(公众号)：https://xqmcm.com/app/teacher/index.html 。 （https://github1s.com/gezi666/xingGouWeChat/blob/HEAD/src/router/index.js#L456）
 
-history模式配置失败的原因可能是url带参数没有用encodeURIComponent：：：：：：
+2.1-----history模式配置失败的原因可能是url带参数没有用encodeURIComponent
 
-(要保证你的h5页面域名和公众号后台js安全域名一致）：：：：：：：
+2.2-----(要保证你的h5页面域名和公众号后台js安全域名一致）
 
-微信分享到朋友圈onMenuShareTimeline成功后的回调函数不执行的问题；：：：：：：：：
-
+2.3-----微信分享到朋友圈onMenuShareTimeline成功后的回调函数不执行的问题
 setTimeout(function(){undefined
           将指定的代码移出本次执行,等到下一轮Event Loop
      }, 500);
-
-
-支付、购买：：：：：：：：：：：：
+     
+2.4-----支付、购买
     /**
      * 购买支付-充值-向微信发起获取openid请求，请求成功后微信会将openid返给后台   --- 1   备注： 登录后查看后台返回的openid是否有值，若没有值，则向微信发送请求  (不要走接口，直接跳链接)
      */
@@ -71,15 +65,15 @@ setTimeout(function(){undefined
     /**
      * 购买支付-充值-打开微信支付界面进行支付   --- 4
      */
+2.5-----微信登陆
 
 
-3：团长端微信小程序。
 
-监听订单变化 单一修改 不需要批量更新：：：：：：：：：：：
 
+3：：：：：：：：：：：团长端微信小程序。
+3.1-----监听订单变化 单一修改 不需要批量更新
 /** 触发*/
 this._events.emit('escrow:detail:change', detail); //3
-
 /** 监听订单状态改变 */
 	subscribeOrderDetailChange(listener: (order: IOrderPage.OrderDetail) => void): () => void {
 		//5
@@ -103,21 +97,13 @@ function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): v
 		return unSubscribe;
 	}, [cbFn]);
 }
-
-
-
-解锁 上锁：：：：：：：：：：：：：：：：：：：：：：：：：
+3.2-----解锁 上锁：：：：：：：：：：：：：：：：：：：：：：：：：
 只允许一个线程写入（其他线程既不能写入也不能读取）当完成是其他的线程可以继续
 没有写入时，多个线程允许同时读（提高性能）
-
 案例：：：：：接口如何防刷 
 同一客户端次数限制。这个前端的一般使用是给接口调用加锁，在返回结果或者一定时间之后解锁。
-
-
-
-输入框的 防流 节抖：：：：：：：：：：：：：：：：：：
+3.3-----输入框的 防流 节抖：：：：：：：：：：：：：：：：：：
 const debouncedValue = useDebounce(values, 200);
-
 	useDebounceFn(
 		() => {
 			alert(1111);
@@ -126,28 +112,26 @@ const debouncedValue = useDebounce(values, 200);
 		2000,
 	);
 
+4：：：：：：：：：：：游戏(桥接至app 支付宝小程序 微信小程序)。
 
-4：游戏(桥接至app 支付宝小程序 微信小程序)。
-
-页面跳转:::::::::::::::::::::::::
+4.1-----页面跳转
 loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');  RwMutex  writeLock
 
-登录 分享::::::::::::::::::::::::
+4.2-----登录 分享:
 const env = await PLATFORM_BRIDGE.getRunningEnv();
 微信环境----ios的 ua 中无 miniProgram，很坑爹,但都有 MicroMessenger（表示是微信浏览器）
 
-安卓ios-----webview
+4.3-----安卓ios-----webview
 async setNavWechatShare(shareInfo: NativeWechatShareInfo): Promise<void> {
 		this.invokeBridge('setNavWechatShare', shareInfo);
 	}
-
 const iosBridge = win.webkit && win.webkit.messageHandlers && win.webkit.messageHandlers.FNJSBridge;
 const androidBridge = win.FNJSBridge;
 
 iosBridge.postMessage(msg);
 androidBridge.callHandler(method, param ? JSON.stringify(param) : '', id);
 
-/** usePersistFn可以保证函数地址永远不会变化*/：：：：：：：：：：：
+4.4-----usePersistFn可以保证函数地址永远不会变化：：：：：：：：：：：
 setSelectKey(_index + 1);
 子组件依赖key  
   useEffect(() => {
@@ -155,15 +139,14 @@ setSelectKey(_index + 1);
             handleLuckDraw(selectKey);   //这个方法又触发父组件的回调    父组件的回调中又改变selectKey
         }
     }, [selectKey, handleLuckDraw]);
-
 usePersistFn可以保证函数地址永远不会变化(useRef)
 
-web-animations-js polyfill：：：：：：：：：
+4.5-----web-animations-js polyfill：：：：：：：：：
 没有找到 window.requestAnimationFrame 
 
 
 
-5：fnx react-hooks移动端组件。
+5：：：：：：：：：：：：：：：fnx react-hooks移动端组件。
 
 rafPolyfill  raf
 
@@ -176,3 +159,5 @@ lerna  是一个专门用于管理带有多个包的JavaScript项目的工具，
 3：项目使用vite构建
 4：开发一个符合公司的脚手架
 
+
+6：：：：：：：：：：：：：：：taro+node 秒杀系统

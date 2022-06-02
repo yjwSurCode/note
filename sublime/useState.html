@@ -99,6 +99,7 @@
       }
 
       function dispatchAction(queue, action) {
+        console.log(queue, action, "queue, action");
         // 问题？？   这里的dispatchAction 对应的是哪一个 useState
 
         const update = {
@@ -139,7 +140,8 @@
         return {
           onClick() {
             // console.log("a---onClick");
-            setNum((num) => num + 1);
+            // setNum((num) => num + 1);
+            setNum(num + 1);
             // setNums((nums) => nums + 1);
           },
           num,

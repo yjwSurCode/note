@@ -96,17 +96,37 @@ watcher 订阅者 oserver compile之间通信的桥梁
 mvvm
 数据绑定的入口 整合三者 通过observer监听modal数据的变化 通过compile来解析编译模板的指令 watcher 数据变化----》视图更新----》视图交互变化
 
-Object.defindProperty对比proxy：：：：：：：：：：：：：：：：：：：：：：：  https://juejin.cn/post/6844904150560423950
-不需要递归遍历每个属性，添加劫持，深层对象属性只有在访问的时候才转换成 Proxy
-对新增的属性不需要另外做劫持处理
-不需要对数组的方法进行重定义
+Object.defindProperty对比proxy：：：：：：：：：：：：：：：：：：：：：：：  (https://juejin.cn/post/6844904150560423950)
+1:不需要递归遍历每个属性，添加劫持，深层对象属性只有在访问的时候才转换成 Proxy
+2:对新增的属性不需要另外做劫持处理
+3:不需要对数组的方法进行重定义
 缺点：不兼容 ie
+
+
+
+setup() {
+        const { proxy } = getCurrentInstance();
+        onMounted(() => {
+            proxy.$toast.loading({
+                message: '加载中...',
+                forbidClick: true,
+            })
+        });
+ 
+        return {};
+    }
+
 
 Vue3新特性:：：：：：：：：：：：：：：：：：：：：：：
 
 vue3通过10个实例小练习https://github.com/biaochenxuying/blog/issues/63
 
 vben的vue3源码 :https://github1s.com/anncwb/vue-vben-admin
+
+vue3源码：https://github1s.com/vuejs/core/blob/HEAD/packages/reactivity/src/computed.ts
+
+Proxy为什么要配合Reflect使用：https://juejin.cn/post/7080916820353351688
+
 
 
 // import { nextTick } from 'vue'

@@ -7,10 +7,30 @@
 
 node大致原理：https://zhuanlan.zhihu.com/p/145413875
 
-JS是脚本语言,脚本语言都需要一个解析器才能运行。对于写在HTML页面里的JS，浏览器充当了解析器的角色。而对于需要独立运行的JS，NodeJS就是一个解析器。
+JS是脚本语言, 脚本语言都需要一个解析器才能运行。对于写在HTML页面里的JS，浏览器充当了解析器的角色。而对于需要独立运行的JS，NodeJS就是一个解析器。
 
 
-node  API：：：：：：：：：： http://nodejs.cn/api/
+
+
+运行 npm run xxx 的时候发生了什么 ：：：：：：：：：：：：----------- https://zhuanlan.zhihu.com/p/487431985
+
+npm run serve的时候，实际上就是执行了vue - cli - service serve
+{
+  "name": "h5",
+    "scripts": {
+    "serve": "vue-cli-service serve"
+  },
+}
+
+就会node_modules /.bin / 目录中创建 好vue - cli - service 为名的几个可执行文件了。
+当使用 npm run serve 执行 vue - cli - service serve 时，
+虽然没有安装 vue - cli - service的全局命令但是 npm 会到./ node_modules /.bin 中找到 vue - cli - service 文件作为 脚本来执行
+则相当于执行了./ node_modules /.bin / vue - cli - service serve（最后的 serve 作为参数传入）。
+
+
+
+
+node  API：：：：：：：：：：：：：：：：： http://nodejs.cn/api/
 1：assert 测试断言。
 2：buffer 缓冲区
 JavaScript 语言自身只有字符串数据类型，没有二进制数据类型。但在处理像TCP流或文件流时，必须使用到二进制数据。因此在 Node.js中，定义了一个 Buffer 类，该类用来创建一个专门存放二进制数据的缓存区。
@@ -22,8 +42,8 @@ console.log(buf.toString('base64'));
 
 Node.js 目前支持的字符编码包括：：：
 ascii - 仅支持 7 位 ASCII 数据。如果设置去掉高位的话，这种编码是非常快的。
-utf8 - 多字节编码的 Unicode 字符。许多网页和其他文档格式都使用 UTF-8 。
-utf16le - 2 或 4 个字节，小字节序编码的 Unicode 字符。支持代理对（U+10000 至 U+10FFFF）。
+utf8 - 多字节编码的 Unicode 字符。许多网页和其他文档格式都使用 UTF - 8 。
+utf16le - 2 或 4 个字节，小字节序编码的 Unicode 字符。支持代理对（U + 10000 至 U + 10FFFF）。
 ucs2 - utf16le 的别名。
 base64 - Base64 编码。
 latin1 - 一种把 Buffer 编码成一字节编码的字符串的方式。
@@ -31,9 +51,9 @@ binary - latin1 的别名。
 hex - 将每个字节编码为两个十六进制字符。
 
 3：child_process 子进程
-在node中我们常常需要在主进程之外新建一个子进程来提高程序的运行效率，这时就需要使用到node中的child_process模块。child_process 模块提供了衍生子进程的功能，在默认情况下，父进程和子进程之间会建立stdin,stdout,stderr三个管道，数据能够以非阻塞的方式流动
+在node中我们常常需要在主进程之外新建一个子进程来提高程序的运行效率，这时就需要使用到node中的child_process模块。child_process 模块提供了衍生子进程的功能，在默认情况下，父进程和子进程之间会建立stdin, stdout, stderr三个管道，数据能够以非阻塞的方式流动
 
-4:集群
+4: 集群
 Node.js 的单个实例在单个线程中运行。 为了利用多核系统，用户有时会想要启动 Node.js 进程的集群来处理负载
 
 5：crypto 加密
@@ -45,13 +65,13 @@ const { createHmac } = await import('crypto');
 
 const secret = 'abcdefg';
 const hash = createHmac('sha256', secret)
-               .update('I love cupcakes')
-               .digest('hex');
+  .update('I love cupcakes')
+  .digest('hex');
 console.log(hash);
 
 
 process.argv(commnder)
-process.env(需注意cross-env mac和windows不一样)
+process.env(需注意cross - env mac和windows不一样)
 process.cwd() 当前工作目录
 process.nextTick
 process.platform
@@ -69,31 +89,31 @@ Buffer.toString() buffer 转字符串
 process是一个全局变量，可通过process.argv获得命令行参数。由于argv[0]固定等于NodeJS执行程序的绝对路径，argv[1]固定等于主模块的绝对路径，因此第一个命令行参数从argv[2]这个位置开始。
 
 
-fs.unlink('/tmp/shiyanlou', function(err) {   //unlink为删除文件方法
-    if (err) {
-        throw err;
-    }
-    console.log('成功删除了 /tmp/shiyanlou');
+fs.unlink('/tmp/shiyanlou', function (err) {   //unlink为删除文件方法
+  if (err) {
+    throw err;
+  }
+  console.log('成功删除了 /tmp/shiyanlou');
 });
 
-fs.readFile('./test.txt', function(err, data) {
-    // 读取文件失败/错误
-    if (err) {
-        throw err;
-    }
-    // 读取文件成功
-    console.log(data);
+fs.readFile('./test.txt', function (err, data) {
+  // 读取文件失败/错误
+  if (err) {
+    throw err;
+  }
+  // 读取文件成功
+  console.log(data);
 });
 
 
 var fs = require('fs'); // 引入fs模块
 
 // 创建 newdir 目录
-fs.mkdir('./newdir', function(err) {
-    if (err) {
-        throw err;
-    }
-    console.log('make dir success.');
+fs.mkdir('./newdir', function (err) {
+  if (err) {
+    throw err;
+  }
+  console.log('make dir success.');
 });
 
 
@@ -116,13 +136,13 @@ var session = require('express-session');
 
 expressAPI：：：：：：：：：：：：：：：：：：：：   https://www.expressjs.com.cn/4x/api.html
 1：app.use(express.json()); // 解析请求中的 json 数据
-2：express.urlencoded 处理x-www-form-urlencoded形式的请求
+2：express.urlencoded 处理x - www - form - urlencoded形式的请求
 3：app.use(express.static("public")); // 设置静态资源目录 ---------当浏览器访问 /home.html时，会去自动匹配public/home.html文件，并将它返回给前端。
 4：设置 本地变量 app.locals.name = "张三";
 console.log(app.locals.name);
 /** 等价于 */
 console.log(request.app.locals.name);
-5：本地变量 app.set("name", "zhangsan");app.get("name");  
+5：本地变量 app.set("name", "zhangsan"); app.get("name");
 6：用于处理路径中的参数  app.param
 const app = express();
 app.param("id", (req, res, next, id) => {
@@ -132,7 +152,8 @@ app.param("id", (req, res, next, id) => {
 app.get("/user/:id", (req, res, next) => {
   res.send("1");
 });
-7：
+
+7：mysql 语句注意事项：：：：：：：：：：：
 
 
 
@@ -141,8 +162,10 @@ app.get("/user/:id", (req, res, next) => {
 
 
 REDIS缓存：
+
+
 可视化工具：https://juejin.cn/post/7072537112834211847
 
 消息队列：
 
-回流：
+回流(事务)：

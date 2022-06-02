@@ -1,4 +1,3 @@
-
 浮动(float)与绝对定位(position:absolute/fixed)之间的区别就是
 (1)浮动会使元素脱离文档流,但是不会脱离文本流,在于其他盒子的文本内容计算布局的时候,还是占位置的。
 (2)绝对定位会使元素脱离文档流,同时也会脱离文本流, 在于其他盒子的文本内容计算布局的时候,不占位置。
@@ -35,8 +34,8 @@ vertical-align 只应用于 行内元素和替换元素（不影响块级元素�
 
 text-align:center 这个只对行内元素有效，所以我们要使用 text-align:center 就必须将子元素设置为 display: inline; 或者 display: inline-block;；
 
- first-line、:first-letter、:before、:after 伪元素
- ::after生成的内容也比::before生成的内容靠后。  伪类
+ 伪元素-----first-line、:first-letter、:before、:after 
+ 伪类-------::after生成的内容也比::before生成的内容靠后。
 
 
 有无继承性的属性：：：：：：：：：：：：：：：
@@ -58,50 +57,62 @@ input, textarea, img, video, object {
 
 水平垂直居中：：：：：：：：
 1: position:reletive 对应的子元素要设置 position:absolute，然后使用 top:50%;left:50%
-2: line-height  text-aglin：center
-3: flex +margin：auto
-4: 负margin 和 transform and  magin:0 auto
+2: width:100% height:100% line-height  text-aglin：center
+3: display:flex +margin：auto
+4: 父：position: relative height: 600px;
+   子：position: absolute----top: 0----left: 0-----right: 0------bottom: 0-----margin: auto-----width: 300px----height: 300px;
 5:文档fixed+ :after {
   content: "";
   display: inline-block;
   height: 100%;
   vertical-align: middle;
 }
-6:display: grid; place-content: center;
-7: display: table/table-cell + vertical-align: middle 不限定宽高
+6: height有一个高度-----display: grid  place-content: center;
+7: 父：display: table text-align: center 子：display: table/table-cell vertical-align: middle 不限定宽高
 8:伪元素 父级after {
     content:'';
     display: inline-block;
     height: 100%;
     vertical-align: middle;
   }
-9： position: absolute; top: 50%; margin-top: -50px;  /* margin-top值为自身高度的一半 宽度同理*/
+  子级：{
+  width: 500px;
+  height: 500px;
+  background-color: red;
+  display: inline-block;
+  vertical-align: middle;
+  }
+  
+9：  父：position: relative width: 500px height: 500px
+     子：position: absolute  width: 100px height: 100px left: 50%  top: 50%  margin-left: -50px  margin-top: -50px;  /* margin-top值为自身高度的一半 宽度同理*/
+     子：position: absolute  top: 50% left:50%  transform: translate(-50%,-50%); 
 
 
+图片和文字垂直居中 ：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+display: inline-block;
+vertical-align: middle;
 
-GRID布局：：：：：：：：：：：：：：：：：：：：：：：：
 
-两栏布局(一侧固定，一侧自适应)
+GRID(grid)布局 ：：：：：：：：：：：：：：：：：：：：：：：：
+
+1:两栏布局(一侧固定，一侧自适应)
 .container{
   display: grid;
   grid-template-columns: 100px auto; // 或者 100px 1fr
 }
-
-十二网格布局：
+2:十二网格布局：
 .container{
   display: grid;
   grid-template-columns: repeat(12, 1fr);
 }
-
-自适应两端对齐：
-#container{
+3:自适应两端对齐：
+container{
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   grid-auto-rows: minmax(100px, auto);
   gap: 30px;
 }
-
-基于网格线布局：
+4:基于网格线布局：
 .wrapper {
   display: grid;
   grid-gap: 17px;
@@ -125,15 +136,12 @@ GRID布局：：：：：：：：：：：：：：：：：：：：：：：�
 }
 
 
-图片和文字垂直居中：：：：：：：：
-display: inline-block;
-vertical-align: middle;
 
 圣杯布局：：：：：：：：
 float + 左元素margin-left:-100%;+右元素 margin-left:`width`px
-flex + flex：1
+flex + flex：1  
 
-扩展：：：：：：：：
+扩展 ：：：：：：：：：：：：：
 flex:1是： flex-grow, flex-shrink 和 flex-basis的简写
 相当于：
 {
@@ -141,6 +149,9 @@ flex:1是： flex-grow, flex-shrink 和 flex-basis的简写
     flex-shrink: 1;  // flex-shrink 定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小
     flex-basis: 0%;   //flex-basis给上面两个属性分配多余空间之前, 计算项目是否有多余空间, 默认值为 auto, 即项目本身的大小
 }
+
+
+footer底部自适应：https://www.cnblogs.com/xiaonian8/p/15143779.html
 
 
 BFC 规范（块级格式化上下文：blockformattingcontext）：：：：：：：：
@@ -157,7 +168,7 @@ IFC（Inline formatting contexts）：内联格式上下文
 
 FFC（Flex formatting contexts）:自适应格式上下文
 
-使用transform描绘1px边框:::::
+使用transform描绘1px边框：：：：：：：：：：：：：：：：：：：：
 &.normal {
     border: 1px solid #f66;
   }
@@ -175,9 +186,21 @@ FFC（Flex formatting contexts）:自适应格式上下文
       transform-origin: left top;
     }
 
-
-使用max-height切换自动高度
-
+使用max-height切换自动高度：
+      .tab-content {
+        max-height: 0;
+        overflow: hidden;
+      }
+      .tab h2:hover ~ .tab-content {
+        max-height: 500px;
+      }
+          <div class="tab-content">
+            <p>
+              隐藏的文字<br />
+              隐藏的文字<br />
+              隐藏的文字<br />
+            </p>
+          </div>
 
 
 设备像素指的是物理像素，一般手机的分辨率指的就是设备像素，一个设备的设备像素是不可变的。
@@ -356,7 +379,7 @@ CSS书写顺序::
 }
 
 
-
+css浏览器兼容性：：：：：：：：：：：：：：：：
 -moz代表firefox浏览器私有属性
 -ms代表IE浏览器私有属性
 -webkit代表chrome、safari私有属性
@@ -383,6 +406,10 @@ css 性能优化：：：：
 有选择地使用选择器（CSS选择器的匹配是从右向左进行的）
 
 
+css 响应式开发
+https://juejin.cn/post/6844903814332432397
+https://juejin.cn/post/6844903479681499150
+
 
 // 3.2 css rem em vh vw 是什么 自适应怎么写
 https://blog.csdn.net/geekmubai/article/details/81152774
@@ -402,3 +429,61 @@ https://blog.csdn.net/geekmubai/article/details/81152774
 img {
     filter: invert(1) hue-rotate(180deg);
   }
+
+
+
+
+table布局：：：：：：
+border-collapse:collapse;/* 让边框合并，不让出现双边框*/
+
+<table border="1" cellspacing="0">
+        <thead>
+          <tr class="table-head">
+            <th>品牌承诺函</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>百胜</td>
+          </tr>
+        </tbody>
+        <tfoot></tfoot>
+      </table>
+
+
+手风琴：
+ <div class="tab-content">
+            <p>
+              隐藏的文字<br />
+              隐藏的文字<br />
+              隐藏的文字<br />
+            </p>
+          </div>
+
+  .tab-content {
+        max-height: 0;
+        overflow: hidden;
+      }
+
+      .tab h2:hover ~ .tab-content {
+        max-height: 500px;
+      }
+
+
+css 固定footer
+.container {
+  /* footer+header 70 +125  如果header占布局就只减header高度125 */
+  min-height: calc(100% - 71px);
+  box-sizing: border-box;
+  padding-bottom: 71px;
+
+  background: #f5f5f5;
+}
+.tool_pager_foot {
+  height: 125px;
+  margin-top: -125px;
+  background: #f5f5f5;
+  text-align: center;
+  font-size: 16px;
+  color: #333333;
+}
