@@ -386,6 +386,8 @@ css浏览器兼容性：：：：：：：：：：：：：：：：
 -o代表opera私有属性
 
 
+z-index 点击穿透：pointer-events: none;
+
 eg:
  -webkit-transform:rotate(-3deg); /*为Chrome/Safari*/ 
  -moz-transform:rotate(-3deg); /*为Firefox*/ 

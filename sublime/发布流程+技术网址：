@@ -14,12 +14,8 @@
   // 13:undendfind null  ''  合理使用
   // 14:定义组件命名需要大写
   // 15:考虑接口的复用
-
   // 1: 可以复用 第三方的库------直接搬源码
   // 2: 可以使用 ahooks 自己搬源码-直接封装方法
-
-
-  开发UI：https://modao.cc/
 
 支付宝的坑：
 H5 页面相关
@@ -34,30 +30,66 @@ H5 页面相关
 • 没有配置 H5 域名白名单，请参照 配置 H5 域名 完成配置，如遇白名单添加后仍然显示页面受限问题，请参见 web-view 调试报错页面访问受限处理方法。
 • 支付宝 App 版本过低导致，升级至最新版本即可。
 
+
 window安装node：：：：：：：：：：：：：：：：：：：
 nvm 下载官方安装包
-
 安装版本  在nvm文件夹中先创建版本文件夹 v11.15.0
 nvm install 11.15.0 (安装node版本)
 nvm ls
 使用 nvm use 11.15.0
 
-发布流程：
 
+设备的根字体大小 * 全屏比例值 =  设备的宽度
+
+设计稿的根字体大小 * 全屏比例值 = 设计稿的宽度
+
+这两个等式中的全屏比例值相等的条件下，在真实设备上可以高保真地还原设计稿。
+
+
+1英寸 = 2.54 厘米
+
+屏幕分辨率：一个屏幕具体由多少个像素点组成
+
+设备像素比(DPR) = 设备像素个数 / 理想视口CSS像素个数(device-width) ，则：
+
+CSS像素 = 设计稿像素/dpr。
+
+
+
+假设元素宽度300px
+X=(300px(设计稿元素大小)/750px(设计稿宽度))*10rem
+
+图片分辨率其实是指图片含有的像素数
+
+2.容易跟dpr(设备像素比)混淆在一起，牵强地解释根字体的计算，有碍对根字体计算的理解。dpr是逻辑像素和真实物理设备像素之间的对应关系，dpr引发的问题是在css中明明写的边距宽度是1px, 在设备上看起来比较粗，好像有2~3px那么宽。可通过脚本设置dpr或者transform: scale+伪元素的方式修正。
+
+
+
+
+
+
+在线ps ：https://zhuanlan.zhihu.com/p/120390258
+
+在线postman：https://identity.getpostman.com/login?addAccount=1&email=1424800753%40qq.com
+
+在线接口文档地址：https://www.apifox.cn/web?c=195.51161095197057
+
+在线开发UI网址：https://modao.cc/
+
+
+
+
+
+
+公司发布流程：
 第一步： 切换正确分支
+修改代码：提交代码到分支
 
-修改代码：
-
-提交代码到分支
-
-合并到beta
-
-先改beta  提交  然后 去gitlab 点击发布   然后地址验证
+合并到beta 先改beta  提交  然后 yarn  deploy   然后地址验证
 
 beta 然后merge到 preview 然后  去gitlab 点击发布   然后地址验证
 
 beta merge 到 master 然后去gitlab 然后手动发布   然后去online地址验证
-
 
 yun-pos项目  
 
@@ -70,21 +102,25 @@ online  需要将代码提交到 master分支  然后去gitlab 然后手动发�
 
 
 
-
 charles key
 
 什么是ssl 什么是证书    开启SSL代理，并添加信任地址  手机下载证书
 
 连接手机 https://juejin.cn/post/6844903733478817800
 
-
 charles的Map Remote（请求重定向）功能，说白了就是你本来要请求A接口拿数据，重定向后，你实际请求的是B接口，拿到的是B接口返回的数据。
-
 
 charles的Map Local（请求重定向到本地文件）功能，说白了就是你本来要请求A接口拿数据，重定向本地文件后，你实际请求的是A接口，拿到的是本地文件返回的数据。
 
-
 微信调试：  第一步需要beta版本的调试
+
+
+手机网络 configure proxy 关闭
+
+
+configure proxy   server：10.211.242.183   port 8888
+
+
 
 
 第一步：： 先获取guid  获取不到guid 就去登录
@@ -190,11 +226,8 @@ PLATFORM_BRIDGE.jumpLogin({ url: window.location.href });
 
 小程序端 授权登录：（不可以重定向）
 
-运行小程序代码  添加编译模式   
-
+运行小程序代码  添加编译模式！！！！！！！   
 f=http%3A%2F%2F10.211.242.183%3A3000%2F%3FROUTE_ENTRY%3Dannual%26ROUTE_PATHNAME%3Dyouxian%26activityId%3D719%26storeCode%3D1002&aid=yx&sid=1001
-
-	
 
 <Button
 					color="#e80313"
@@ -244,9 +277,9 @@ f=http%3A%2F%2F10.211.242.183%3A3000%2F%3FROUTE_ENTRY%3Dannual%26ROUTE_PATHNAME%
 
 
 
-分享 app端:::::::::
+分享 app端:::::::::::::::::::::::::::::::::::::::::::
 
-分享个人
+分享个人:::::::::::::::::
 NATIVE_BRIDGE.setNavWechatShare(shareInfo);
 
 	/**
@@ -260,14 +293,13 @@ NATIVE_BRIDGE.setNavWechatShare(shareInfo);
 	}
 
 
-分享朋友圈：
+分享朋友圈::::::::::
 NATIVE_BRIDGE.wechatShare({
 						...shareInfo,
 						shareTarget: 'frineds',
 					});
 
 小程序端 分享：：：：
-
 PLATFORM_BRIDGE.postMessage({
 						title: '翻牌集卡有机会赢1111元喔，一起来玩吧~',
 						src: appendQuery('pages/www/cms', {
@@ -289,6 +321,28 @@ PLATFORM_BRIDGE.postMessage({
 		}
 	}
 
+
+		if (type === 'wx') {
+			const params = parseSearchParams(window.location.search);
+			NATIVE_BRIDGE.wechatShare({
+				shareTarget: 'frineds',
+				shareTitle: '《🐟大润发杀鱼师傅工作证》.JPG',
+				shareContent: '点击参与领取大润发杀鱼师傅同款心冷工作证',
+				shareContentUrl: appendQuery(window.location.href.split('?')[0], {
+					...params,
+					guid: encrypt(guid),
+					sid: storeCode,
+					isShareCardPage: 1,
+				}),
+				shareImageUrl:
+					'https://img17.fn-mart.com/pic/a9901349fdfc24e5c893/Bn82TTs2FTflBdUdln/5xmRoa0RPG3ijx/CtCLmGKphiSAdOlxAAEJslA1tqk161.png',
+			});
+		}
+
+		if (type === 'pyq') {
+			NATIVE_BRIDGE.wechatShareImage({ shareImageData: cardPreviewImgSrc, shareTarget: 'moments' });
+		}
+
 桥接:::::::
 
 获取cookies
@@ -298,67 +352,6 @@ const cookies = await NATIVE_BRIDGE.getNativeCookies();
 
 
 分享微信朋友圈和微信朋友
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{
-  "data": function({
-    _req,
-    Mock
-  }) {
-    if (!_req.body.phone) {
-      return [{
-        "code": 1,
-        "msg": "error"
-      }]
-    }
-      return [
-        //   {
-        //   "id": 1,
-        //   "product_id": "A001",
-        //   "poster_url": "https://i1.mifile.cn/a1/pms_1550642182.7527088!220x220.jpg",
-        //   "description": "骁龙855，索尼4800万超广角微距三摄",
-        //   "title": "小米9 6GB+128GB",
-        //   "price": 2999
-        // }, {
-        //   "id": 2,
-        //   "product_id": "A002",
-        //   "poster_url": "https://i1.mifile.cn/a1/pms_1545457719.47232999!220x220.png",
-        //   "description": "5.84\"小水滴全面屏，后置1200万 AI 双摄",
-        //   "title": "小米Play 4GB+64GB",
-        //   "price": 1099
-        // }, {
-        //   "id": 3,
-        //   "product_id": "A003",
-        //   "poster_url": "https://i1.mifile.cn/a1/pms_1537324004.08544830!220x220.jpg",
-        //   "description": "潮流镜面渐变色，2400万自拍旗舰",
-        //   "title": "小米8青春版6GB+64GB",
-        //   "price": 1499
-        // }
-        {
-          "code": "200",
-          "msg": "验证码已通过短信发送至您的手机，请注意查收",
-          "ok": true
-
-        }
-      ]
-   
-  }
-}
-
 
 
 
@@ -377,48 +370,3 @@ lineColor	设置条形码及其文本的颜色	#000000	String
 margin	设置条形码和条形码文本组合体的外边距	10	Number	设置的并不是整个条形码容器的外边距，反而可以理解成是整个条形码的内边距，也可以单独设置某一个边距，marginTop、marginRight、marginBottom、marginLeft
 valid	执行生成条形码过程后的回调函数	function (valid){}	Function	接收一个参数valid，表示条形码生成是否成功，一般是指是否受支持的条形码文本，如果是因为传入不支持的条形码类型会直接报错
 
-
-
-
-设备的根字体大小 * 全屏比例值 =  设备的宽度
-
-设计稿的根字体大小 * 全屏比例值 = 设计稿的宽度
-
-这两个等式中的全屏比例值相等的条件下，在真实设备上可以高保真地还原设计稿。
-
-
-
-1英寸 = 2.54 厘米
-
-屏幕分辨率
-屏幕分辨率指一个屏幕具体由多少个像素点组成
-
-
-
-设备像素比(DPR) = 设备像素个数 / 理想视口CSS像素个数(device-width) ，则：
-
-750/
-
-CSS像素 = 设计稿像素/dpr。
-
-
-
-假设元素宽度300px
-X=(300px(设计稿元素大小)/750px(设计稿宽度))*10rem
-
-图片分辨率其实是指图片含有的像素数
-
-2.容易跟dpr(设备像素比)混淆在一起，牵强地解释根字体的计算，有碍对根字体计算的理解。dpr是逻辑像素和真实物理设备像素之间的对应关系，dpr引发的问题是在css中明明写的边距宽度是1px, 在设备上看起来比较粗，好像有2~3px那么宽。可通过脚本设置dpr或者transform: scale+伪元素的方式修正。
-
-
-
-
-
-
-
-
-
-
-在线ps ：https://zhuanlan.zhihu.com/p/120390258
-
-在线postman：https://identity.getpostman.com/login?addAccount=1&email=1424800753%40qq.com

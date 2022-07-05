@@ -1,0 +1,34 @@
+1: react 引入大图片
+
+	style={{
+						backgroundImage: `url(${wheel_bg})`,
+					}}
+
+2:判断环境;;;;;;;;
+
+export const IS_DEV_MODE: boolean = __PROJECT__.IS_DEV;
+
+export const PROJECT_ENV: ProjectEnv = __PROJECT__.ENV || ProjectEnv.Online;
+
+  <% if(process.env.NODE_ENV === 'development') { %>
+     <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <script>
+  const vConsole = new VConsole();
+  </script>
+    <% } 
+    %>
+
+3:数据加密：
+const secretKey = 'guidKey';
+// 加密字符串
+const encrypt = (txt: string) => {
+	return CryptoJS.AES.encrypt(txt, secretKey).toString();
+};
+// 解密字符串
+const decrypt = (txt: string) => {
+	return CryptoJS.AES.decrypt(txt, secretKey).toString(CryptoJS.enc.Utf8);
+};
+
+
+4: 图片加载失败 可优化的地方
+	<img src={activityInfo.userIcon} onError={(e) => (e.target.src = defaultUserHeadImg)}></img>

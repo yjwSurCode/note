@@ -131,6 +131,15 @@ https: //blog.csdn.net/u013068502/article/details/85399806?utm_term=%E5%8F%AA%E6
 
 
 
+冲突解决：：：：：：：：：：：：：：：
+
+accept current change 保留现在本地最新的
+
+accept incoming change  选择git最新的
+
+
+
+
 
 // feat： 新增 feature
 // fix: 修复 bug
@@ -162,8 +171,8 @@ https: //blog.csdn.net/u013068502/article/details/85399806?utm_term=%E5%8F%AA%E6
 
 // git push - u origin dev
 // 想将 dev 分支合并到 master 分支，操作如下：
-// 1、首先切换到master分支上
-// git checkout master
+// 1、首先切换到master分支上   
+// git checkout master （可以查看一下 git branch）
 // 2、如果是多人开发的话 需要把远程master上的代码pull下来
 // git pull origin master
 //如果是自己一个开发就没有必要了，为了保险期间还是 pull
@@ -218,3 +227,11 @@ example:
     https://www.zhihu.com/search?type=content&q=git%20%E5%8E%9F%E7%90%86
     https://zhuanlan.zhihu.com/p/66506485 */
 }
+
+
+
+SVN
+SVN
+SVN：：：：：：：：：：：：：：：：：：：：：：：：：：
+
+svn checkout http://wh-svn.fn.com/feiniu-website/code/ui/branch/project/rt-supplier-openapi

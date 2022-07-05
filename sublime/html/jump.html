@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>正在跳转.......</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- <meta http-equiv="refresh" content="0; url=http://cms-yx.beta1.fn/act/htm/fresh-cms-v2/card-game-youxian.html?storeCode=1001&activityId=714" /> -->
+    <!-- <meta http-equiv="refresh" content="0; url=http://10.211.242.183:3000/?ROUTE_ENTRY=card-game&ROUTE_PATHNAME=youxian&activityId=719&storeCode=1001" /> -->
+    <!-- <meta http-equiv="refresh" content="0; url=http://10.211.242.183:3000/?ROUTE_ENTRY=annual&ROUTE_PATHNAME=youxian&activityId=719&storeCode=1002" /> -->
+    <!-- <meta http-equiv="refresh" content="0; url=http://10.211.242.183:3000/?ROUTE_ENTRY=yun-pos&ROUTE_PATHNAME=activity" /> -->
+    <!-- <meta http-equiv="refresh" content="0; url=http://cms-yx.beta1.fn/act/htm/fresh-cms-v2/annual-2021.html" /> -->
+
+    <meta
+      http-equiv="refresh"
+      content="0; url=http://cms-yx.beta1.fn/act/htm/fresh-cms-v2/yun-pos-app-game.html?storeCode=1001"
+    />
+
+    <!-- <meta
+      http-equiv="refresh"
+      content="0; url=http://10.211.242.183:3000/?ROUTE_ENTRY=yun-pos&ROUTE_PATHNAME=game"
+    /> -->
+  </head>
+  <body></body>
+</html>
+
+<!-- 
+
+{/* {item.prizeType === 3 ? (
+																		<span
+																			onClick={() =>
+																				handleViewCode({
+																					name: item.consigneeName,
+																					phone: item.consigneeTelephone,
+																					address: item.consigneeAddress,
+																					prizeRecordId: item.prizeRecordId,
+																				})
+																			}
+																		>
+																			修改地址
+																		</span>
+																	) : item.nrCode ? (
+																		<span
+																			onClick={() =>
+																				handleViewCode({
+																					nrCode: item.nrCode,
+																				})
+																			}
+																		>
+																			查看券码
+																		</span>
+																	) : (
+																		<span>确认</span>
+																	)} */} -->
+
+<!-- 
+
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import { createBEM } from '../../utils/class-utils';
+import logUtils from '../../utils/log-utils';
+import { PLATFORM_BRIDGE } from '../../utils/platform-utils';
+import { RunningEnv, FreshChannel } from '../../core/constants';
+import { NATIVE_BRIDGE } from '../../utils/native-utils';
+import { createFC } from '../../utils/react-utils';
+import { AppLocation } from '../../utils/route-utils';
+import { useAsyncFn } from '../../hooks/use-advanced';
+import { YunPosGameSvc } from './supports/service';
+import { YunPosRaffle } from './supports/interface';
+import { Loading, Toast, Popup, Icon, Button, Cascader } from 'fnx-ui';
+import { TreeQuery } from '../../utils/tree-utils';
+import { loadImage } from '../../utils/script-utils';
+import WheelGamePage from './components/WheelGame/index';
+import { classnames } from './../../utils/class-utils';
+import Empty from './../../components/Empty/index';
+import closeImg from './assets/images/close.png';
+import patronizeImg from './assets/images/pup_elephant.png';
+import { Res, okRes, errRes } from '@artisan-framework/core';
+import Barcode from './components/BarCode';
+import './YunPosGamePage.less';
+
+const bem = createBEM('yun-pos-game-page');
+
+type StatusType = 'login' | 'game' | 'address';
+
+interface PageState {
+	// /*地区*/
+	areaTree?: YunPosRaffle.AreaTreeNode[];
+	/*GUID*/
+	guid: string;
+	/*门店号*/
+	storeCode: string;
+	/*卷活动id*/
+	activityId?: string;
+	/*会员卡号*/
+	cardId?: string;
+	/*抽奖活动信息数据*/
+	activityData: YunPosRaffle.QueryActInfoData;
+	/*活动唯一id*/
+	actId: string;
+}
+
+/*抽奖活动信息数据*/
+// activityData: YunPosRaffle.QueryActInfoData;
+/*活动唯一id*/
+// actId: string;
+
+interface FormDataState {
+	prizeRecordId?: number;
+	name: string;
+	phone: string;
+	address: string;
+}
+
+const YunPosGamePage = createFC<{ location: AppLocation }>('YunPosGamePage', (props) => {
+	const [pageStatus, setPageStatus] = useState<StatusType>('game');
+	const [loginData, setLoginData] = useState<YunPosRaffle.LoginInfoData>();
+	const [pageData, setPageData] = useState<PageState>();
+	const [activityData, setActivityData] = useState<PageState>();
+	const [drawTimes, setTimes] = useState<number>(0);
+	const [nrCodeData, setNrCodeData] = useState<YunPosRaffle.QueryNrCodeData>();
+	const [volumeCodeData, setVolumeCodeData] = useState<YunPosRaffle.ViewCodeInfoData>();
+	const [selectKey, setSelectKey] = useState<number | null>(null);
+	const [captchaCountDown, setCaptchaCountDown] = useState<number>();
+	const selectPrizes = useRef<YunPosRaffle.WinningTripleData | null>();
+	const selectCode = useRef<string | undefined>();
+	const [currentStore, setCurrentStore] = useState<YunPosRaffle.Area>();
+	const [storeCascader, setStoreCascader] = useState<boolean>(false);
+	const [formData, setFormData] = useState<FormDataState>(() => ({
+		name: '',
+		phone: '',
+		address: '',
+	}));
+	const [thanksPopupData, setThanksPopupData] = useState<boolean>();
+	const [rulePopupData, setRulePopupData] = useState<{
+		visible?: boolean;
+		title?: string;
+	}>();
+	const [prizePopupData, setPrizePopupData] = useState<{
+		title?: string;
+		content?: YunPosRaffle.CheckPrizeInfoData[];
+		visible?: boolean;
+	}>();
+	const [awardPopupData, setAwardPopupData] = useState<{
+		title?: string;
+		visible?: boolean;
+	}>();
+	const [codePopupData, setCodePopupData] = useState<{
+		title?: string;
+		visible?: boolean;
+	}>();
+
+	const [{ loading: pageLoading, error: pageDataError }, { run: loadPageData }] = useAsyncFn(
+		async (loc: AppLocation): Promise<Res<PageState, 'no-login'>> => {
+			const { storeCode: queryStoreCode, owx: owx } = loc.params;
+			const { area_code } = JSON.parse(decodeURIComponent(owx || '{}'));
+			const env = await PLATFORM_BRIDGE.getRunningEnv();
+			let storeCode: string = queryStoreCode || area_code || undefined;
+			let guid: string | undefined;
+
+			guid = loc.params.guid;
+
+			if (env === RunningEnv.Android || env === RunningEnv.Ios) {
+				const cookies = await NATIVE_BRIDGE.getNativeCookies();
+				guid = cookies.yx_guid;
+			}
+
+			if (!guid) {
+				return errRes('no-login');
+			}
+
+			if (currentStore?.no) {
+				storeCode = currentStore?.no;
+			}
+
+			// /*活动信息接口数据*/
+			const activityData = await YunPosGameSvc.queryActInfo({ storeCode: currentStore?.no }); // quant.actId;
+
+			if (!activityData) {
+				throw new Error('后台接口返回错误');
+			}
+
+			return okRes({
+				guid,
+				storeCode,
+				activityData,
+				actId: activityData.actId,
+			});
+		},
+		{
+			onSuccess: async (res) => {
+				if (res.isError) {
+					if (res.error === 'no-login') {
+						setPageStatus('login');
+						PLATFORM_BRIDGE.jumpLogin({ url: window.location.href });
+					}
+
+					return;
+				}
+
+				console.log('b-111111111111', res.value);
+
+				setPageData(res.value);
+
+				if (res.value.storeCode) {
+					handleGetTimes(res.value.storeCode, res.value.guid, res.value.actId);
+				}
+			},
+			onError: (err) => {
+				if ('Failed to fetch' === err.message) {
+					Toast.fail(`网络开小差拉，可以刷新一下，重新进入哦～～`);
+					return;
+				}
+				alert(err.message);
+			},
+		},
+	);
+
+	console.log('a-pageData-------', pageData);
+
+	const [{ data: activity, loading: progressLoading }, { run: loadActivityData }] = useAsyncFn(
+		async (loc: AppLocation): Promise<Res<{ areaTree: YunPosRaffle.AreaTreeNode[] }, 'no-login'>> => {
+			const { storeCode: queryStoreCode, owx: owx } = loc.params;
+			const { area_code } = JSON.parse(decodeURIComponent(owx || '{}'));
+			const env = await PLATFORM_BRIDGE.getRunningEnv();
+			let storeCode: string = queryStoreCode || area_code || undefined;
+			let guid: string | undefined;
+
+			// if (![RunningEnv.Android, RunningEnv.Ios, RunningEnv.AliApp, RunningEnv.WeApp].includes(env)) {
+			// 	throw new Error('该活动仅支持在大润发优鲜app及大润发优鲜小程序参与哦~');
+			// }
+
+			guid = loc.params.guid;
+
+			if (env === RunningEnv.Android || env === RunningEnv.Ios) {
+				const cookies = await NATIVE_BRIDGE.getNativeCookies();
+				guid = cookies.yx_guid;
+				if (cookies.yx_storecode && !storeCode) {
+					storeCode = cookies.yx_storecode;
+				}
+			}
+
+			if (!guid) {
+				return errRes('no-login');
+			}
+
+			const areaTree = await YunPosGameSvc.getAreaTree();
+
+			if (!storeCode) {
+				setStoreCascader(true);
+			} else {
+				const node = new TreeQuery(areaTree).findNodeByDepth(({ attrs }) => attrs.no === storeCode);
+				setCurrentStore(node?.attrs);
+			}
+
+			return okRes({ areaTree });
+		},
+		{
+			onSuccess: async (res) => {
+				console.log(res, 'b-22222222222222');
+
+				if (res.isError) {
+					if (res.error === 'no-login') {
+						setPageStatus('login');
+						PLATFORM_BRIDGE.jumpLogin({ url: window.location.href });
+					}
+
+					return;
+				}
+
+				setPageData({ ...pageData, ...res.value.areaTree });
+			},
+			onError: (err) => {
+				console.log(err, 'b-444444444444');
+			},
+		},
+	);
+
+	console.log('a-activity-------', activity);
+
+	const [{ loading: captchaLoading }, { run: _handleCaptcha }] = useAsyncFn(
+		async (): Promise<Res<string, [number, string]>> => {
+			return await YunPosGameSvc.sendLoginCaptcha({
+				phone: formData.phone,
+			});
+		},
+		{
+			onSuccess: (res) => {
+				if (res.isError) {
+					const [, msg] = res.error;
+					Toast.fail({ message: msg });
+					return;
+				}
+
+				setCaptchaCountDown(60);
+				Toast.show({ message: '验证码已通过短信发送至您的手机，请注意查收' });
+			},
+			onError: (err) => {
+				Toast.fail(`无法连接到服务器:${(err && err.message) || err}`);
+			},
+		},
+	);
+
+	const [, { run: _handleSubmit }] = useAsyncFn(
+		async (params: {
+			storeCode: string;
+			phone: string;
+			validCode: string;
+			nrCode: string;
+		}): Promise<Res<YunPosRaffle.LoginInfoData, [number, string]>> => {
+			const toast = Toast.loading({ duration: 0 });
+
+			try {
+				return await YunPosGameSvc.login(params);
+			} finally {
+				toast.clear();
+			}
+		},
+		{
+			onSuccess: (res) => {
+				if (res.isError) {
+					const [, msg] = res.error;
+					Toast.fail({ message: msg });
+					return;
+				}
+
+				/*保存登录返回信息*/
+				setLoginData(res.value);
+				setPageStatus('game');
+
+				if (pageData?.cardId != '-1') {
+					handleNrCode();
+				} else {
+					// setNrCodeData({ nrCode: [{ couponNumber: formData.nrCode, orderCode: '' }], drawTimes: 1 });
+				}
+			},
+			onError: (err) => {
+				Toast.fail(`无法连接到服务器:${(err && err.message) || err}`);
+			},
+		},
+	);
+
+	const [, { run: handleNrCode }] = useAsyncFn(
+		async (): Promise<Res<{ nrCodeData: YunPosRaffle.QueryNrCodeData }, 'need-nrCode'>> => {
+			if (!pageData?.activityId || !pageData?.cardId) {
+				throw new Error('URL parse failed');
+			}
+
+			/*获取nRCode接口数据*/
+			const nrCodeData = await YunPosGameSvc.queryNrCode({
+				couponId: pageData?.activityId,
+				cardId: pageData?.cardId,
+			});
+
+			if (!nrCodeData.nrCode) {
+				return errRes('need-nrCode');
+			}
+
+			return okRes({ nrCodeData });
+		},
+		{
+			onSuccess: (res) => {
+				if (res.isError) {
+					Toast.fail({ message: '后台接口返回错误2' });
+					return;
+				}
+
+				// setNrCodeData(res.value.nrCodeData);
+			},
+			onError: (err) => {
+				Toast.fail(`无法连接到服务器:${(err && err.message) || err}`);
+			},
+			cacheData: true,
+		},
+	);
+
+	const [, { run: _handleLuckDraw }] = useAsyncFn(
+		async (): Promise<Res<YunPosRaffle.WinningTripleData, [number, string]>> => {
+			const toast = Toast.loading({ duration: 0 });
+
+			if (!pageData?.activityData.actId || currentStore == undefined) {
+				throw new Error('后台接口返回错误');
+			}
+
+			try {
+				/*调用抽奖接口*/
+				return await YunPosGameSvc.winningTriple({
+					actId: pageData?.activityData.actId, //pageData?.actId,
+					storeCode: currentStore.no, // nrCodeData.nrCode[0].couponNumber,
+					guid: pageData.guid, //loginData?.guid,
+				});
+			} finally {
+				toast.clear();
+			}
+		},
+		{
+			onSuccess: (res) => {
+				if (res.isError) {
+					const [code, msg] = res.error;
+					Toast.fail({ message: msg });
+					console.log(res, 'a-666666666666666666666');
+					// if (Number(code) === 1005) {
+					// 	Toast.fail({ message: '该二维码已使用，暂无抽奖资格' });
+					// 	if (pageData?.cardId != '-1') {
+					// 		handleNrCode();
+					// 	} else {
+					// 		setNrCodeData({ nrCode: [], drawTimes: 0 });
+					// 	}
+					// 	return;
+					// }
+					// Toast.fail({ message: msg });
+					// if (pageData?.cardId != '-1') {
+					// 	handleNrCode();
+					// } else {
+					// 	setNrCodeData({ nrCode: [], drawTimes: 0 });
+					// }
+
+					return;
+				}
+
+				const _index = pageData?.activityData.prizeVoList.findIndex((item: YunPosRaffle.PrizeVoListData) => {
+					return item.id === res.value.prizeId;
+				});
+
+				if (
+					_index == null ||
+					(_index < 0 && res.value.prizeType !== 1) ||
+					(_index > 0 && res.value.prizeType === 1)
+				) {
+					Toast.fail({ message: '后台接口返回错误3' });
+					return;
+				}
+
+				setSelectKey(_index + 1);
+				selectPrizes.current = res.value;
+
+				res.value;
+
+				if (!pageData || selectCode.current) return;
+				handleGetTimes(pageData.storeCode, pageData.guid, pageData.actId);
+				//存卷码
+				selectCode.current = res.value.nrCode;
+
+				// if (pageData?.cardId != '-1') {
+				// 	handleNrCode();
+				// } else {
+				// 	setNrCodeData({ nrCode: [], drawTimes: 0 });
+				// }
+			},
+			onError: (err) => {
+				Toast.fail(`无法连接到服务器:${(err && err.message) || err}`);
+			},
+		},
+	);
+
+	const [, { run: handleCheckPrize }] = useAsyncFn(
+		async (): Promise<Res<Array<YunPosRaffle.CheckPrizeInfoData>, [number, string]>> => {
+			const toast = Toast.loading({ duration: 0 });
+
+			if (!pageData?.actId || !pageData?.guid) {
+				throw new Error('后台接口返回错误');
+			}
+
+			try {
+				/*调用奖品信息查询接口(查看我的奖品)*/
+				return await YunPosGameSvc.checkPrizeInfo({
+					actId: pageData.actId,
+					storeCode: currentStore?.no,
+					guid: pageData.guid,
+				});
+			} finally {
+				toast.clear();
+			}
+		},
+		{
+			onSuccess: (res) => {
+				if (res.isError) {
+					const [, msg] = res.error;
+					Toast.fail({ message: msg });
+					return;
+				}
+
+				console.log('我的奖品我的奖品我的奖品我的奖品', res.value);
+
+				setPrizePopupData({ visible: true, title: '我的奖品', content: res.value });
+			},
+			onError: (err) => {
+				Toast.fail(`无法连接到服务器:${(err && err.message) || err}`);
+			},
+		},
+	);
+
+	const [, { run: handleViewCode }] = useAsyncFn(
+		async (params: {
+			nrCode?: string;
+			name?: string;
+			phone?: string;
+			address?: string;
+			prizeRecordId?: string;
+		}): Promise<Res<YunPosRaffle.ViewCodeInfoData | { type: 'material' }, [number, string]>> => {
+			console.log('a-444444444444444444', params, !params.nrCode, selectPrizes.current?.prizeType);
+			/*跳转地址填写页面 */
+			// if (params.type === 1 || selectPrizes.current?.prizeType === 3) {
+			// 	return okRes({ type: 'material', result: params });
+			// }
+
+			if (params.prizeRecordId) {
+				return okRes({ type: 'material', result: params });
+			}
+
+			if (selectPrizes.current?.prizeType == 3) {
+				return okRes({ type: 'material', result: params });
+			}
+
+			const toast = Toast.loading({ duration: 0 });
+
+			try {
+				/*查看一维码*/
+				return await YunPosGameSvc.viewCodeInfo({
+					nrCode: params.nrCode,
+				});
+			} finally {
+				toast.clear();
+			}
+		},
+		{
+			onSuccess: (res) => {
+				if (res.isError) {
+					const [, msg] = res.error;
+					Toast.fail({ message: msg });
+					return;
+				}
+				console.log('a-5555555555555555555555555', res.value);
+
+				/*填写地址*/
+				if ((res.value as any).type == 'material') {
+					setFormData({ ...formData, ...(res.value as any).result });
+					setPrizePopupData({ ...prizePopupData, visible: false });
+					setAwardPopupData({ ...awardPopupData, visible: false });
+					setPageStatus('address');
+					return;
+				}
+
+				//TODO 类型做兼容
+				setVolumeCodeData(res.value as YunPosRaffle.ViewCodeInfoData);
+				setCodePopupData({ ...codePopupData, visible: true });
+				setAwardPopupData({ ...awardPopupData, visible: false });
+			},
+			onError: (err) => {
+				Toast.fail(`无法连接到服务器:${(err && err.message) || err}`);
+			},
+		},
+	);
+
+	const [, { run: handleSaveInfo }] = useAsyncFn(
+		async (params: {
+			prizeRecordId: number;
+			name: string;
+			phone: string;
+			address: string;
+		}): Promise<Res<string, [number, string]>> => {
+			const toast = Toast.loading({ duration: 0 });
+
+			try {
+				/*中奖信息人保存接口+核销接口*/
+				return await YunPosGameSvc.saveInformation({
+					prizeRecordId: params.prizeRecordId,
+					name: params.name,
+					phone: params.phone,
+					address: params.address,
+				});
+			} finally {
+				toast.clear();
+			}
+		},
+		{
+			onSuccess: (res) => {
+				if (res.isError) {
+					const [, msg] = res.error;
+					Toast.fail({ message: msg });
+					return;
+				}
+
+				// setClickable(false);
+				Toast.success({ message: res.value });
+				setTimeout(() => {
+					selectPrizes.current = null;
+					setPageStatus('game');
+				}, 500);
+			},
+			onError: (err) => {
+				Toast.fail(`无法连接到服务器:${(err && err.message) || err}`);
+			},
+		},
+	);
+
+	const handleLuckDraw = () => {
+		if (drawTimes < 1) {
+			Toast.fail({ message: '很抱歉，您的抽奖次数已用光' });
+			return;
+		}
+
+		if (selectKey != null) return;
+
+		_handleLuckDraw();
+	};
+
+	const handleViewPrize = () => {
+		setSelectKey(null);
+
+		if (selectPrizes.current?.prizeType === 1) {
+			setThanksPopupData(true);
+		} else {
+			setAwardPopupData({ visible: true, title: '恭喜您' });
+		}
+	};
+
+	const handleSubmit = () => {
+		if (!formData.name || !formData.phone || !formData.address) {
+			Toast.fail('请填写完整');
+			return;
+		}
+		console.log(formData, '55555555fformData');
+
+		if (formData.prizeRecordId) {
+			handleSaveInfo({ prizeRecordId: formData.prizeRecordId, ...formData });
+		} else if (selectPrizes.current?.prizeRecordId) {
+			handleSaveInfo({ prizeRecordId: selectPrizes.current?.prizeRecordId, ...formData });
+		}
+	};
+
+	const handleCaptcha = () => {
+		if (captchaLoading || captchaCountDown != null) {
+			return;
+		}
+
+		_handleCaptcha();
+	};
+
+	const handleGetTimes = async (storeCode: string, guid: string, actId?: string) => {
+		if (guid && storeCode) {
+			/*抽奖次数*/
+			const timeData = await YunPosGameSvc.queryTimes({
+				storeCode: storeCode,
+				actId: actId,
+				guid: guid,
+			});
+
+			console.log(timeData.drawTimes, '666666666666timeData');
+			if (typeof timeData.drawTimes === 'number') {
+				setTimes(timeData.drawTimes);
+				return;
+			}
+			Toast.fail(`获取抽奖次数失败~`);
+		} else {
+			// Toast.fail(`获取抽奖次数失败~`);
+		}
+	};
+
+	const ruleContent = useMemo<string[]>(() => {
+		return pageData?.activityData.ruleContent ? pageData?.activityData.ruleContent.split('\n') : [];
+	}, [pageData?.activityData]);
+
+	const couponsRuleContent = useMemo<string[]>(() => {
+		return volumeCodeData?.rtExchangeRules ? volumeCodeData.rtExchangeRules.split('\n') : [];
+	}, [volumeCodeData?.rtExchangeRules]);
+
+	useEffect(() => {
+		if (captchaCountDown == null) {
+			return;
+		}
+
+		const tid = setTimeout(() => {
+			setCaptchaCountDown(captchaCountDown > 1 ? captchaCountDown - 1 : undefined);
+		}, 1000);
+
+		return () => {
+			clearTimeout(tid);
+		};
+	}, [captchaCountDown]);
+
+	useEffect(() => {
+		console.log('a-111111111111111', currentStore);
+		if (currentStore) {
+			loadPageData(props.location);
+		}
+	}, [currentStore, loadPageData, props.location]);
+
+	useEffect(() => {
+		loadActivityData(props.location);
+	}, [loadActivityData, props.location]);
+
+	useEffect(() => {
+		PLATFORM_BRIDGE.setPageTitle('转盘抽奖');
+	}, []);
+
+	if (pageDataError) {
+		return <Empty description={`${pageDataError.message || pageDataError}`} />;
+	}
+
+	if (pageLoading) {
+		return (
+			<div className={bem('center')}>
+				<Loading className={bem('loading')} size={50} />
+			</div>
+		);
+	}
+
+	const renderLoginView = () => {
+		return (
+			<>
+				<Empty description={'很抱歉，您当前暂未登陆APP/小程序\n请登陆后再来参加活动吧~~'} />
+				<Button
+					block
+					className={bem('login-btn')}
+					onClick={() => PLATFORM_BRIDGE.jumpLogin({ url: window.location.href })}
+				>
+					去登陆
+				</Button>
+			</>
+		);
+	};
+
+	const renderInfo = () => {
+		return (
+			<>
+				<div className={classnames(bem('module'), bem('verify'))}>
+					<div className={bem('field')}>
+						<label className={bem('field-label')}>门店</label>
+						<div className={classnames(bem('field-input'), bem('field-input-store'))}>
+							<input readOnly value={currentStore?.label} />
+						</div>
+					</div>
+
+					<div className={bem('field')}>
+						<label className={bem('field-label')}>姓名</label>
+						<div className={bem('field-input')}>
+							<input
+								maxLength={100}
+								placeholder="请输入您的姓名"
+								defaultValue={formData.name}
+								onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+							/>
+						</div>
+					</div>
+
+					<div className={bem('field')}>
+						<label className={bem('field-label')}>电话</label>
+						<div className={bem('field-input')}>
+							<input
+								maxLength={11}
+								placeholder="请输入您的电话号码"
+								defaultValue={formData.phone}
+								onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
+							/>
+						</div>
+					</div>
+
+					<div className={bem('field')}>
+						<label className={bem('field-label')}>地址</label>
+						<div className={bem('field-input')}>
+							<input
+								maxLength={256}
+								placeholder="请输入您的家庭住址"
+								defaultValue={formData.address}
+								onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
+							/>
+						</div>
+					</div>
+
+					{/* <div
+						className={classnames(bem('submit-btn'), clickable ? null : bem('submit-btn--disabled'))}
+						onClick={handleSubmit}
+						style={{ backgroundColor: pageData?.publicData.btnColor }}
+					>
+						确认提交
+					</div> */}
+					<div className={classnames(bem('submit-btn'))} onClick={handleSubmit}>
+						确认提交
+					</div>
+				</div>
+				{/* <div className={classnames(bem('module'), bem('rule'))}>
+					<div className={bem('rule-title')}>活动规则</div>
+					{pageData?.publicData.ruleType === 1 ? (
+						<div className={bem('rule-content')}>
+							{ruleContent.map((line, idx) => (
+								<p key={idx}>{line}</p>
+							))}
+						</div>
+					) : (
+						<img className={bem('rule-img')} src={pageData?.publicData.ruleImg} alt="" />
+					)}
+				</div> */}
+				<div className={bem('footer')}></div>
+			</>
+		);
+	};
+
+	const renderAwardPopup = () => {
+		return (
+			<Popup visible={awardPopupData && awardPopupData.visible} className={bem('tip-container')}>
+				<div className={bem('award')}>
+					<div className={bem('subtitle')}>{awardPopupData?.title}</div>
+					<div className={bem('main-content')}>
+						{selectPrizes.current?.prizeType === 2 ? (
+							selectPrizes.current?.couponName
+						) : (
+							<>
+								<div className={bem('main-content-title')}>{selectPrizes.current?.prizeName}</div>
+								<img className={bem('main-content-img')} src={selectPrizes.current?.prizeImg} alt="" />
+							</>
+						)}
+					</div>
+					<div className={bem('check-btn')} onClick={() => handleViewCode({})}>
+						查看奖品
+					</div>
+				</div>
+				<div className={bem('close-img')}>
+					<img
+						src={closeImg}
+						onClick={() => {
+							setAwardPopupData({
+								...awardPopupData,
+								visible: false,
+							});
+						}}
+					/>
+				</div>
+			</Popup>
+		);
+	};
+
+	const renderPrizePopup = () => {
+		return (
+			<Popup visible={prizePopupData && prizePopupData.visible} className={bem('tip-container')}>
+				<div className={bem('prize')}>
+					<div className={bem('prize-title')}>{prizePopupData?.title}</div>
+					{prizePopupData && prizePopupData.content?.length === 0 ? (
+						<div className={bem('prize-regret')}>很遗憾，您当前暂无中奖记录，再接再厉哦~</div>
+					) : (
+						<>
+							<div className={bem('prize-content')}>
+								<table className={bem('table')}>
+									<tbody>
+										<tr>
+											<th>奖品名称</th>
+											<th>奖品类型</th>
+											<th>领取手机号</th>
+											<th>领取时间</th>
+										</tr>
+										{prizePopupData?.content?.map(
+											(item: YunPosRaffle.CheckPrizeInfoData, index: number) => {
+												return (
+													<tr key={index}>
+														<td>{item.prizeName}</td>
+														<td>
+															<div>{item.prizeType === 3 ? '第三方实物' : '优惠券'}</div>
+															<div className={bem('code-btn')}>
+																{item.prizeType === 3 ? (
+																	<span
+																		onClick={() =>
+																			handleViewCode({
+																				name: item.consigneeName,
+																				phone: item.consigneeTelephone,
+																				address: item.consigneeAddress,
+																				prizeRecordId: item.prizeRecordId,
+																			})
+																		}
+																	>
+																		修改地址
+																	</span>
+																) : item.nrCode ? (
+																	<span
+																		onClick={() =>
+																			handleViewCode({ nrCode: item.nrCode })
+																		}
+																	>
+																		查看券码
+																	</span>
+																) : (
+																	<span onClick={() => Toast.fail('后台返回错误')}>
+																		undefined
+																	</span>
+																)}
+															</div>
+														</td>
+														<td>{item.telephoneNumber}</td>
+														<td>{item.createTime}</td>
+													</tr>
+												);
+											},
+										)}
+									</tbody>
+								</table>
+							</div>
+							<div className={bem('prize-remark')}>
+								注：可以通过“优鲜小程序/APP-我的/优惠券卡包”查看已领取优惠券。
+							</div>
+						</>
+					)}
+				</div>
+				<div className={bem('close-img')}>
+					<img
+						src={closeImg}
+						onClick={() => {
+							setPrizePopupData({
+								...prizePopupData,
+								visible: false,
+							});
+						}}
+					/>
+				</div>
+			</Popup>
+		);
+	};
+
+	const renderThanksPopup = () => {
+		return (
+			<Popup visible={thanksPopupData} className={bem('tip-container')}>
+				<div className={bem('patronize')}>
+					<img className={bem('patronize-img')} src={patronizeImg} alt="" />
+					<div className={bem('patronize-msg')}>
+						这次活动太过火爆啦！我们准备的奖品已经发放完毕了，但是我们为您准备了精美礼品，请您前往服务台兑换哦~
+					</div>
+				</div>
+				<div className={bem('close-img')}>
+					<img src={closeImg} onClick={() => setThanksPopupData(false)} />
+				</div>
+			</Popup>
+		);
+	};
+
+	const renderRulePopup = () => {
+		return (
+			<Popup visible={rulePopupData && rulePopupData.visible} className={bem('tip-container')}>
+				{pageData && pageData.activityData.ruleType === 1 ? (
+					<div className={bem('rule')}>
+						<div className={bem('rule-title')}>{rulePopupData && rulePopupData.title}</div>
+						<div className={bem('rule-content')}>
+							<div className={bem('rule-content-text')}>
+								{ruleContent.map((line, idx) => (
+									<p key={idx}>{line}</p>
+								))}
+							</div>
+						</div>
+					</div>
+				) : (
+					<img
+						className={bem('rule-content-img')}
+						src={pageData?.activityData && pageData?.activityData.ruleImg}
+					/>
+				)}
+				<div className={bem('close-img')}>
+					<img
+						src={closeImg}
+						onClick={() =>
+							setRulePopupData({
+								...rulePopupData,
+								visible: false,
+							})
+						}
+					/>
+				</div>
+			</Popup>
+		);
+	};
+
+	const renderCodePopup = () => {
+		return (
+			<Popup visible={codePopupData && codePopupData.visible} position="bottom" className={bem('code-container')}>
+				<div className={bem('volume-code')}>
+					<Icon
+						onClick={() =>
+							setCodePopupData({
+								...codePopupData,
+								visible: false,
+							})
+						}
+						className={bem('volume-code-icon')}
+						size="0.8rem"
+						name="close-o"
+					/>
+					<div className={bem('volume-code-title')}>请将此条码出示给收银员扫描</div>
+					<div className={bem('volume-code-sketch')}>{volumeCodeData?.title}</div>
+					<Barcode
+						className={bem('js-barcode')}
+						value={volumeCodeData?.couponNumber}
+						options={{ format: 'code128' }}
+						renderer="image"
+					/>
+					<div className={bem('volume-code-rule')}>
+						<p>兑券规则</p>
+						<div className={bem('volume-code-text')}>
+							{couponsRuleContent.map((line, idx) => (
+								<p key={idx}>{line}</p>
+							))}
+						</div>
+					</div>
+				</div>
+			</Popup>
+		);
+	};
+
+	return (
+		<div
+			className={bem()}
+			style={
+				pageStatus === 'game' || pageStatus === 'address'
+					? {
+							backgroundImage: `url('${pageData?.activityData.bgImg}')`,
+							backgroundColor: `${pageData?.activityData.bgColor}`,
+					  }
+					: { backgroundColor: `#FFFFFF` }
+			}
+		>
+			<div className={bem('store')}>
+				{/* <div className={currentStore?.label ? bem('current-store') : ''}>{currentStore?.label}</div> */}
+				<div className={bem('selected-store')}>
+					<Popup.Select<string[]>
+						round
+						overlayCloseable
+						visible={storeCascader}
+						select={
+							<Cascader<YunPosRaffle.AreaTreeNode>
+								title="选择区域"
+								activeColor="#e60012"
+								data={pageData?.areaTree}
+								// data={pageData?.areaTree}
+								dataNames={{
+									label: ['attrs', 'label'],
+									value: ['attrs', 'no'],
+								}}
+								onConfirm={(_, options) => {
+									setCurrentStore(options[options.length - 1].attrs);
+									setStoreCascader(false);
+								}}
+								onCancel={() => {
+									setStoreCascader(false);
+								}}
+								closeIcon={currentStore ? null : <div></div>}
+							/>
+						}
+					>
+						{/* <div onClick={() => setStoreCascader(true)}>切换活动门店</div>; */}
+					</Popup.Select>
+				</div>
+			</div>
+			{pageStatus === 'login' && renderLoginView()}
+			{pageStatus === 'game' && (
+				<WheelGamePage
+					selectKey={selectKey}
+					prizeData={pageData?.activityData}
+					gameData={{
+						drawTimes: drawTimes, //'nrCodeData?.drawTimes',
+						storeName: currentStore?.label,
+						cardId: loginData?.cardId,
+					}}
+					onLuckDraw={handleLuckDraw}
+					onCheckPrize={handleCheckPrize}
+					onViewPrize={handleViewPrize}
+					onViewRule={() => setRulePopupData({ visible: true, title: '活动规则' })}
+					onChangeStore={() => setStoreCascader(true)}
+				></WheelGamePage>
+			)}
+			{pageStatus === 'address' && renderInfo()}
+			{renderAwardPopup()}
+			{renderPrizePopup()}
+			{renderThanksPopup()}
+			{renderRulePopup()}
+			{renderCodePopup()}
+		</div>
+	);
+});
+
+YunPosGamePage.displayName = 'YunPosGamePage';
+
+export default YunPosGamePage; -->
