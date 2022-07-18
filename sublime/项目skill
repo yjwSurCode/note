@@ -1,10 +1,10 @@
-1: react 引入大图片
+#1: react 引入大图片
 
 	style={{
 						backgroundImage: `url(${wheel_bg})`,
 					}}
 
-2:判断环境;;;;;;;;
+# 2:判断环境 
 
 export const IS_DEV_MODE: boolean = __PROJECT__.IS_DEV;
 
@@ -18,7 +18,7 @@ export const PROJECT_ENV: ProjectEnv = __PROJECT__.ENV || ProjectEnv.Online;
     <% } 
     %>
 
-3:数据加密：
+# 3:数据加密：
 const secretKey = 'guidKey';
 // 加密字符串
 const encrypt = (txt: string) => {
@@ -30,5 +30,51 @@ const decrypt = (txt: string) => {
 };
 
 
-4: 图片加载失败 可优化的地方
+# 4: 图片加载失败 可优化的地方
 	<img src={activityInfo.userIcon} onError={(e) => (e.target.src = defaultUserHeadImg)}></img>
+
+# 如何让localStorage支持过期时间设置：：：：：：：：：：：：：：  https://juejin.cn/post/7040671388025225229
+const store = {
+  // 存储过期时间映射
+  setExpireMap: (key, expire) => {
+    const expireMap = localStorage.getItem("EXPIRE_MAP") || "{}";
+    localStorage.setItem(
+      "EXPIRE_MAP",
+      JSON.stringify({
+        ...JSON.parse(expireMap),
+        key: expire,
+      })
+    );
+  },
+  setItem: (key, value, expire) => {
+    store.setExpireMap(key, expire);
+    localStorage.setItem(key, value);
+  },
+  getItem: (key) => {
+    // 在取值之前先判断是否过期
+    const expireMap = JSON.parse(localStorage.getItem("EXPIRE_MAP") || "{}");
+    if (expireMap[key] && expireMap[key] < Date.now()) {
+      return localStorage.getItem(key);
+    } else {
+      localStorage.removeItem(key);
+      return null;
+    }
+  },
+};
+
+第二种方法
+import { store } from "xijs";
+// 设置带有过期时间的key
+store.set("name", "dooring", Date.now() + 1000);
+console.log(store.get("name"));
+setTimeout(() => {
+  console.log(store.get("name"));
+}, 1000);
+
+// 设置成功后的回调
+store.set("dooring", "xuxiaoxi", Date.now() + 1000, (status, key, value) => {
+  console.log("success");
+});
+
+
+# ！！！！创建：项目辅助部分(函数 类型)   @mars-framework/core

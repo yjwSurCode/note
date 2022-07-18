@@ -1,0 +1,35 @@
+@import '../../style/theme.less';
+@import '../../style/mixins.less';
+
+.demo-sklelton {
+	height: 100%;
+	background-color: white;
+	padding: 10px;
+	.demo-preview {
+		display: flex;
+		padding: 0 @padding-md;
+
+		.demo-content {
+			padding-top: 6px;
+
+			h3 {
+				margin: 0;
+				font-size: 18px;
+				line-height: 20px;
+			}
+
+			p {
+				margin: 13px 0 0;
+				font-size: 14px;
+				line-height: 20px;
+			}
+		}
+
+		img {
+			flex-shrink: 0;
+			width: 32px;
+			height: 32px;
+			margin-right: @padding-md;
+		}
+	}
+}

@@ -1,43 +1,31 @@
-介绍babel：https://github.com/yjwSurCode/babel-plugin#readme
-
-1：语法分析----这个阶段语法解析器(Parser)会把Tokens转换为抽象语法树(Abstract Syntax Tree，AST)
-2：编辑AST,接着就是转换(Transform)了,转换阶段会对 AST 进行遍历，在这个过程中对节点进行增删查改。Babel 所有插件都是在这个阶段工作, 比如语法转换、代码压缩。
-3：最后阶段还是要把 AST 转换回字符串形式的Javascript，同时这个阶段还会生成Source Map。
+# 介绍babel(https://github.com/yjwSurCode/babel-plugin#readme)
+1：语法分析----这个阶段语法解析器(Parser)会把Tokens转换为抽象语法树(Abstract Syntax Tree,AST)
+2：编辑AST,接着就是转换(Transform)了,转换阶段会对 AST 进行遍历,在这个过程中对节点进行增删查改。Babel所有插件都是在这个阶段工作, 比如语法转换、代码压缩。
+3：最后阶段还是要把 AST 转换回字符串形式的Javascript,同时这个阶段还会生成Source Map。
 (AST: 它就是一棵'对象树'，用来表示代码的语法结构。)
 
-babel初步了解：https://zhuanlan.zhihu.com/p/352878760
-
-npm install --save-dev @babel/core @babel/cli @babel/preset-env
+babel初步了解(https://zhuanlan.zhihu.com/p/352878760)(npm install --save-dev @babel/core @babel/cli @babel/preset-env)
 
 1：Babel 自带了一个内置的 CLI 命令行工具，可通过命令行编译文件
 
 架构和原理 + 实战（https://juejin.cn/post/6844903956905197576#babel-%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B）
 
 
-babel的常用插件：：：：：：：：：：：：：：：：：：：：：：
+# babel的常用插件：：：：：：：：：：：：：：：：：：：：：：
 @babel/plugin-proposal-class-properties
 (该插件可以让你在类中书写初始化字段)
 
 @babel-plugin-transform-remove-console
-（打包后移除console.log）
+(打包后移除console.log)
 
 @babel/plugin-transform-runtime
 （语法转码后生成的代码 有太多冗余的代码，插件可以把重复的函数声明代码集中在一个文件）
 
 @babel-plugin-import
-(组件库按需导入--在babel转码的时候，把整个库‘antd’的引用，变为’antd/lib/button’具体模块的引用。这样webpack收集依赖module就不是整个antd，而是里面的button)。
+(组件库按需导入--在babel转码的时候,把整个库'antd'的引用，变为'antd/lib/button'具体模块的引用。这样webpack收集依赖module就不是整个antd,而是里面的button)。
 
 @babel/plugin-proposal-function-bind
 (该插件可以让你轻松的为某个方法绑定this)
-
-example:
-function Print() {
-    console.log(this.loginId);
-}
-const obj = {
-    loginId: "abc"
-};
-obj::Print(); //相当于：Print.call(obj);
 
 example：
 plugins: [
@@ -57,12 +45,12 @@ plugins: [
       })]
 
 core-js polyfill的类库
-（core-js 是babel-polyfill 的底层依赖）
+(core-js 是babel-polyfill 的底层依赖)
 
 代码案例演示：https://astexplorer.net/#/KJ8AjD6maa
 
 
-Webpack：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+#  Webpack：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 
 Webpack是一种前端资源构建工具，一个静态模块打包器
 (将各种类型的资源，包括图片、css、js等，转译、组合、拼接、生成 JS 格式的 bundler.js文件,转换成为浏览器可运行的代码)
@@ -71,23 +59,21 @@ Webpack是一种前端资源构建工具，一个静态模块打包器
 代码分割：提取多个页面的公共代码、提取首屏不需要执行部分的代码让其异步加载。
 模块合并：在采用模块化的项目里会有很多个模块和文件，需要构建功能把模块分类合并成一个文件。
 自动刷新：监听本地源代码的变化，自动重新构建、刷新浏览器。
+社区围绕着 Webpack 衍生出了各种手脚架，比如 vue-cli、create-react-app,umi解决“用”的问题。
 
-8个配置:
-mode 模型-------development production
-entry 入口
-output输出
-1. path：最终产物所在目录
-1. filename：产物文件命名规则
-1. chunkFilename：chunk文件命名规则
-1. publicPath：公共目录路径，用于指定特定的文件查找路径
 
-devtool开发工具
-
-devServer开发服务器------------webpack-dev-server  hot热替换
-
-optimization优化
-
-module模块
+# 8个配置:
+1：mode模型-------development production
+2：entry 入口
+3：output输出
+3.1 path：最终产物所在目录
+3.2 filename：产物文件命名规则
+3.3 chunkFilename：chunk文件命名规则
+3.4 publicPath：公共目录路径，用于指定特定的文件查找路径
+4：devtool开发工具
+5：devServer开发服务器------------webpack-dev-server  hot热替换
+6:optimization优化
+7:module模块
 针对不同的文件 module里面可以通过不同的loader来处理
 rules:{ test include exclude use }在其中配置不同类型文件所使用的不同loader，例如某些loader可以将react的代码及其依赖自动变成一个js文件
 eg：：：：：：：：
@@ -107,40 +93,41 @@ rules：:[
 ]
 }
 
-plugins插件
+8：plugins插件
 1. html-webpack-plugin能自动将改名后的文件加载到原先引用它的文件中
 1. DefinePlugin能将常量插入文件中
 
 
-社区围绕着 Webpack 衍生出了各种手脚架，比如 vue-cli、create-react-app，umi解决“用”的问题。
+# webpack 运行机制与核心工作原理 ：：：：：：：：：：：：：：：：：：(一文吃透 Webpack 核心原理：https://zhuanlan.zhihu.com/p/363928061)
+通过 Loader 处理特殊类型资源的加载，例如加载样式、图片；
+通过 Plugin 实现各种自动化的构建任务，例如自动压缩、自动发布。
 
-一文吃透 Webpack 核心原理：https://zhuanlan.zhihu.com/p/363928061
-
-3:webpack 运行机制与核心工作原理 ：：：：：：：：：：：：：：：：：：
-  通过 Loader 处理特殊类型资源的加载，例如加载样式、图片；
-  通过 Plugin 实现各种自动化的构建任务，例如自动压缩、自动发布。
-
-
-介绍下 webpack 热更新原理：：：：：：：
-HMR Server 使用webSocket通知HMR runtime 需要更新，HMR运行时通过HTTP请求更新jsonp；
-5.HMR运行时替换更新中的模块，如果确定这些模块无法更新，则触发整个页面刷新。
+# 介绍下 webpack 热更新原理：：：：：：：
+HMR Server 使用webSocket通知HMR runtime 需要更新,HMR运行时通过HTTP请求更新jsonp,
+5.HMR运行时替换更新中的模块,如果确定这些模块无法更新,则触发整个页面刷新。
 
 
-Webpack
-原理：：逐级递归识别依赖，构建依赖图谱->转化AST语法树->处理代码->转换为浏览器可识别的代码
+# Webpack与vite的打包相比：：：：：：：：：：：：：：：：：
+entry：入口,Webpack 执行构建的第一步将从 entry 开始，可抽象成输入
+module：模块,在 Webpack 里一切皆模块，一个模块对应着一个文件。Webpack 会从配置的 entry 开始递归找出所有依赖的模块
+chunk：代码块,一个 chunk 由多个模块组合而成，用于 代码合并与分割
+loader：模块转换器,用于把模块原内容按照需求转换成新内容
+plugin：扩展插件,在 Webpack 构建流程中的特定时机会广播出对应的事件，插件可以监听这些事件的发生，在特定时机做对应的事情
 
-Webpack与vite的打包相比：：：：：：：：：：：：：：：：：
+# webpack打包流程:::::::::::::::::::::::(我们直接写出来的是module webpack处理时是chunk 最后生成浏览器可以直接运行的 bundle)
+初始化配置,确定入口:根据配置中的entry找出所有的入口文件-------编译前的准备(比如:注册plugin)-------resolve流程-------构建module上(runloader)
+------------构建module下(文件解析ast,分析依赖关系)---------生成chunk-----优化chunk(设置moduleId chunkId,hash)----
+---资源的构建(使用template渲染chunk资源)-----生成bundle文件输入到output的指定文件夹中
 
-webpack打包流程：vite：先build——>递归构建 module——————生成 chunk————————chunk 优化————————bubdle(内存)——>启动（web server）
+但是webpack这类工具的做法是将所有模块提前编译、打包进bundle里,换句话说,不管模块是否会被执行,都要被编译和打包到bundle里。随着项目越来越大,打包后的bundle也越来越大,打包的速度自然会越来越慢。
 
-但是webpack 这类工具的做法是将所有模块提前编译、打包进bundle里，换句话说，不管模块是否会被执行，都要被编译和打包到bundle里。随着项目越来越大，打包后的bundle也越来越大，打包的速度自然会越来越慢。
+# vite打包流程:::::::::::::::::::::::::::::::::::::::
+vite--->启动 web server ————编译请求的文件到浏览器
 
-vite打包流程：vite--->启动 web server ————编译请求的文件到浏览器
 
-
-1:webpack 会需要打包一个一个大体积的bundle.js？ 之前会产生打包需求的主要原因：
-浏览器环境并不支持模块化零散模块文件会产生大量的http请求（大量请求在浏览器端会出现并发请求资源的问题）
-而vite的打包原理是基于es新特性 Dynamic imports 实现的，那对老浏览器必然会有兼容问题 处理方案还是用大剑熟悉的Polyfill。
+# webpack 会需要打包一个一个大体积的bundle.js？之前会产生打包需求的主要原因：
+浏览器环境并不支持模块化零散模块文件会产生大量的http请求(大量请求在浏览器端会出现并发请求资源的问题)
+而vite的打包原理是基于es新特性 Dynamic imports 实现的，那对老浏览器必然会有兼容问题处理方案还是用大剑熟悉的Polyfill。
 (npm install dynamic-import-polyfill)
 import dynamicImportPolyfill from 'dynamic-import-polyfill';
 // This needs to be done before any dynamic imports are used.
@@ -151,10 +138,9 @@ dynamicImportPolyfill.initialize({
 
 vite源码分析::https://juejin.cn/post/6968793122029436959
 
-
-vite 在构建过程中使用esbuild进行构建，esbuild 是一个新的代码构建工具，近来构建速度及其迅猛，圈粉速度也很疯狂，它可以将 CommonJS / UMD 转换为 ESM 格式,
+vite 在构建过程中使用esbuild进行构建,esbuild 是一个新的代码构建工具，近来构建速度及其迅猛,它可以将 CommonJS / UMD 转换为 ESM 格式,
 转换ts, tsx文件等文件转化成浏览器可以识别的js文件,
-它使用go编写,并编译成了机器码,利用paralleljs 的高并行优势,具有大量的并行算法
+它使用go编写,并编译成了机器码,具有大量的并行算法 利用paralleljs的高并行优势,
 
 vite 的作用就是体现在了这里,vite的任务就是用koa起一个http请求,然后利用拦截器去拦截修改这些请求内容
 
@@ -180,20 +166,10 @@ https://juejin.cn/post/6959721156350296095
 
 Lerna 是一个管理工具，用于管理包含多个软件包（package）的 JavaScript 项目
 
+# vite plugin插件(vite插件大全：http://www.guofeian.cn/article_details/647258913514991616)
+vite-plugin-svg-icons(用于生成 svg 雪碧图，方便在项目中使用 .svg 文件。)
 
-
-
-
-vite-plugin-svg-icons
-用于生成 svg 雪碧图，方便在项目中使用 .svg 文件。
-
-
-vite-plugin-mock
-提供了本地和生产 mock 服务。
-
-优势在于本地使用，与传统使用 mockjs 不同，是可以真实在浏览器里看到请求记录，大大提高了开发效率。  
-
-
+vite-plugin-mock(提供了本地和生产 mock 服务---优势在于本地使用，与传统使用 mockjs不同,是可以真实在浏览器里看到请求记录,大大提高了开发效率。)
 
 
 移动端支持
@@ -229,7 +205,7 @@ module.exports = {
 }
 
 
-vite插件大全：http://www.guofeian.cn/article_details/647258913514991616
+
 
 
 

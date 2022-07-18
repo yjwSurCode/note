@@ -1,131 +1,144 @@
-// 原理：git ls-files --stage
-// index文件git暂存区存放index文件中，所以我们把暂存区有时也叫作索引（index）。索引是一个二进制格式的文件，里面存放了与当前暂存内容相关的信息，包括暂存的文件名、文件内容的SHA1哈希串值和文件访问权限。
-// 暂存区是贯穿于整个Git使用流程的重要概念，所以index文件就很重要。由于是二进制所以我们无法查看具体内容，但是可以用git ls-files --stage 命令查看暂存区里面的文件
-// objects目录
-// Git对象(blob,tree,commit,tag)都保存在objects目录里面，所以objects目录就是真正的仓库。objects里面的目录结构组织的很有特点，是以SHA值的前2位作为目录，后38位作为这个目录下的文件名。
+# 原理：git ls-files --stage
+index文件git暂存区存放index文件中，所以我们把暂存区有时也叫作索引（index）。索引是一个二进制格式的文件，里面存放了与当前暂存内容相关的信息，
+包括暂存的文件名、文件内容的SHA1哈希串值和文件访问权限。
+暂存区是贯穿于整个Git使用流程的重要概念，所以index文件就很重要。由于是二进制所以我们无法查看具体内容，但是可以用git ls-files --stage 命令查看暂存区里面的文件
+objects目录
 
-// Tree 对象
-// 一个tree对象有一串(bunch)指向blob对象或是其它tree对象的指针，它一般用来表示内容之间的目录层次关系。
-// git ls-tree 或 git cat-file -p 命令还可以用来查看tree对象，现在我们查看刚刚最新提交对应的Tree对象 我们可以像下面一样来查看它：
+Git对象(blob,tree,commit,tag)都保存在objects目录里面，所以objects目录就是真正的仓库。objects里面的目录结构组织的很有特点，是以SHA值的前2位作为目录，后38位作为这个目录下的文件名。
 
-// 将本地仓库与远程仓库建立联系
-// 命令：git remote add origin 项目地址
+# Tree 对象
+一个tree对象有一串(bunch)指向blob对象或是其它tree对象的指针，它一般用来表示内容之间的目录层次关系。
+git ls-tree 或 git cat-file -p 命令还可以用来查看tree对象，现在我们查看刚刚最新提交对应的Tree对象 我们可以像下面一样来查看它：
 
-//查看远程地址 git remote -v
+# 将本地仓库与远程仓库建立联系 git remote add origin 项目地址
+从命令的角度来看，git add 可以分两条底层命令实现:
+git hash-object<file>
+git update-index --add<file>
 
-// 从命令的角度来看，git add 可以分两条底层命令实现:
-
-// git hash-object<file>
-// git update-index --add<file>
-
-// HEAD：当前提交你的回购。大多数时候都  HEAD 指向分支中的最新提交，但情况并非如此。 HEAD 真的只是意味着“我的回购目前指向的是什么”。
-// master：git在首次创建repo时为您创建的默认分支的名称。在大多数情况下，“主”意味着“主要分支”。大多数商店都有人推动掌握，而主人被认为是回购的最终观点。但是发布分支也很常见，因为发布分支是由master发布的。您的本地仓库有自己的主分支，几乎总是跟随远程仓库的主人。
-// origin：git为主远程仓库提供的默认名称。你的盒子有自己的仓库，你最有可能推出一些你和你的同事所推动的远程仓库。这个远程仓库几乎总是被称为原产地，但并非必须如此。
+# 查看远程地址 git remote -v
 
 
-// git push origin master
-// 解决办法：强行让本地分支覆盖远程分支git push origin master -f
-// git push的一般形式为 git push <远程主机名> <本地分支名>  <远程分支名>  eg:git push origin master：refs/for/master 
-// 1.1 git push origin master
-// 如果远程分支被省略，如上则表示将本地分支推送到与之存在追踪关系的远程分支（通常两者同名），如果该远程分支不存在，则会被新建
-// 1.2 git push origin ：refs /for/master 
-// 如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支，等同于 git push origin--delete master
 
-// git stash save '备注信息'
-// 贮藏修改，就要用到git stash.网址：https://git-scm.com/docs/git-stash
-// 先git stash，本地工作区备分，放入git栈中。然后，工作区内容恢复到仓库head最后一次提交的内容。
-// 然后git pull.
-// 最后，git stash pop,这个过程自动合并。如果成功，则自动此备分从git stash中删除。如果有冲突，则你需要手动解决冲突。然后git stash drop
-
-// 问题:不建议在没有为偏离分支指定合并策略时执行pull操作
-// 原文链接：https://blog.csdn.net/wq6ylg08/article/details/114106272
-
-// git cherry-pick可以选择某一个分支中的一个或几个commit(s)来进行操作。
-// 例如，假设我们有个稳定版本的分支，叫v2.0，另外还有个开发版本的分支v3.0，我们不能直接把两个分支合并，这样会导致稳定版本混乱，但是又想增加一个v3.0中的功能到v2.0中，这里就可以使用cherry-pick了。
+HEAD：当前提交你的回购。大多数时候都  HEAD 指向分支中的最新提交，但情况并非如此。 HEAD 真的只是意味着“我的回购目前指向的是什么”。
+master：git在首次创建repo时为您创建的默认分支的名称。在大多数情况下，“主”意味着“主要分支”。大多数商店都有人推动掌握，而主人被认为是回购的最终观点。但是发布分支也很常见，因为发布分支是由master发布的。您的本地仓库有自己的主分支，几乎总是跟随远程仓库的主人。
+origin：git为主远程仓库提供的默认名称。你的盒子有自己的仓库，你最有可能推出一些你和你的同事所推动的远程仓库。这个远程仓库几乎总是被称为原产地，但并非必须如此。
 
 
-// git log-------查看 commit
+git push origin master
+解决办法：强行让本地分支覆盖远程分支git push origin master -f
+git push的一般形式为 git push <远程主机名> <本地分支名>  <远程分支名>  eg:git push origin master：refs/for/master 
+1.1 git push origin master
+如果远程分支被省略，如上则表示将本地分支推送到与之存在追踪关系的远程分支（通常两者同名），如果该远程分支不存在，则会被新建
+1.2 git push origin ：refs /for/master 
+如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支，等同于 git push origin--delete master
+git stash save '备注信息'
+贮藏修改，就要用到git stash.网址：https://git-scm.com/docs/git-stash
+先git stash，本地工作区备分，放入git栈中。然后，工作区内容恢复到仓库head最后一次提交的内容。
+然后git pull.
+最后，git stash pop,这个过程自动合并。如果成功，则自动此备分从git stash中删除。如果有冲突，则你需要手动解决冲突。然后git stash drop
 
-// commit 150f539d430015ba682a3dd95d4f68937eb6533b
-// Author: 贾季帮 <1424800753@qq.com>
-// Date:   Mon Jul 5 15:22:26 2021 +0800
+问题:不建议在没有为偏离分支指定合并策略时执行pull操作
+原文链接：https://blog.csdn.net/wq6ylg08/article/details/114106272
 
-// git show  150f539d430015ba682a3dd95d4f68937eb6533b
-
-// 问题: 撤销 git commit
-
-// git reset  HEAD~1
-// git reset--soft HEAD~2   撤销两次 可以包括commit push
-
-// Git撤销对远程仓库的push & commit提交::!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//     撤销push
-// 1. 执行 git log查看日志， 获取需要回退的版本号
-// commit 986 a582b88f7c8a9830a916f09d48f476ea84265
-// Author: Rockcookies < hqy321 @gmail.com >
-//     Date: Fri Oct 22 20: 29: 36 2021 + 0800
-
-// 2. 执行 git reset– - soft < 版本号 > ，如 git reset --soft  c59c91158d6b08fc457032073eb26a8d00228b48 重置至指定版本的提交， 达到撤销提交的目的 !!!!!!!!!!!!!!!!
-
-// 然后执行 git log 查看 此时， 已重置至指定版本的提交， log中已经没有了需要撤销的提交
-
-// git reset 命令分为两种： git reset– - soft 与 git reset– - hard， 区别是：
-
-// 前者表示只是改变了HEAD的指向， 本地代码不会变化， 我们使用git status依然可以看到， 同时也可以git commit提交。 后者直接回改变本地源码， 不仅仅指向变化了， 代码也回到了那个版本时的代码。
-
-// 3. 执行 git push origin 分支名– - force， 强制提交当前版本号。 !!!!!!!!!!
-
-// exeample: git push origin master --force
+git cherry-pick可以选择某一个分支中的一个或几个commit(s)来进行操作。
+例如，假设我们有个稳定版本的分支，叫v2.0，另外还有个开发版本的分支v3.0，我们不能直接把两个分支合并，这样会导致稳定版本混乱，但是又想增加一个v3.0中的功能到v2.0中，这里就可以使用cherry-pick了。
 
 
-// git reset--soft HEAD~2    去上一个版本
+# 查看commit： git log
+commit 150f539d430015ba682a3dd95d4f68937eb6533b
+Author: 贾季帮 <1424800753@qq.com>
+Date:   Mon Jul 5 15:22:26 2021 +0800
 
-// git revert ec5be      回滚
+git show  150f539d430015ba682a3dd95d4f68937eb6533b
 
-// 使用“git revert -n 版本号”反做，并使用“git commit -m 版本名”提交：
+# 如何撤销 git commit
 
+git reset  HEAD~1
+git reset--soft HEAD~2   撤销两次 可以包括commit push
 
-//提交中间的某一次commit
+# Git撤销对远程仓库的push & commit提交::!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+1：执行 git log查看日志, 获取需要回退的版本号
+commit 986 a582b88f7c8a9830a916f09d48f476ea84265
+Author: Rockcookies < hqy321 @gmail.com >
+    Date: Fri Oct 22 20: 29: 36 2021 + 0800
 
+2：执行 git reset -- soft < 版本号>  如：git reset --soft  c59c91158d6b08fc457032073eb26a8d00228b48 重置至指定版本的提交， 达到撤销提交的目的 !!!!!!!!!!!!!!!!
 
-//问题: 撤销 git pull
-// 1: git reflog
-// 2:  git reset --hard 6ca3754  
+然后执行 git log 查看 此时， 已重置至指定版本的提交， log中已经没有了需要撤销的提交
 
-// git stash暂存修改  
-// git stash list
-// 常用git stash命令：
-// （1）git stash save "save message"  : 执行存储时，添加备注，方便查找，只有git stash 也要可以的，但查找时不方便识别。
-// （2）git stash list  ：查看stash了哪些存储
-// （3）git stash show ：显示做了哪些改动，默认show第一个存储,如果要显示其他存贮，后面加stash@{$num}，比如第二个 git stash show stash@{1}
-// （4）git stash show -p : 显示第一个存储的改动，如果想显示其他存存储，命令：git stash show  stash@{$num}  -p ，比如第二个：git stash show  stash@{1}  -p
-// （5）git stash apply :应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即stash@{0}，如果要使用其他个，git stash apply stash@{$num} ， 比如第二个：git stash apply stash@{1} 
-// （6）git stash pop ：命令恢复之前缓存的工作目录，将缓存堆栈中的对应stash删除，并将对应修改应用到当前的工作目录下,默认为第一个stash,即stash@{0}，如果要应用并删除其他stash，命令：git stash pop stash@{$num} ，比如应用并删除第二个：git stash pop stash@{1}
-// （7）git stash drop stash@{$num} ：丢弃stash@{$num}存储，从列表中删除这个存储
-// （8）git stash clear ：删除所有缓存的stash
+git reset 命令分为两种： git reset -- soft 与 git reset  -- hard 
+区别是：前者表示只是改变了HEAD的指向,本地代码不会变化， 我们使用git status依然可以看到,同时也可以git commit提交,后者直接回改变本地源码,不仅仅指向变化了,代码也回到了那个版本时的代码。
 
-
-// git rebase -i  HEAD~3
-
-// git rebase --abort 会放弃合并，回到rebase操作之前的状态，之前的提交的不会丢弃；
-// git rebase --skip 则会将引起冲突的commits丢弃掉（慎用！！）；
-// git rebase --continue 合并冲突，结合"git add 文件"命令一起用与修复冲突，提示开发者，一步一步地有没有解决冲突。（fix conflicts and then run “git rebase --continue”）
-
-// git pull --rebase      不会产生新的节点
-// 不带任何选项的git pull命令：先尝试快进合并，如果不行再进行正常合并生成一个新的提交。
-// git pull --ff-only命令：只尝试快进合并，如果不行则终止当前合并操作。
-// git pull --no-ff命令：禁止快进合并，即不管能不能快进合并，最后都会进行正常合并生成一个新的提交。
-// git pull --rebase命令：先尝试快进合并，如果不行再进行变基合并。
+3：执行 git push origin 分支名  -- force， 强制提交当前版本号。 !!!!!!!!!!
+exeample: git push origin master --force
 
 
-//问题: error: 您尚未结束您的合并（存在 MERGE_HEAD）。
-// 提示：请在合并前先提交您的修改。
-// fatal: 因为存在未完成的合并而退出
+git reset--soft HEAD~2    去上一个版本
 
-// 解决方法:
-// git merge --abort
-// git reset --merge
+git revert ec5be  回滚
 
-//提交指定的commit
+使用 git revert -n 版本号 反做并使用“git commit -m 版本名”提交：
+
+
+提交中间的某一次commit
+
+
+# 撤销 git pull
+1: git reflog
+2: git reset --hard 6ca3754  
+
+#STASH stash
+git stash暂存修改  
+git stash list
+常用git stash命令：
+（1）git stash save "save message"  : 执行存储时，添加备注，方便查找，只有git stash 也要可以的，但查找时不方便识别。
+（2）git stash list  ：查看stash了哪些存储
+（3）git stash show ：显示做了哪些改动，默认show第一个存储,如果要显示其他存贮，后面加stash@{$num}，比如第二个 git stash show stash@{1}
+（4）git stash show -p : 显示第一个存储的改动，如果想显示其他存存储，命令：git stash show  stash@{$num}  -p ，比如第二个：git stash show  stash@{1}  -p
+（5）git stash apply :应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即stash@{0}，如果要使用其他个，git stash apply stash@{$num} ， 比如第二个：git stash apply stash@{1} 
+（6）git stash pop ：命令恢复之前缓存的工作目录，将缓存堆栈中的对应stash删除，并将对应修改应用到当前的工作目录下,默认为第一个stash,即stash@{0}，如果要应用并删除其他stash，命令：git stash pop stash@{$num} ，比如应用并删除第二个：git stash pop stash@{1}
+（7）git stash drop stash@{$num} ：丢弃stash@{$num}存储，从列表中删除这个存储
+（8）git stash clear ：删除所有缓存的stash
+
+
+# 创建本地分支
+git checkout -b 新分支名
+
+提交：git push --set-upstream origin 新分支名称
+
+# 创建远程分支
+git checkout -b 新分支名
+
+删除本地分支：git branch -d 分支名  (不能删除当前所在分支)
+
+删除远程分支
+git push origin --delete 分支名
+
+
+查看本地和远程分支：git branch -a
+查看远程分支 git branch -r
+
+git rebase -i  HEAD~3
+git rebase --abort 会放弃合并，回到rebase操作之前的状态，之前的提交的不会丢弃；
+git rebase --skip 则会将引起冲突的commits丢弃掉（慎用！！）；
+git rebase --continue 合并冲突，结合"git add 文件"命令一起用与修复冲突，提示开发者，一步一步地有没有解决冲突。（fix conflicts and then run “git rebase --continue”）
+
+git pull --rebase      不会产生新的节点
+不带任何选项的git pull命令：先尝试快进合并，如果不行再进行正常合并生成一个新的提交。
+git pull --ff-only命令：只尝试快进合并，如果不行则终止当前合并操作。
+git pull --no-ff命令：禁止快进合并，即不管能不能快进合并，最后都会进行正常合并生成一个新的提交。
+git pull --rebase命令：先尝试快进合并，如果不行再进行变基合并。
+
+
+问题: error: 您尚未结束您的合并（存在 MERGE_HEAD）。
+提示：请在合并前先提交您的修改。
+fatal: 因为存在未完成的合并而退出
+
+解决方法:
+git merge --abort
+git reset --merge
+
+提交指定的commit
 https: //blog.csdn.net/u013068502/article/details/85399806?utm_term=%E5%8F%AA%E6%8F%90%E4%BA%A4%E6%9C%AC%E5%9C%B0%E6%8C%87%E5%AE%9A%E7%9A%84commit&utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~sobaiduweb~default-0-85399806&spm=3001.4430
 
 

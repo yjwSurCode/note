@@ -6,7 +6,7 @@ var isValid = function (s) {
     let map = new Map([['(', ')'], ['[', ']'], ['{', '}']]);
     let stack = [];
 
-    for (let i of s) {  // map.get(i) 找到i对应的值
+    for (let i of s) {  // map.get(i) 找到与之对应的值
         if (!map.get(i)) {
             console.log('2222222', stack, stack[stack.length - 1], map.get(i))
             if (stack[stack.length - 1] === map.get(i)) return false;
@@ -17,6 +17,8 @@ var isValid = function (s) {
     }
     return !stack.length;
 };
+
+// console.log(isValid('()[]{}'), 'RESULT')
 
 // ! 2:判断是否对称二叉树  (迭代-递归)
 var isSymmetric = function (root) {
@@ -142,10 +144,19 @@ var maxSubArray = function (arr) {
 
 };
 
+if (val.value) {
+    console.log(1111111111111)
+    if (!opt.data.imgUrl.split("=")[1]) {
+        console.log(1111111111111)
+        const newUrl = opt.data.imgUrl.split("=");
+        newUrl[1] = val.value;
+    }
+}
 
 
 
-// console.log(isValid('()[]{}'), 'RESULT')
+
+
 // console.log(isValid('{[]}'), 'RESULT')
 
 // console.log(isSymmetric([1, 2, 3, 4, 4, 4, 4]), 'RESULT')
@@ -230,6 +241,3 @@ var moveZeroes = function (nums) {
 // console.log(isAnagram('aaabbbcbcdcdc'), 'isAnagram')
 
 console.log(moveZeroes([1, 2, 0, 3, 0, 5, 0]), 'moveZeroes') //moveZeroes([0, 1, 3, 5, 0, 7, 9, 00, 0, 11, 13, 0, 15, 0, 0])
-
-
-

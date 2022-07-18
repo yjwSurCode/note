@@ -1,16 +1,14 @@
 export PUB_HOSTED_URL=https://pub.flutter-io.cn
 
+# 编译语言的JavaScript
 分词/词法分析------解析/语法分析------代码生成
 
-eval(..) 和 with 会在运行时修改或创建新的作用域，以此来欺骗其他在书写时定义的词
-法作用域。
-ES6 还引入了 const,同样可以用来创建块作用域变量,但其值是固定的
-（常量）。之后任何试图修改值的操作都会引起错误。
 
-这个过程就好像变量和函数声明从它们在代码中出现的位置被“移动”
-到了最上面。这个过程就叫作提升。
-(只有声明本身会被提升，而赋值或其他运行逻辑会留在原地。如果提升改变了代码执行的顺序，会造成非常严重的破坏。)
-(函数声明会被提升，但是函数表达式却不会被提升。)   函数优先！！！！   再其次是变量
+# 变量提升 函数提升
+var 存在变量提升 (var在全局作用域声明的变量有一种行为会挂载在window对象上)
+const 同样可以用来创建块作用域变量,const声明的是常量,只读,修改值会报错
+let 声明的变量没有var那样的变量提升----暂时死区(禁止重复声明)
+(函数声明(function a(){})会被提升，但是函数表达式(var a=function(){})却不会被提升。) (函数优先！！！！再其次是变量)
 
 let myObject = {
   mealA: 'Breakfast',
@@ -22,13 +20,10 @@ for (var k in myObject) {
 console.log( k, myObject[k] );
 }
 
-for (let [key, value] of Object.entries(meals)) {
+for (let [key, value] of myObject.entries(meals)) {
   console.log(key + ':' + value);
 }
 
-Object.keys(myObject)
-
-var myObject = Object.create( anotherObject );  
 
 宏任务和微任务-：：：：：：：：：：：：：：：：：：：：
 function add(xPromise,yPromise) {
@@ -192,65 +187,65 @@ apply 、 call 、bind 三者第一个参数都是this要指向的对象,也就�
 apply 、 call 、bind 三者都可以利用后续参数传参
 bind 是返回对应函数,便于稍后调用,apply 、call 则是立即调用 。
 
-//  const obj = {
-//     x: 10
-//   }
-//   function fn() {
-//     console.log(this)
-//   }
-//   fn.call(obj)      //obj
-//   fn.apply(obj) //obj
-//   fn.bind(obj)() //obj
+ const obj = {
+    x: 10
+  }
+  function fn() {
+    console.log(this)
+  }
+  fn.call(obj)      //obj
+  fn.apply(obj) //obj
+  fn.bind(obj)() //obj
 
-// 4.1: 判断类型
-// Object.prototype.toString.call(null); // "[object Null]"
-// Object.prototype.toString.call(undefined); // "[object Undefined]"
-// Object.prototype.toString.call(“abc”);// "[object String]"
-// Object.prototype.toString.call(123);// "[object Number]"
-// Object.prototype.toString.call(true);// "[object Boolean]"
-// Object.prototype.toString.call(new Date()); // "[object Date]"
-// Object.prototype.toString.call([1,2,3]); // "[object Array]"
-
-
-// 1: 闭包和递归：：：：：：：：：：：：：：：：：：：：：：：
-
-// 闭包就是能够读取其他函数内部变量的函数。
-// function a() {
-//   let pa = 'a的变量'
-//   const b = () => {
-//     let pb = 'b的变量'
-//   }
-// }
-// const c = a.b
-// console.log('闭包就是能够读取其他函数内部变量的函数。', c)
-
-// function fun(a) {
-//   function f2() {
-//     console.log(a);
-//   }
-//   return f2;
-// }
-// let fn = fun(1)
-// console.log(fn)
-// setTimeout(fn, 1000)
+4.1: 判断类型
+Object.prototype.toString.call(null); // "[object Null]"
+Object.prototype.toString.call(undefined); // "[object Undefined]"
+Object.prototype.toString.call(“abc”);// "[object String]"
+Object.prototype.toString.call(123);// "[object Number]"
+Object.prototype.toString.call(true);// "[object Boolean]"
+Object.prototype.toString.call(new Date()); // "[object Date]"
+Object.prototype.toString.call([1,2,3]); // "[object Array]"
 
 
-// function f1() {
-//   var sum = 0;
-//   console.log('111sum', sum)
-//   var obj = {
-//     inc: function (e) {
-//       console.log(sum, e, 'sum')
-//       sum++;
-//       return sum;
-//     }
-//   };
-//   return obj;
-// }
-// let result = f1();
-// console.log(result.inc());//1
-// console.log(result.inc());//2
-// console.log(result.inc());//3
+1: 闭包和递归：：：：：：：：：：：：：：：：：：：：：：：
+
+闭包就是能够读取其他函数内部变量的函数。
+function a() {
+  let pa = 'a的变量'
+  const b = () => {
+    let pb = 'b的变量'
+  }
+}
+const c = a.b
+console.log('闭包就是能够读取其他函数内部变量的函数。', c)
+
+function fun(a) {
+  function f2() {
+    console.log(a);
+  }
+  return f2;
+}
+let fn = fun(1)
+console.log(fn)
+setTimeout(fn, 1000)
+
+
+function f1() {
+  var sum = 0;
+  console.log('111sum', sum)
+  var obj = {
+    inc: function (e) {
+      console.log(sum, e, 'sum')
+      sum++;
+      return sum;
+    }
+  };
+  return obj;
+}
+let result = f1();
+console.log(result.inc());//1
+console.log(result.inc());//2
+console.log(result.inc());//3
 
 
 闭包使用场景：：：：：：：：：：：：：：：：：
@@ -303,43 +298,18 @@ filter： 筛选出数组符合条件的项 组成一个新数组
 reduce： 让数组的前项和后项做某种计算 并累计最终值   //[1,2,3,4,5].reduce((prev,next)=>return prev+next)
 every： 检测数组的每一项是否符合条件 全部符合就是true
 some： 检测数组中的某一项是否符合条件 一项符合即可
+splice：操作函数：
 
- 5: HOC高阶组件
- const HOC = (Com) => {
-     return class tar extends Component<IProps, IState> {
-         constructor(props: IProps) {
-             super(props);
-        }
-         render() {
-             return <div>
-                 <Com  {...this.props}  > </Com>
-             </div>
-         }
-     }
- }
-
-//调用:
-// HOC(组件名)
+# 对象操作：：：：：：：：：：：：：：：：：：：：：：：：：：：
+var copy = Object.assign({}, obj) 
+var obj = { 0: 'a', 1: 'b', 2: 'c' } console.log(Object.keys(obj))---console: ['0', '1', '2'] console.log(Object.values(obj))---- ['a', 'b', 'c']
+const obj = { foo: 'bar', baz: 42 }-----console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]   
+var obj = {a: 'ss', b: 'bb', c: 'cc'}---------for (var i in obj){ console.log(i+'--------'+obj[i]) }
+Object.defineProperty(obj, prop, descriptor)
 
 
-react类组件和hooks对比：：：：：：：：：：：：：：：：：：：：：：：：：：
-// constructor ------   useState
-// getDerivedStateFromProps --------  useState 里面 update 函数
-// shouldComponentUpdate ------ useMemo
-// render ------    函数本身
-// componentDidMount ------ useEffect
-// componentDidUpdate ------    useEffect
-// componentWillUnmount ------  useEffect 里面返回的函数
-// componentDidCatch ------ 无
-// getDerivedStateFromError ------  无
 
-命令式 VS 声明式
-去生命周期化
-去this 化
-编译和压缩----对于构建工具来说,class 不能很好的压缩并且会使热重载出现不稳定的情况
-性能------hook完成时间短
-
-new WeakMap用法：：：：：：：：：：：：：：：：：：：：：：
+# new WeakMap用法：：：：：：：：：：：：：：：：：：：：：：
 WeakMap的作用就是可以更有效的垃圾回收、释放内存。
 let myWm = new WeakMap()
 // 删除键
@@ -353,49 +323,7 @@ myWm.get(key);
 
 
 
-如何让localStorage支持过期时间设置：：：：：：：：：：：：：：  https://juejin.cn/post/7040671388025225229
 
-const store = {
-  // 存储过期时间映射
-  setExpireMap: (key, expire) => {
-    const expireMap = localStorage.getItem("EXPIRE_MAP") || "{}";
-    localStorage.setItem(
-      "EXPIRE_MAP",
-      JSON.stringify({
-        ...JSON.parse(expireMap),
-        key: expire,
-      })
-    );
-  },
-  setItem: (key, value, expire) => {
-    store.setExpireMap(key, expire);
-    localStorage.setItem(key, value);
-  },
-  getItem: (key) => {
-    // 在取值之前先判断是否过期
-    const expireMap = JSON.parse(localStorage.getItem("EXPIRE_MAP") || "{}");
-    if (expireMap[key] && expireMap[key] < Date.now()) {
-      return localStorage.getItem(key);
-    } else {
-      localStorage.removeItem(key);
-      return null;
-    }
-  },
-};
-
-222222222222222222222222222222222222
-import { store } from "xijs";
-// 设置带有过期时间的key
-store.set("name", "dooring", Date.now() + 1000);
-console.log(store.get("name"));
-setTimeout(() => {
-  console.log(store.get("name"));
-}, 1000);
-
-// 设置成功后的回调
-store.set("dooring", "xuxiaoxi", Date.now() + 1000, (status, key, value) => {
-  console.log("success");
-});
 
 6:React SSR + express 构建简单服务端渲染Demo      https://juejin.cn/post/6844903990497378318
 
@@ -411,7 +339,7 @@ reduce 高级用法：https://juejin.cn/post/6844903669977055239
 
 执行上下文是评估和执行 JavaScript 代码的环境的抽象概念
 
-执行栈，也就是在其它编程语言中所说的“调用栈”，是一种拥有 LIFO（后进先出）数据结构的栈，被用来存储代码运行时创建的所有执行上下文。
+执行栈，也就是在其它编程语言中所说的“调用栈”，是一种拥有 LIFO(后进先出)数据结构的栈，被用来存储代码运行时创建的所有执行上下文。
 
 
 值类型(基本类型)：字符串(string)、数值(number)、布尔值(boolean)、undefined、null  （这5种基本数据类型是按值访问的，因为可以操作保存在变量中的实际的值）(ECMAScript 2016新增了一种基本数据类型：symbol http://es6.ruanyifeng.com/#docs/symbol )
@@ -543,6 +471,38 @@ function dateFormat(fmt, date) {
 }
 
 
+
+获取今天周几：
+['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'][new Date().getDay()]
+
+   function getTime(n) {
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = now.getMonth() + 1;
+      var day = now.getDay(); //返回星期几的某一天;
+      n = day == 0 ? n + 6 : n + (day - 1);
+      now.setDate(now.getDate() - n);
+      const date = now.getDate();
+      var s =
+        year +
+        "-" +
+        (month < 10 ? "0" + month : month) +
+        "-" +
+        (date < 10 ? "0" + date : date);
+      return s;
+    }
+    //上周的开始时间
+    console.log(getTime(7));
+    //上周的结束时间
+    console.log(getTime(1));
+    //本周的开始时间
+    console.log(getTime(0));
+    //本周的结束时间
+    console.log(getTime(-6));
+    //下周的开始时间
+    console.log(getTime(-7));
+    //下周结束时间
+    console.log(getTime(-13));
 
 
 

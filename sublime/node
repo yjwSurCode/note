@@ -156,7 +156,8 @@ app.get("/user/:id", (req, res, next) => {
 7：mysql 语句注意事项：：：：：：：：：：：
 
 
-
+// /发送邮件的node插件
+const nodemailer = require('nodemailer'); 
 
 
 

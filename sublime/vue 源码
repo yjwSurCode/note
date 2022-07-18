@@ -1,81 +1,4 @@
-
-忽略.vue后缀
-export default defineConfig({     // vite umi??
-  resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
-  }
-})
-
-参考链接：https://juejin.cn/post/6986838175062687752	
-
-
-// class Dep {
-//   // 订阅池
-//   constructor(name) {
-//     this.id = new Date(); //这里简单的运用时间戳做订阅池的ID
-//     this.subs = []; //该事件下被订阅对象的集合
-//   }
-//   defined() {
-//     // 添加订阅者
-//     Dep.watch.add(this);
-//   }
-//   notify() {
-//     //通知订阅者有变化
-//     this.subs.forEach((e, i) => {
-//       if (typeof e.update === "function") {
-//         try {
-//           e.update.apply(e); //触发订阅者更新函数
-//         } catch (err) {
-//           console.warr(err);
-//         }
-//       }
-//     });
-//   }
-// }
-// Dep.watch = null;
-
-// class Watch {
-//   constructor(name, fn) {
-//     this.name = name; //订阅消息的名称
-//     this.id = new Date(); //这里简单的运用时间戳做订阅者的ID
-//     this.callBack = fn; //订阅消息发送改变时->订阅者执行的回调函数
-//   }
-//   add(dep) {
-//     //将订阅者放入dep订阅池
-//     dep.subs.push(this);
-//   }
-//   update() {
-//     //将订阅者更新方法
-//     var cb = this.callBack; //赋值为了不改变函数内调用的this
-//     cb(this.name);
-//   }
-// }
-// var addHistoryMethod = (function () {
-//   var historyDep = new Dep();
-//   return function (name) {
-//     if (name === "historychange") {
-//       return function (name, fn) {
-//         var event = new Watch(name, fn);
-//         Dep.watch = event;
-//         historyDep.defined();
-//         Dep.watch = null; //置空供下一个订阅者使用
-//       };
-//     } else if (name === "pushState" || name === "replaceState") {
-//       var method = history[name];
-//       return function () {
-//         method.apply(history, arguments);
-//         historyDep.notify();
-//       };
-//     }
-//   };
-// })();
-
-// window.addHistoryListener = addHistoryMethod("historychange");
-// history.pushState = addHistoryMethod("pushState");
-// history.replaceState = addHistoryMethod("replaceState");
-
-
-6:v2.x 与 vue3.0之间的区别:
+# v2.x 与 vue3.0之间的区别:
 基于 Proxy 观察者机制以满足全语言覆盖以及更好的性能；
 放弃 Object.defineProperty ，使用更快的原生Proxy；
 beforeCreate -> 请使用 setup()
@@ -88,7 +11,7 @@ beforeDestroy -> onBeforeUnmount
 destroyed -> onUnmounted
 
 
-v-modal 发布者 订阅者 ：：：：：：：：：：：：：：：：：：：：：
+# v-modal 发布者 订阅者
 Object.defindProperty
 observer.js 数据劫持  geter seter
 compile.js 判断元素  添加监听数据的订阅者 数据变化 更新试图
@@ -96,7 +19,7 @@ watcher 订阅者 oserver compile之间通信的桥梁
 mvvm
 数据绑定的入口 整合三者 通过observer监听modal数据的变化 通过compile来解析编译模板的指令 watcher 数据变化----》视图更新----》视图交互变化
 
-Object.defindProperty对比proxy：：：：：：：：：：：：：：：：：：：：：：：  (https://juejin.cn/post/6844904150560423950)
+# Object.defindProperty 对比 proxy  (https://juejin.cn/post/6844904150560423950)
 1:不需要递归遍历每个属性，添加劫持，深层对象属性只有在访问的时候才转换成 Proxy
 2:对新增的属性不需要另外做劫持处理
 3:不需要对数组的方法进行重定义
@@ -126,6 +49,16 @@ vben的vue3源码 :https://github1s.com/anncwb/vue-vben-admin
 vue3源码：https://github1s.com/vuejs/core/blob/HEAD/packages/reactivity/src/computed.ts
 
 Proxy为什么要配合Reflect使用：https://juejin.cn/post/7080916820353351688
+
+
+忽略.vue后缀
+export default defineConfig({     // vite umi??
+  resolve: {
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+  }
+})
+
+参考链接：https://juejin.cn/post/6986838175062687752	
 
 
 
@@ -238,9 +171,119 @@ vue-cli使用指南：https://cli.vuejs.org/zh/dev-guide/plugin-dev.html
 
 vue create vue-cli-app ------ vue-cli-service build
 
-使用npm run script 命令时，直接会找到node_modules/.bin下面对应的脚本，windows系统对应vue-cli-service.cmd命令，类unix系统是/bin/sh命令
+使用npm run script 命令时,直接会找到node_modules/.bin下面对应的脚本,windows系统对应vue-cli-service.cmd命令,类unix系统是/bin/sh命令
 开始执行vue-cli-service.js
-Service实例化后，又到vue-cli-service.js中，执行service run方法
-config 下的base.js css.js 等webpack配置模块都会执行chainWebpack方法，以base模块为例
-build方法会根据命令行参数，加载不同的模块来处理webpack配置
+Service实例化后,又到vue-cli-service.js中,执行service run方法
+config 下的base.js css.js 等webpack配置模块都会执行chainWebpack方法,以base模块为例
+build方法会根据命令行参数,加载不同的模块来处理webpack配置
 
+
+# VUE2.6使用VueCompositionAPI 
+import VueCompositionAPI from '@vue/composition-api'
+Vue.use(VueCompositionAPI)
+
+
+# Vue3用法 https://v3.cn.vuejs.org/
+
+1：context
+export default {
+  setup(props, context) {
+    // Attribute (非响应式对象，等同于 $attrs)
+    console.log(context.attrs)
+
+    // 插槽 (非响应式对象，等同于 $slots)
+    console.log(context.slots)
+
+    // 触发事件 (方法，等同于 $emit)
+    console.log(context.emit)
+
+    // 暴露公共 property (函数)
+    console.log(context.expose)
+  }
+}
+
+2：nextTick
+将回调推迟到下一个 DOM 更新周期之后执行。在更改了一些数据以等待 DOM 更新后立即使用它。
+ setup() {
+    const message = ref('Hello!')
+    const changeMessage = async newMessage => {
+      message.value = newMessage
+      await nextTick()
+      console.log('Now DOM is updated')
+    }
+  }
+
+3：slot
+parents.vue： 
+ <ModulePopup popupState="module">
+      <template v-slot:slotModule>
+        <p class="card-header-title">优先显示我</p>
+      </template>
+    </ModulePopup>
+child.vue：
+  <slot name="slotModule">
+        我是插槽，父组件标签中没有填写信息，我就是默认的
+      </slot>
+
+slot传值（子传父）：
+child.vue:
+ <slot :text="text"
+        >我是传值插槽，父组件标签中没有填写信息，我就是默认的</slot
+      >
+
+parents.vue:
+<ModulePopup popupState="module">
+      <template v-slot:default="slotProps">
+        <p class="card-header-title">优先展示{{ slotProps }}</p>
+      </template>
+    </ModulePopup>
+
+slot传值（子传父）：
+
+
+4：emit
+父组件： <emit-child @on-change="emitFn" />
+const emitFn = v => {
+      console.log(v);
+    }
+子组件: <button @click="clickBtn" class="btn-item">hi~</button>  
+const clickBtn = () => {
+      ctx.emit("on-change", "hi~");
+    };
+  
+5：Provide / Inject
+
+6：其他API
+reactive toRefs： 
+setup(){
+    const data = reactive({
+      name: "小四",
+      age: 18,
+      year: computed({
+        get: () => {
+          return 2020 - data.age;
+        },
+        set: (val) => {
+          data.age = 2020 - val;
+        },
+      }),
+    });
+    return {
+      ...toRefs(data),//讲响应式的对象变为普通对象 在家。。。结构，在模板中就可以直接使用属性，不用data.name
+    };
+  },
+computed： 接受一个 getter 函数，并根据 getter 的返回值返回一个不可变的响应式 ref 对象。
+watchEffect： 立即执行传入的一个函数，同时响应式追踪其依赖，并在其依赖变更时重新运行该函数。
+watch：
+watch(count, (count, prevCount) => {
+  /* ... */
+})
+watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
+  /* ... */
+})
+惰性地执行副作用；
+更具体地说明应触发侦听器重新运行的状态；
+访问被侦听状态的先前值和当前值。
+getCurrentInstance：
+getCurrentInstance 支持访问内部组件实例。
+const internalInstance = getCurrentInstance()
