@@ -234,6 +234,23 @@ var moveZeroes = function (nums) {
 
 };
 
+// 4:解析url 
+var analysisUrl = function (nums) {
+    let nums = 'http://localhost:8080/?id=2&type=1&age=20&score=88&score=99'; // 模拟url 地址
+    let urlIndex = nums.indexOf("?"); // 查看? 位置为多少  22
+    // 截取字符串,urlIndex是从下标开始的,应此加一
+    let str = nums.substr(urlIndex + 1, nums.toString().length);
+    console.log('str', str); // 打印 id=2&type=1&age=20
+    let strList = str.split("&") // ['id=2', 'type=1', 'age=20']
+
+    // let key = strList[i].split("=")[0]; // 如 id
+    // let value = strList[i].split("=")[1]; // 如 2
+    // obj[key] = value
+};
+
+
+
+
 // console.log(climbStairs(4), 'climbStairs')
 
 // console.log(containsDuplicate([11, 2, 3, 4]), 'containsDuplicate')

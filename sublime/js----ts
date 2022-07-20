@@ -1,95 +1,95 @@
-export PUB_HOSTED_URL=https://pub.flutter-io.cn
+export PUB_HOSTED_URL = https://pub.flutter-io.cn
 
 # 编译语言的JavaScript
-分词/词法分析------解析/语法分析------代码生成
+分词 / 词法分析------解析 / 语法分析------代码生成
 
 
 # 变量提升 函数提升
 var 存在变量提升 (var在全局作用域声明的变量有一种行为会挂载在window对象上)
-const 同样可以用来创建块作用域变量,const声明的是常量,只读,修改值会报错
+const 同样可以用来创建块作用域变量, const声明的是常量, 只读, 修改值会报错
 let 声明的变量没有var那样的变量提升----暂时死区(禁止重复声明)
-(函数声明(function a(){})会被提升，但是函数表达式(var a=function(){})却不会被提升。) (函数优先！！！！再其次是变量)
+  (函数声明(function a() { })会被提升，但是函数表达式(var a = function () { }) 却不会被提升。) (函数优先！！！！再其次是变量)
 
-let myObject = {
+let myObj= {
   mealA: 'Breakfast',
   mealB: 'Lunch',
   mealC: 'Dinner'
 };
 
-for (var k in myObject) {
-console.log( k, myObject[k] );
+for (var key in myObj) {
+  console.log(key, myObj[k]);
 }
 
-for (let [key, value] of myObject.entries(meals)) {
+for (let [key, value] of Object.entries(myObj)) {
   console.log(key + ':' + value);
 }
 
 
-宏任务和微任务-：：：：：：：：：：：：：：：：：：：：
-function add(xPromise,yPromise) {
- // Promise.all([ .. ])接受一个promise数组并返回一个新的promise，
- // 这个新promise等待数组中的所有promise完成
- return Promise.all( [xPromise, yPromise] )
- // 这个promise决议之后，我们取得收到的X和Y值并加在一起
- .then( function(values){
- // values是来自于之前决议的promisei的消息数组
- return values[0] + values[1];
- } );
+宏任务和微任务 -：：：：：：：：：：：：：：：：：：：：
+function add(xPromise, yPromise) {
+  // Promise.all([ .. ])接受一个promise数组并返回一个新的promise，
+  // 这个新promise等待数组中的所有promise完成
+  return Promise.all([xPromise, yPromise])
+    // 这个promise决议之后，我们取得收到的X和Y值并加在一起
+    .then(function (values) {
+      // values是来自于之前决议的promisei的消息数组
+      return values[0] + values[1];
+    });
 }
 // fetchX()和fetchY()返回相应值的promise，可能已经就绪，
 // 也可能以后就绪
-add( fetchX(), fetchY() )
-// 我们得到一个这两个数组的和的promise
-// 现在链式调用 then(..)来等待返回promise的决议
-.then( function(sum){
- console.log( sum ); // 这更简单！
-} ); 
+add(fetchX(), fetchY())
+  // 我们得到一个这两个数组的和的promise
+  // 现在链式调用 then(..)来等待返回promise的决议
+  .then(function (sum) {
+    console.log(sum); // 这更简单！
+  });
 
 
 eg例子：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 1  7 6 8 2 4 3 5 9  10 11 12
 
-eg:  6之后执行8  是因为 6是第一个微服务 执行完微服务要执行所有的微服务
+eg: 6之后执行8  是因为 6是第一个微服务 执行完微服务要执行所有的微服务
 
-eg: 2，4 ，3，5     ,,24之后要执行完这里的微服务再执行下面的微服务。下面的setimeOut是第三轮的事件循环宏服务
+eg: 2，4 ，3，5,, 24之后要执行完这里的微服务再执行下面的微服务。下面的setimeOut是第三轮的事件循环宏服务
 
 
 console.log('1');
-setTimeout(function() {
-    console.log('2');
-    process.nextTick(function() {
-        console.log('3');
-    })
-    new Promise(function(resolve) {
-        console.log('4');
-        resolve();
-    }).then(function() {
-        console.log('5')
-    })
-})
-
-process.nextTick(function() {
-    console.log('6');
-})
-
-new Promise(function(resolve) {
-    console.log('7');
+setTimeout(function () {
+  console.log('2');
+  process.nextTick(function () {
+    console.log('3');
+  })
+  new Promise(function (resolve) {
+    console.log('4');
     resolve();
-}).then(function() {
-    console.log('8')
+  }).then(function () {
+    console.log('5')
+  })
 })
 
-setTimeout(function() {
-    console.log('9');
-    process.nextTick(function() {
-        console.log('10');
-    })
-    new Promise(function(resolve) {
-        console.log('11');
-        resolve();
-    }).then(function() {
-        console.log('12')
-    })
+process.nextTick(function () {
+  console.log('6');
+})
+
+new Promise(function (resolve) {
+  console.log('7');
+  resolve();
+}).then(function () {
+  console.log('8')
+})
+
+setTimeout(function () {
+  console.log('9');
+  process.nextTick(function () {
+    console.log('10');
+  })
+  new Promise(function (resolve) {
+    console.log('11');
+    resolve();
+  }).then(function () {
+    console.log('12')
+  })
 })
 
 
@@ -97,15 +97,15 @@ Promise.race或者  new promise 内部设置回调
 
 promise的信任问题：：：：：：：：：：：：：：
 // 不要只是这么做：
-foo( 42 )
-.then( function(v){
- console.log( v );
-} );
+foo(42)
+  .then(function (v) {
+    console.log(v);
+  });
 // 而要这么做：
-Promise.resolve( foo( 42 ) )
-.then( function(v){
- console.log( v );
-} ); 
+Promise.resolve(foo(42))
+  .then(function (v) {
+    console.log(v);
+  });
 
 
 Promise.all() 允许同时执行所有的异步函数：：：：：：：：：
@@ -117,12 +117,12 @@ Promise
 在 rejected 状态，不能迁移到其它状态，必须有个不可变的 reason。
 
 
-Async/Await - 定义异步函数
+Async / Await - 定义异步函数
 自动把函数转换为 Promise
 当调用异步函数时，函数返回值会被 resolve 处理
 异步函数内部可以使用 await
 
-EG：：：：：：
+  EG：：：：：：
 多个异步函数同时执行时，需要借助 Promise.all
 await 把异步变成了同步。
 async function getABC() {
@@ -130,9 +130,9 @@ async function getABC() {
   let B = await getValueB();  getValueA 花费 4 秒
   let C = await getValueC();  getValueA 花费 3 秒
 
-  return A*B*C;总花费9秒
+  return A * B * C; 总花费9秒
 
-  return await Promise.all([ getValueA, getValueB, getValueC ]); 总花费4秒
+  return await Promise.all([getValueA, getValueB, getValueC]); 总花费4秒
 }
 
 
@@ -143,13 +143,13 @@ async function getABC() {
 call bind apply用法：：：：https://zhuanlan.zhihu.com/p/82340026
 
 1：call
-(function(name) {
-        //
-    })("aa");
-    //等价于
-    (function(name) {
-        //
-    }).call(window, "aa");
+  (function (name) {
+    //
+  })("aa");
+//等价于
+(function (name) {
+  //
+}).call(window, "aa");
 
 函数作为对象的方法被调用(那么this就是这对象)
 
@@ -163,8 +163,8 @@ person.hellofn("world");//[object Object] says hello world
 //相当于person.hellofn(person,"world")
 
 person.innerobj = {
-    name: "innerobjname",
-    f: function(){ console.log(this.name); }
+  name: "innerobjname",
+  f: function () { console.log(this.name); }
 }
 person.innerobj.f(); // 相当于obj.innerobj.f.call(obj.innerobj)
 // ==> innerobjname
@@ -174,28 +174,28 @@ person.innerobj.f(); // 相当于obj.innerobj.f.call(obj.innerobj)
 func.call(this, arg1, arg2)
 func.apply(this, [arg1, arg2]))
 
-验证是否是数组：functionisArray(obj){ 
-    return Object.prototype.toString.call(obj) === '[object Array]' ;
+验证是否是数组：functionisArray(obj){
+  return Object.prototype.toString.call(obj) === '[object Array]';
 }
 
 var args = Array.prototype.slice.call(arguments); arguments是伪数组
-  args.unshift('(app)');
-   console.log.apply(console, args);
+args.unshift('(app)');
+console.log.apply(console, args);
 
 apply 、 call 、bind 三者都是用来改变函数的this对象的指向的
-apply 、 call 、bind 三者第一个参数都是this要指向的对象,也就是想指定的上下文
+apply 、 call 、bind 三者第一个参数都是this要指向的对象, 也就是想指定的上下文
 apply 、 call 、bind 三者都可以利用后续参数传参
-bind 是返回对应函数,便于稍后调用,apply 、call 则是立即调用 。
+bind 是返回对应函数, 便于稍后调用, apply 、call 则是立即调用 。
 
- const obj = {
-    x: 10
-  }
-  function fn() {
-    console.log(this)
-  }
-  fn.call(obj)      //obj
-  fn.apply(obj) //obj
-  fn.bind(obj)() //obj
+const obj = {
+  x: 10
+}
+function fn() {
+  console.log(this)
+}
+fn.call(obj)      //obj
+fn.apply(obj) //obj
+fn.bind(obj)() //obj
 
 4.1: 判断类型
 Object.prototype.toString.call(null); // "[object Null]"
@@ -204,7 +204,7 @@ Object.prototype.toString.call(“abc”);// "[object String]"
 Object.prototype.toString.call(123);// "[object Number]"
 Object.prototype.toString.call(true);// "[object Boolean]"
 Object.prototype.toString.call(new Date()); // "[object Date]"
-Object.prototype.toString.call([1,2,3]); // "[object Array]"
+Object.prototype.toString.call([1, 2, 3]); // "[object Array]"
 
 
 1: 闭包和递归：：：：：：：：：：：：：：：：：：：：：：：
@@ -262,27 +262,27 @@ https://juejin.cn/post/6844903619808985095
 
 
 
-递归-：：：：：：：：：：：：：：：：：：：：
+递归 -：：：：：：：：：：：：：：：：：：：：
 const multiply = (A, B) => {
-   if (A === 1) {
-      return B;
-    } else {
-      return B + multiply(A - 1, B);
-    }
-  };
+  if (A === 1) {
+    return B;
+  } else {
+    return B + multiply(A - 1, B);
+  }
+};
 
 扩展：函数柯里化：：
 function curry(fn, args) {
   var length = fn.length;
   args = args || [];
-  return function(...rest) {
+  return function (...rest) {
     var _args = [...args, ...rest];
     return _args.length < length
       ? curry.call(this, fn, _args)
-    : fn.apply(this, _args);
+      : fn.apply(this, _args);
   }
 }
-var fn = curry(function(a, b, c) {
+var fn = curry(function (a, b, c) {
   console.log(a + b + c);
 });
 fn('a', 'b', 'c'); // abc
@@ -293,7 +293,7 @@ fn('a')('b')('c'); // abc
 
 forEach、map、filter、reduce、every、some的区别联系：：：：：：：：：：：
 forEach：  让数组中的每一项做一件事
-map： 让数组的通过某种计算产生一个新的数组  
+map： 让数组的通过某种计算产生一个新的数组
 filter： 筛选出数组符合条件的项 组成一个新数组
 reduce： 让数组的前项和后项做某种计算 并累计最终值   //[1,2,3,4,5].reduce((prev,next)=>return prev+next)
 every： 检测数组的每一项是否符合条件 全部符合就是true
@@ -301,10 +301,10 @@ some： 检测数组中的某一项是否符合条件 一项符合即可
 splice：操作函数：
 
 # 对象操作：：：：：：：：：：：：：：：：：：：：：：：：：：：
-var copy = Object.assign({}, obj) 
-var obj = { 0: 'a', 1: 'b', 2: 'c' } console.log(Object.keys(obj))---console: ['0', '1', '2'] console.log(Object.values(obj))---- ['a', 'b', 'c']
+var copy = Object.assign({}, obj)
+var obj = { 0: 'a', 1: 'b', 2: 'c' } console.log(Object.keys(obj))---console: ['0', '1', '2'] console.log(Object.values(obj))----['a', 'b', 'c']
 const obj = { foo: 'bar', baz: 42 }-----console.log(Object.entries(obj)); // [ ['foo', 'bar'], ['baz', 42] ]   
-var obj = {a: 'ss', b: 'bb', c: 'cc'}---------for (var i in obj){ console.log(i+'--------'+obj[i]) }
+var obj = { a: 'ss', b: 'bb', c: 'cc' }---------for (var i in obj) { console.log(i + '--------' + obj[i]) }
 Object.defineProperty(obj, prop, descriptor)
 
 
@@ -320,9 +320,6 @@ myWm.set(key, value);
 myWm.has(key);
 // 获取键对应的值
 myWm.get(key);
-
-
-
 
 
 6:React SSR + express 构建简单服务端渲染Demo      https://juejin.cn/post/6844903990497378318
@@ -346,8 +343,8 @@ reduce 高级用法：https://juejin.cn/post/6844903669977055239
 • 符号(symbol)ES6 中新增------- 一个 symbol 实例可以被赋值到一个左值变量，还可以通过标识符检查类型 （可以非常有效的消除magic string和magic number）
 var identity = Symbol()
 var obj = {
-    name : 'john',
-    [identity] : 'hero'
+  name: 'john',
+  [identity]: 'hero'
 }
 obj.name   //'john'
 obj[name]  //'john'
@@ -359,7 +356,7 @@ obj[identity]  //'hero'
 都具有对象特性，即可自由扩展属性
 都有一个隐式原型 __proto__ 属性，属性值是一个普通的对象。
 
-const obj = { a:1 }
+const obj = { a: 1 }
 obj.toString
 当你试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么它会去它的隐式原型 __proto__（也就是它的构造函数的显式原型 prototype）中寻找
 obj 对象并没有 toString 属性，之所以能获取到 toString 属性，是遵循了第四条规则，从它的构造函数 Object 的 prototype 里去获取。
@@ -385,15 +382,15 @@ Null	“object”
 布尔值	“boolean”
 数值	“number”
 字符串	“string”
-Symbol (ECMAScript 6 新增)	“symbol”
-宿主对象(JS环境提供的，比如浏览器)	Implementation-dependent
+Symbol(ECMAScript 6 新增)	“symbol”
+宿主对象(JS环境提供的，比如浏览器)	Implementation - dependent
 函数对象	“function”
 任何其他对象	“object”
 作用：：：typeof可以判断数据类型，但是无法判断array和object，
 
 
 instanceof用法：instanceof运算符可以用来判断某个构造函数的prototype属性是否存在于另外一个要检测对象的原型链上。
-作用：：：instanceof主要的目的是检测引用类型,判断对象是Array,还是RegExp!
+作用：：：instanceof主要的目的是检测引用类型, 判断对象是Array, 还是RegExp!
 
 eg：
 function Foo(name) {
@@ -421,53 +418,53 @@ export function GenNonDuplicateID() {
 
 
 
-*获取一个时间标准对象: const time= new Date(时间戳); Wed Jun 01 2022 12:00:00 GMT+0800 (中国标准时间)
+* 获取一个时间标准对象: const time = new Date(时间戳); Wed Jun 01 2022 12: 00: 00 GMT + 0800(中国标准时间)
 
-*获取一个时间戳:  new Date('2022-06-01 16:00:00').getTime()  //获取一个时间戳 1654070400000
+  * 获取一个时间戳: new Date('2022-06-01 16:00:00').getTime()  //获取一个时间戳 1654070400000
 
 
 
-*获取当前时间日期格式： new Date().toLocaleString()      //'2022/6/1 13:55:02'
+    * 获取当前时间日期格式： new Date().toLocaleString()      //'2022/6/1 13:55:02'
 
-*获取当天的时间戳： let startTime1 = new Date(new Date().toLocaleDateString()).getTime();  当天0点 1654012800000
-*获取当天指定时间的时间戳： let endTime1 = new Date(new Date().toLocaleDateString()).getTime() + 15 * 60 * 60 * 1000    当天 15:00
-*获取当天指定时间的时间戳： let endTime1 = new Date(new Date().toLocaleDateString()).getTime() + 15 * 60 * 60 * 1000 -1   当天 14:59:59
+      * 获取当天的时间戳： let startTime1 = new Date(new Date().toLocaleDateString()).getTime();  当天0点 1654012800000
+        * 获取当天指定时间的时间戳： let endTime1 = new Date(new Date().toLocaleDateString()).getTime() + 15 * 60 * 60 * 1000    当天 15:00
+* 获取当天指定时间的时间戳： let endTime1 = new Date(new Date().toLocaleDateString()).getTime() + 15 * 60 * 60 * 1000 - 1   当天 14:59:59
 
-*两个时间戳相隔时间：
+* 两个时间戳相隔时间：
 function intervalTime(startTime, endTime) {
-    var timeDiff = (endTime - startTime) //时间差
-    let days = Math.floor(timeDiff / (24 * 3600 * 1000)); // 计算出天数
-    let leavel1 = timeDiff % (24 * 3600 * 1000); // 计算天数后剩余的时间
-    let hours = Math.floor(leavel1 / (3600 * 1000)); // 计算天数后剩余的小时数
-    let leavel2 = timeDiff % (3600 * 1000); // 计算剩余小时后剩余的毫秒数
-    let minutes = Math.floor(leavel2 / (60 * 1000)); // 计算剩余的分钟数
-    let leavel3 = timeDiff % (3600 * 1000); // 计算剩余分钟后剩余的毫秒数
-    let scends = Math.floor(leavel3 / (60 * 1000));
+  var timeDiff = (endTime - startTime) //时间差
+  let days = Math.floor(timeDiff / (24 * 3600 * 1000)); // 计算出天数
+  let leavel1 = timeDiff % (24 * 3600 * 1000); // 计算天数后剩余的时间
+  let hours = Math.floor(leavel1 / (3600 * 1000)); // 计算天数后剩余的小时数
+  let leavel2 = timeDiff % (3600 * 1000); // 计算剩余小时后剩余的毫秒数
+  let minutes = Math.floor(leavel2 / (60 * 1000)); // 计算剩余的分钟数
+  let leavel3 = timeDiff % (3600 * 1000); // 计算剩余分钟后剩余的毫秒数
+  let scends = Math.floor(leavel3 / (60 * 1000));
 
-    console.log(`${days}天${hours}时${minutes}分${scends}秒`)
+  console.log(`${days}天${hours}时${minutes}分${scends}秒`)
 
-    return 111
+  return 111
 }
 
-*标准时间转日期格式： dateFormat("YYYY-mm-dd HH:MM:SS", new Date())  //2022-06-01 11:22:30
+* 标准时间转日期格式： dateFormat("YYYY-mm-dd HH:MM:SS", new Date())  //2022-06-01 11:22:30
 function dateFormat(fmt, date) {
-    let ret
-    const opt = {
-        'Y+': date.getFullYear().toString(), // 年
-        'm+': (date.getMonth() + 1).toString(), // 月
-        'd+': date.getDate().toString(), // 日
-        'H+': date.getHours().toString(), // 时
-        'M+': date.getMinutes().toString(), // 分
-        'S+': date.getSeconds().toString(), // 秒
-        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  let ret
+  const opt = {
+    'Y+': date.getFullYear().toString(), // 年
+    'm+': (date.getMonth() + 1).toString(), // 月
+    'd+': date.getDate().toString(), // 日
+    'H+': date.getHours().toString(), // 时
+    'M+': date.getMinutes().toString(), // 分
+    'S+': date.getSeconds().toString(), // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  }
+  for (let k in opt) {
+    ret = new RegExp('(' + k + ')').exec(fmt)
+    if (ret) {
+      fmt = fmt.replace(ret[1], ret[1].length == 1 ? opt[k] : opt[k].padStart(ret[1].length, '0'))
     }
-    for (let k in opt) {
-        ret = new RegExp('(' + k + ')').exec(fmt)
-        if (ret) {
-            fmt = fmt.replace(ret[1], ret[1].length == 1 ? opt[k] : opt[k].padStart(ret[1].length, '0'))
-        }
-    }
-    return fmt
+  }
+  return fmt
 }
 
 
@@ -475,34 +472,34 @@ function dateFormat(fmt, date) {
 获取今天周几：
 ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'][new Date().getDay()]
 
-   function getTime(n) {
-      var now = new Date();
-      var year = now.getFullYear();
-      var month = now.getMonth() + 1;
-      var day = now.getDay(); //返回星期几的某一天;
-      n = day == 0 ? n + 6 : n + (day - 1);
-      now.setDate(now.getDate() - n);
-      const date = now.getDate();
-      var s =
-        year +
-        "-" +
-        (month < 10 ? "0" + month : month) +
-        "-" +
-        (date < 10 ? "0" + date : date);
-      return s;
-    }
-    //上周的开始时间
-    console.log(getTime(7));
-    //上周的结束时间
-    console.log(getTime(1));
-    //本周的开始时间
-    console.log(getTime(0));
-    //本周的结束时间
-    console.log(getTime(-6));
-    //下周的开始时间
-    console.log(getTime(-7));
-    //下周结束时间
-    console.log(getTime(-13));
+function getTime(n) {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var day = now.getDay(); //返回星期几的某一天;
+  n = day == 0 ? n + 6 : n + (day - 1);
+  now.setDate(now.getDate() - n);
+  const date = now.getDate();
+  var s =
+    year +
+    "-" +
+    (month < 10 ? "0" + month : month) +
+    "-" +
+    (date < 10 ? "0" + date : date);
+  return s;
+}
+//上周的开始时间
+console.log(getTime(7));
+//上周的结束时间
+console.log(getTime(1));
+//本周的开始时间
+console.log(getTime(0));
+//本周的结束时间
+console.log(getTime(-6));
+//下周的开始时间
+console.log(getTime(-7));
+//下周结束时间
+console.log(getTime(-13));
 
 
 
@@ -519,9 +516,9 @@ JS的20个实用技巧：：：：：：：：：：：：：：：：：   http
 
 使用reduce实现数组filter方法
 const myFilter2 = function (fn, context) {
-    return this.reduce((total, current, index) => {
-        return fn.call(context, current, index, this) ? [...total, current] : [...total]
-    }, [])
+  return this.reduce((total, current, index) => {
+    return fn.call(context, current, index, this) ? [...total, current] : [...total]
+  }, [])
 }
 
 // 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
@@ -532,49 +529,49 @@ const myFilter2 = function (fn, context) {
 
 
 export function eventBus() {
-	const all: Dictionary<Array<Function>> = Object.create(null);
+  const all: Dictionary<Array<Function>> = Object.create(null);
 
-	return {
-		/**
-		 * Register an event handler for the given type.
-		 *
-		 * @param type	Type of event to listen for, or `"*"` for all events
-		 * @param handler Function to call in response to given event
-		 */
-		on(type: string, handler: (event?: any) => void) {
-			(all[type] || (all[type] = [])).push(handler);
-		},
+  return {
+    /**
+     * Register an event handler for the given type.
+     *
+     * @param type	Type of event to listen for, or `"*"` for all events
+     * @param handler Function to call in response to given event
+     */
+    on(type: string, handler: (event?: any) => void) {
+      (all[type] || (all[type] = [])).push(handler);
+    },
 
-		/**
-		 * Remove an event handler for the given type.
-		 *
-		 * @param type	Type of event to unregister `handler` from, or `"*"`
-		 * @param handler Handler function to remove
-		 */
-		off(type: string, handler: (event?: any) => void) {
-			if (all[type]) {
-				all[type].splice(all[type].indexOf(handler) >>> 0, 1);
-			}
-		},
+    /**
+     * Remove an event handler for the given type.
+     *
+     * @param type	Type of event to unregister `handler` from, or `"*"`
+     * @param handler Handler function to remove
+     */
+    off(type: string, handler: (event?: any) => void) {
+      if (all[type]) {
+        all[type].splice(all[type].indexOf(handler) >>> 0, 1);
+      }
+    },
 
-		/**
-		 * Invoke all handlers for the given type.
-		 * If present, `"*"` handlers are invoked after type-matched handlers.
-		 *
-		 * Note: Manually firing "*" handlers is not supported.
-		 *
-		 * @param type  The event type to invoke
-		 * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
-		 */
-		emit(type: string, evt: any) {
-			(all[type] || []).slice().map(handler => {
-				handler(evt);
-			});
-			(all['*'] || []).slice().map(handler => {
-				handler(type, evt);
-			});
-		},
-	};
+    /**
+     * Invoke all handlers for the given type.
+     * If present, `"*"` handlers are invoked after type-matched handlers.
+     *
+     * Note: Manually firing "*" handlers is not supported.
+     *
+     * @param type  The event type to invoke
+     * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
+     */
+    emit(type: string, evt: any) {
+      (all[type] || []).slice().map(handler => {
+        handler(evt);
+      });
+      (all['*'] || []).slice().map(handler => {
+        handler(type, evt);
+      });
+    },
+  };
 }
 
 
@@ -589,9 +586,9 @@ interface SetSister {
   name: string;
   (name: string, age: number): void;
 }
-2： 都可以扩展 但是 type是&--------interface是extends
+2： 都可以扩展 但是 type是 & --------interface是extends
 3： interface扩展是不可以重复
-4: type可以并用两个接口,而接口不可以并用接口
+4: type可以并用两个接口, 而接口不可以并用接口
 interface Admin {
   name: string;
   privileges: string[];
@@ -615,76 +612,76 @@ V（Value）：表示对象中的值类型；
 E（Element）：表示元素类型。
 
 1：function aname<T>(value: T): T {
-	return value;
+  return value;
 }
-2：function identity <T, U>(value: T, message: U) : T {
+2：function identity<T, U>(value: T, message: U): T {
   console.log(message);
   return value;
 }
 3：const bname = <T>(x: T): T => {
 	return x;
 };
-/**  Record<string, unknown> 相当于{} */
-4：const cname = <T extends Record<string, unknown>>(x: T): T => x;
-5：const dname =
-	<T1 extends Record<string, unknown>>(arg1: T1) =>
-	<T2 extends Record<string, unknown>>(arg2: T2) => {
-		return { arg1, arg2 };
+/**  Record<string, unknown> 相当于{ } */
+  4：const cname = <T extends Record<string, unknown>>(x: T): T => x;
+  5：const dname =
+  <T1 extends Record<string, unknown>>(arg1: T1) =>
+  <T2 extends Record<string, unknown>>(arg2: T2) => {
+		return {arg1, arg2};
 	};
 
-字符串枚举+常量枚举=异构枚举
-类型断言： <string>someValue =====  someValue as any 
-Partial<T> 的作用就是将某个类型或者接口里的属性全部变为可选项 ?
+  字符串枚举+常量枚举=异构枚举
+  类型断言： <string>someValue =====  someValue as any
+    Partial<T> 的作用就是将某个类型或者接口里的属性全部变为可选项 ?
 
-JSON数据格式转ts接口： http://ww7.jsontots.com/
+      JSON数据格式转ts接口： http://ww7.jsontots.com/
 
-高级类型技巧： https://juejin.cn/post/6994102811218673700#heading-6
+      高级类型技巧： https://juejin.cn/post/6994102811218673700#heading-6
 
 
 
- class Greeter {
-  // 静态属性
-  static cname: string = "Greeter";
-  // 成员属性
-  greeting: string;
+      class Greeter {
+        // 静态属性
+        static cname: string = "Greeter";
+      // 成员属性
+      greeting: string;
 
-  // 构造函数 - 执行初始化操作
-  constructor(message: string) {
-    this.greeting = message;
+      // 构造函数 - 执行初始化操作
+      constructor(message: string) {
+        this.greeting = message;
   }
 
-  // 静态方法
-  static getClassName() {
+      // 静态方法
+      static getClassName() {
     return "Class name is Greeter";
   }
 
-  // 成员方法
-  greet() {
+      // 成员方法
+      greet() {
     return "Hello, " + this.greeting;
   }
 }
 
-let greeter = new Greeter("world");
+      let greeter = new Greeter("world");
 
 
-编译成ES5代码：：：：：：：：：：：：：：：：：：：
+      编译成ES5代码：：：：：：：：：：：：：：：：：：：
 
-"use strict";
-var Greeter = /** @class */ (function () {
-    // 构造函数 - 执行初始化操作
-    function Greeter(message) {
-      this.greeting = message;
-    }
+      "use strict";
+      var Greeter = /** @class */ (function () {
+        // 构造函数 - 执行初始化操作
+        function Greeter(message) {
+          this.greeting = message;
+        }
     // 静态方法
     Greeter.getClassName = function () {
       return "Class name is Greeter";
     };
-    // 成员方法
-    Greeter.prototype.greet = function () {
+      // 成员方法
+      Greeter.prototype.greet = function () {
       return "Hello, " + this.greeting;
     };
-    // 静态属性
-    Greeter.cname = "Greeter";
-    return Greeter;
+      // 静态属性
+      Greeter.cname = "Greeter";
+      return Greeter;
 }());
-var greeter = new Greeter("world");
+      var greeter = new Greeter("world");

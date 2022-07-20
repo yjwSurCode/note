@@ -50,7 +50,7 @@ core-js polyfill的类库
 代码案例演示：https://astexplorer.net/#/KJ8AjD6maa
 
 
-#  Webpack：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+#  Webpack：：：：：：：：：：：：：：：：：：(https://webpack.docschina.org/)
 
 Webpack是一种前端资源构建工具，一个静态模块打包器
 (将各种类型的资源，包括图片、css、js等，转译、组合、拼接、生成 JS 格式的 bundler.js文件,转换成为浏览器可运行的代码)
@@ -66,10 +66,10 @@ Webpack是一种前端资源构建工具，一个静态模块打包器
 1：mode模型-------development production
 2：entry 入口
 3：output输出
-3.1 path：最终产物所在目录
-3.2 filename：产物文件命名规则
-3.3 chunkFilename：chunk文件命名规则
-3.4 publicPath：公共目录路径，用于指定特定的文件查找路径
+3.1：path：最终产物所在目录
+3.2：filename：产物文件命名规则
+3.3：chunkFilename：chunk文件命名规则
+3.4：publicPath：公共目录路径，用于指定特定的文件查找路径
 4：devtool开发工具
 5：devServer开发服务器------------webpack-dev-server  hot热替换
 6:optimization优化
@@ -92,10 +92,24 @@ rules：:[
   }
 ]
 }
-
+# babel-loader(jsx--->js) 
+# style-loader,css-loader(css) 
+# babel-loader(jsx--->js)
+# babel-loader(jsx--->js)
 8：plugins插件
+  plugins: [
+    new HtmlwebpackPlugin({
+      title: 'Webpack-demos',
+      filename: 'index.html'
+    }),
+    new OpenBrowserPlugin({
+      url: 'http://localhost:8080'
+    })
+  ]
 1. html-webpack-plugin能自动将改名后的文件加载到原先引用它的文件中
 1. DefinePlugin能将常量插入文件中
+
+# webpack配置demo(https://github1s.com/ruanyf/webpack-demos)
 
 
 # webpack 运行机制与核心工作原理 ：：：：：：：：：：：：：：：：：：(一文吃透 Webpack 核心原理：https://zhuanlan.zhihu.com/p/363928061)
@@ -121,8 +135,14 @@ plugin：扩展插件,在 Webpack 构建流程中的特定时机会广播出对�
 
 但是webpack这类工具的做法是将所有模块提前编译、打包进bundle里,换句话说,不管模块是否会被执行,都要被编译和打包到bundle里。随着项目越来越大,打包后的bundle也越来越大,打包的速度自然会越来越慢。
 
-# vite打包流程:::::::::::::::::::::::::::::::::::::::
-vite--->启动 web server ————编译请求的文件到浏览器
+
+# vite打包流程:::::::::::::::::::::::
+
+
+# webpack-dev-server 中的「HMR」
+核心就是 HotModuleReplacementPlugin
+
+# vite 中的「HMR」
 
 
 # webpack 会需要打包一个一个大体积的bundle.js？之前会产生打包需求的主要原因：
@@ -144,11 +164,7 @@ vite 在构建过程中使用esbuild进行构建,esbuild 是一个新的代码�
 
 vite 的作用就是体现在了这里,vite的任务就是用koa起一个http请求,然后利用拦截器去拦截修改这些请求内容
 
-问题：：：：：：：：：：
-不能识别md文件？
-为什么webpack可以引入loader的方式加载md文件？
-如何编写vite插件？
-vite不是基于webpack 为什么不可以引入loader 怎么写插件解决 ？
+
 
 gulp构建工具：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 擅长：前端开发流程规范管理。不包括模块化功能。

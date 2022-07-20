@@ -51,7 +51,8 @@ binary - latin1 的别名。
 hex - 将每个字节编码为两个十六进制字符。
 
 3：child_process 子进程
-在node中我们常常需要在主进程之外新建一个子进程来提高程序的运行效率，这时就需要使用到node中的child_process模块。child_process 模块提供了衍生子进程的功能，在默认情况下，父进程和子进程之间会建立stdin, stdout, stderr三个管道，数据能够以非阻塞的方式流动
+在node中我们常常需要在主进程之外新建一个子进程来提高程序的运行效率，这时就需要使用到node中的child_process模块。child_process 模块提供了衍生子进程的功能，在默认情况下,
+父进程和子进程之间会建立stdin, stdout, stderr三个管道，数据能够以非阻塞的方式流动
 
 4: 集群
 Node.js 的单个实例在单个线程中运行。 为了利用多核系统，用户有时会想要启动 Node.js 进程的集群来处理负载
