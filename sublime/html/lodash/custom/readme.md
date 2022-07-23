@@ -25,4 +25,4 @@ npm install @babel/core@7.4.5 @babel/preset-env@7.4.5 -D
 
 
 实时在浏览器预览：
-npm i -D webpack webpack-cli webpack-dev-server typescript ts-loader clean-webpack-plugin
+npm i -D webpack webpack-cli webpack-dev-server typescript ts-loader clean-webpack-plugin   

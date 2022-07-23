@@ -138,6 +138,9 @@ async function getABC() {
 
 
 
+# new操作符的作用
+
+
 
 
 call bind apply用法：：：：https://zhuanlan.zhihu.com/p/82340026
@@ -504,10 +507,6 @@ console.log(getTime(-13));
 
 
 
-
-
-
-
 eventBus：：：：：：：：：：：：：：：：：：：：：：：
 
 
@@ -520,6 +519,7 @@ const myFilter2 = function (fn, context) {
     return fn.call(context, current, index, this) ? [...total, current] : [...total]
   }, [])
 }
+
 
 // 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
 
@@ -580,7 +580,7 @@ export function eventBus() {
 ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 
-接口iterface 和 类型别名type 的关联和区别：：：：：：：：：
+# 接口iterface 和 类型别名type 的关联和区别：：：：：：：：：
 1：都可以描述 对象和函数
 interface SetSister {
   name: string;
@@ -599,7 +599,7 @@ interface Employee {
 }
 type UnknownEmployee = Employee | Admin;
 
-implements与extends的区别：：：：：：：：：：：：：：：：
+# implements与extends的区别：：：：：：：：：：：：：：：：
 
 extends继承，一个新的接口或者类，从父类或者接口继承所有的属性和方法，不可以重写属性，但可以重写方法
 implements是对某个接口或者类型的实现继承，必须满足接口的类型规范。

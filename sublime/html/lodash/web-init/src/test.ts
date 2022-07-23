@@ -18,54 +18,61 @@ import useDebounceFn from "./useDebounceFn";
 import debounced from "./debounce";
 import _ from "lodash"; //npm i --save-dev @types/lodash
 
-// debounce(
-//   () => {
-//     console.log("触发-debounce");
-//   },
-//   1000,
-//   {}
-// );
-
-// function a() {
-//   debounce(
-//     () => {
-//       console.log("触发-debounce");
-//     },
-//     1000,
-//     {}
-//   );
-// }
-
-// a();
-
 const _debounced = debounced(
   () => {
     console.log("触发-debounce");
     // _debounced.cancel;
+    callCounts++;
   },
-  2000,
-  { leading: true }
+  1000
+  // { trailing: false } // false 0 0    true 0 1
 );
+
+var callCounts = 0;
 
 const _useDebounceFn = useDebounceFn(
-  () => {
-    console.log("触发-useDebounceFn");
+  (e) => {
+    console.log("触发-useDebounceFn", e);
+    callCounts++;
+    // alert("触发-useDebounceFn");
+    // _useDebounceFn.cancel;
+    // _useDebounceFn.flush;
   },
-  1000,
-  { leading: true }
+  200,
+  { maxWait: 200 }
 );
 
-window.addEventListener("click", () => {
-  console.log("用户点击");
+const lodashDebounce = _.debounce(
+  () => {
+    console.log("触发-lodashDebounce");
+    // _debounced.cancel;
+    callCounts++;
+  },
+  2000,
+  { leading: true, maxWait: 2000 }
+);
+
+window.addEventListener("click", (e) => {
+  console.log("用户点击", e);
   // _debounced();
   _useDebounceFn();
-  // _.debounce(
+  // lodashDebounce();
+  // useDebounceFn(
   //   () => {
-  //     console.log("触发-lodash-debounce");
+  //     console.log("触发-useDebounceFn");
   //   },
-  //   2000,
-  //   { leading: true }
+  //   1000,
+  //   { maxWait: 3000 }
   // )();
+  console.log("callCounts[0]", callCounts);
+
+  setTimeout(_useDebounceFn, 190);
+  setTimeout(_useDebounceFn, 200);
+  setTimeout(_useDebounceFn, 210);
+
+  setTimeout(function () {
+    console.log("callCounts[0]----4444", callCounts); //2
+  }, 2000);
 });
 
 // _debounce.cancel;
