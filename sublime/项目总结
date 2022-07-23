@@ -176,7 +176,7 @@ lerna  是一个专门用于管理带有多个包的JavaScript项目的工具，
 vite不是基于webpack为什么不可以引入loader怎么写插件解决？
 
 
-7：：：：：：：：：：：：：：：秒杀系统(taro+node+express+mysql+redis+nginx+docker+docker-compose)
+7：秒杀系统(taro+node+express+mysql+redis+nginx+docker+docker-compose)
 
 
 (前提创建一个项目需要用别人的脚手架 比如: vue-cli create-react-app )
