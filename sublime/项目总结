@@ -102,6 +102,7 @@ function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): v
 没有写入时，多个线程允许同时读（提高性能）
 案例：：：：：接口如何防刷 
 同一客户端次数限制。这个前端的一般使用是给接口调用加锁，在返回结果或者一定时间之后解锁。
+
 3.3-----输入框的 防流 节抖：：：：：：：：：：：：：：：：：：
 const debouncedValue = useDebounce(values, 200);
 	useDebounceFn(
@@ -155,12 +156,12 @@ gulp   gulp是一个基于流的构建工具
 lerna  是一个专门用于管理带有多个包的JavaScript项目的工具，可以帮助进行npm发布及git上传
 
 1：lerna init 生成 packages
-2：yarn dev---------------- lerna exec -- [..args] # 在所有包中运行该命令    "dev": "lerna exec --scope fnx-ui yarn dev",
+2：yarn dev----------------lerna exec -- [..args] # 在所有包中运行该命令    "dev": "lerna exec --scope fnx-ui yarn dev",
 3：项目使用vite构建
 4：开发一个符合公司的脚手架
 
 
-6:：：：：：：：：：：：：：：：
+6:：
 手写webpack打包工具的loader
 手写webpack打包工具的插件plugin
 实现简易版webpack
