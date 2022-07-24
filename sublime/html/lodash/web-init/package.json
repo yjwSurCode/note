@@ -9,7 +9,7 @@
     "watch": "webpack --watch",
     "serve": "webpack serve",
     "test": "jest",
-    "test-single": "jest debounce.spec.ts --coverage"
+    "test-single": "jest throttle.spec.ts --coverage"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.7",

@@ -33,7 +33,7 @@ describe("debounce", function () {
       done();
     }, 256);
 
-    done();
+    // done();
   });
   it("subsequent debounced calls return the last `func` result", function (done) {
     var debounced = debounce(identity, 32);
@@ -197,30 +197,32 @@ describe("debounce", function () {
 
   //TODO
   it("should support `maxWait` in a tight loop", function (done) {
-    // var limit = argv || isPhantom ? 1000 : 320,
-    //   withCount = 0,
-    //   withoutCount = 0;
-    // var withMaxWait = debounce(
-    //   function () {
-    //     withCount++;
-    //   },
-    //   64,
-    //   { maxWait: 128 }
-    // );
-    // var withoutMaxWait = debounce(function () {
-    //   withoutCount++;
-    // }, 96);
-    // var start = +new Date();
-    // while (new Date() - start < limit) {
-    //   withMaxWait();
-    //   withoutMaxWait();
-    // }
-    // var actual = [Boolean(withoutCount), Boolean(withCount)];
-    // setTimeout(function () {
-    //   assert.deepStrictEqual(actual, [false, true]);
-    //   done();
-    // }, 1);
-    done();
+    var limit = 320,
+      withCount = 0,
+      withoutCount = 0;
+    var withMaxWait = debounce(
+      function () {
+        withCount++;
+      },
+      64,
+      { maxWait: 128 }
+    );
+    var withoutMaxWait = debounce(function () {
+      withoutCount++;
+    }, 96);
+
+    var start: number;
+    start = +new Date().getTime();
+
+    while (new Date().getTime() - start < limit) {
+      withMaxWait();
+      withoutMaxWait();
+    }
+    var actual = [Boolean(withoutCount), Boolean(withCount)];
+    setTimeout(function () {
+      assert.deepStrictEqual(actual, [false, true]);
+      done();
+    }, 1);
   });
 
   it("should queue a trailing call for subsequent debounced calls after `maxWait`", function (done) {

@@ -10,11 +10,12 @@ interface DebounceOptions {
 }
 
 interface InitData extends DebounceOptions {
-  /*主函数传入参数* */
+  /* 主函数传入参数 缓存上一个arguments */
   lastArgs?: undefined | Array<any>;
+  /* 缓存上一个this */
   lastThis?: undefined | Array<any>;
-  /* 处理中间件 */
-  result?: undefined;
+  /* 传入函数返回值 */
+  result?: undefined | any;
   timerId?: number;
   /*最后一次触发时间* */
   lastCallTime?: number;
@@ -75,13 +76,13 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     maxWait = maxing ? Math.max(+options.maxWait || 0, wait) : maxWait; //maxing ? Math.max(optMaxWait, wait) : maxWait;
     /* options?.trailing   "trailing" in options */
     trailing = "trailing" in options ? !!options.trailing : trailing;
-    console.log(
-      maxing,
-      maxWait,
-      "对比：",
-      options?.maxWait,
-      "maxWait" in options
-    );
+    // console.log(
+    //   maxing,
+    //   maxWait,
+    //   "对比：",
+    //   options?.maxWait,
+    //   "maxWait" in options
+    // );
   }
   // step 2
   //TODO
@@ -104,8 +105,10 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     lastInvokeTime = time;
     /*设置函数最后执行的时间 */
     //TODO
+    /* result为返回值 当传入函数又返回值 */
     // console.log("d-1111", result,thisArg, args); // undefined   event
     result = func.apply(thisArg, args);
+    // console.log(result, "result");
     return result;
   }
 
@@ -118,31 +121,9 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     const timeSinceLastInvoke = time - lastInvokeTime;
 
     /* 判断时间是否到达最大等待时间 (maxing && timeSinceLastInvoke >= maxWait) */
-    // console.log(maxWait, "maxWait11");
     if (!maxWait) return;
 
-    // console.log("eeeeee");
-
-    // console.log(
-    //   "a-33",
-    //   "是否",
-    //   time - lastInvokeTime,
-    //   "lastInvokeTime--->",
-    //   lastInvokeTime,
-    //   "maxWait--maxing-->",
-    //   maxWait,
-    //   maxing,
-    //   "timeSinceLastInvoke--->",
-    //   timeSinceLastInvoke,
-    //   lastInvokeTime,
-    //   "-----------------------",
-    //   lastCallTime === undefined,
-    //   timeSinceLastCall >= wait,
-    //   timeSinceLastCall < 0,
-    //   "触发判断",
-    //   maxing && timeSinceLastInvoke >= maxWait,
-    //   maxing && timeSinceLastInvoke >= (0 && maxWait)
-    // );
+    // console.log("shouldInvoke--eeeeee");
 
     // Either this is the first call, activity has stopped and we're at the
     // trailing edge, the system time has gone backwards and we're treating
@@ -194,13 +175,13 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     /* 判断执行函数时机 */
     return leading ? invokeFunc(time) : result;
   };
-  // step 4 shouldInvoke(time)
+  // step 4 shouldInvoke(time)===true
   function trailingEdge(time: number) {
     timerId = undefined;
     // Only invoke if we have `lastArgs` which means `func` has been
     // debounced at least once.
 
-    console.log(trailing, lastArgs, "trailing && lastArgs");
+    // console.log(trailing, lastArgs, "trailing && lastArgs");
     //TODO
     if (trailing && lastArgs) {
       return invokeFunc(time);
@@ -210,14 +191,16 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     return result;
   }
 
+  // step 0
   function debounced(...args: Array<any>) {
     const time = Date.now();
-    const isInvoking = shouldInvoke(time); //第一次true 在时间内点击false
+    const isInvoking = shouldInvoke(time); //第一次true在时间内点击false
 
     lastArgs = args;
+    // TODO this的探究
     lastThis = this;
     lastCallTime = time;
-    // console.log("a--debounced(...args)", timerId, maxing, args);
+    // console.log("a--debounced(...args)", this, args, timerId, isInvoking);
     if (isInvoking) {
       if (timerId === undefined) {
         // console.log("b----1", timerId, lastCallTime === time);
@@ -226,7 +209,7 @@ function useDebounceFn<T extends (...args: T[]) => any>(
       }
       /* 传入option maxWait */
       if (maxing) {
-        console.log("b----2", maxing, timerId);
+        // console.log("b----2", maxing, timerId);
         // Handle invocations in a tight loop.
         timerId = startTimer(timerExpired, wait);
         return invokeFunc(lastCallTime);
@@ -234,9 +217,9 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     }
     // console.log(timerId, "d-timerId");
     //TODO 执行时机
+    /* 负责一种情况 trailing为true 在前一个wait的 trailingEdge 已经执行了函数 而在这次函数调用时 shouldInvoke不满足条件 因此要设置定时器 保证函数被执行 */
     if (timerId === undefined) {
-      alert(2);
-      // console.log("b----3", timerId);
+      console.log("！！！！！！！！！！", timerId);
       timerId = startTimer(timerExpired, wait);
     }
 
@@ -257,7 +240,7 @@ function useDebounceFn<T extends (...args: T[]) => any>(
   };
 
   debounced.flush = () => {
-    alert(0);
+    /* 取消并立即执行一次 debounce 函数 */
     return timerId === undefined ? result : trailingEdge(Date.now());
   };
 
