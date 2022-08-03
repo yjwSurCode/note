@@ -1,10 +1,31 @@
-浮动(float)与绝对定位(position:absolute/fixed)之间的区别就是
+# 浮动(float)与绝对定位(position:absolute/fixed)之间的区别：
 (1)浮动会使元素脱离文档流,但是不会脱离文本流,在于其他盒子的文本内容计算布局的时候,还是占位置的。
 (2)绝对定位会使元素脱离文档流,同时也会脱离文本流, 在于其他盒子的文本内容计算布局的时候,不占位置。
+设置float属性之后,父元素的高度为0,这就是所谓的高度塌陷
 
-设置float属性之后，父元素的高度为0，这就是所谓的高度塌陷
 
-清除浮动： 
+# 伪类(pseudo-classes) 伪元素(Pseudo-elements)
+
+伪类：其核心就是用来选择那些不能够被普通选择器选择的文档之外的元素，比如 :focus :hover :first-child 
+:active选择活动的链接
+:checked选择每个被选中的 元素
+:disabled选择每个被禁用的元素。
+:empty选择没有子元素的每个  元素。
+:enabled选择每个已启用的  元素。
+:first-child选择作为其父的首个子元素的每个元素。
+:first-of-type选择作为其父的首个元素的每个元素。
+:last-child 选择作为其父的最后一个子元素的每个元素。
+:last-of-type选择作为其父的最后一个元素的每个元素。:not(selector):not(p)选择每个非元素的元素。
+:nth-child(2)选择作为其父的第二个子元素的每个元素。
+:nth-last-child(2)选择作为父的第二个子元素的每个元素，从最后一个子元素计数。
+:nth-last-of-type(2)选择作为父的第二个元素的每个元素，从最后一个子元素计数
+
+伪元素：核心就是需要创建通常不存在于文档中的元素，比如::before ::after ::first-line ::first-letter 
+
+伪类和伪元素分别用单冒号:和双冒号::来表示
+
+
+# 清除浮动： 
 clear: both;
 父元素  overflow: auto;
 父级 div 定义 伪类 :after 和 zoom 。
@@ -15,30 +36,36 @@ clear: both;
   clear: both;
 }
 
-标准（W3C）盒子模型：width = 内容宽度（content） + border + padding + margin
+# 标准(W3C)盒子模型：
+width = 内容宽度（content） + border + padding + margin
+#  低版本IE盒子模型： 
+width = 内容宽度（content + border + padding）+ margin
 
-低版本IE盒子模型： width = 内容宽度（content + border + padding）+ margin
-
-5.box-sizing是什么
-设置CSS盒模型为标准模型或IE模型。标准模型的宽度只包括content，二IE模型包括border和padding
+#box-sizing是什么
+设置CSS盒模型为标准模型或IE模型。标准模型的宽度只包括content,IE模型包括border和padding
 
 box-sizing属性可以为三个值之一：
+content-box：默认值,只计算内容的宽度,border和padding不计算入width之内
+padding-box：padding计算入宽度内
+border-box：border和padding计算入宽度之内
 
-content-box，默认值，只计算内容的宽度，border和padding不计算入width之内
-padding-box，padding计算入宽度内
-border-box，border和padding计算入宽度之内
+# vertical-align (inline-block依赖型元素)  https://www.zhangxinxu.com/wordpress/2010/05
+vertical-align只应用于行内元素和替换元素(不影响块级元素的内容对齐 但是影响表单元素的垂直对齐)
+只能应用于内联元素以及 display 值为 table-cell inline 的元素。
 
+inline/inline-block/block 液态/固液混合态/固态
 
-vertical-align 只应用于 行内元素和替换元素（不影响块级元素的内容对齐 但是影响表元素的垂直对齐）
-只能应用于内联元素以及 display 值为 table-cell 的元素。
+触发条件：
+父元素设置 display: inline-block   line-height: 200px;
+子元素中设置inline-block
+
 
 text-align:center 这个只对行内元素有效，所以我们要使用 text-align:center 就必须将子元素设置为 display: inline; 或者 display: inline-block;；
 
- 伪元素-----first-line、:first-letter、:before、:after 
- 伪类-------::after生成的内容也比::before生成的内容靠后。
+# vertical-align 与 line-height 之间的关系
 
 
-有无继承性的属性：：：：：：：：：：：：：：：
+# 有无继承性的属性：：：：：：：：：：：：：：：
 继承： 字体 文本 列表
 
 input, textarea, img, video, object {
@@ -368,15 +395,6 @@ CSS书写顺序::
 5.其他(animation, transitions等)
 
 
-
-伪类 伪元素：：：：   https://juejin.cn/post/6844903654756089864
-
-伪类：其实是弥补了CSS选择器的不足，用来更方便地获取信息。
-伪元素：本质上是创建了一个虚拟容器(元素)，我们可以在其中添加内容或样式
-
-.after:hover:before {
-    opacity: 1;
-}
 
 
 css浏览器兼容性：：：：：：：：：：：：：：：：

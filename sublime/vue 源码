@@ -287,3 +287,8 @@ watch([fooRef, barRef], ([foo, bar], [prevFoo, prevBar]) => {
 getCurrentInstance：
 getCurrentInstance 支持访问内部组件实例。
 const internalInstance = getCurrentInstance()
+
+
+
+##  pinia
+https://stackblitz.com/github/piniajs/example-vue-3-vite?file=src%2FApp.vue
