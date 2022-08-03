@@ -21,7 +21,7 @@ interface DebouncedFuncLeading<T extends (...args: T[]) => any>
 }
 
 /* 防抖 如果在Ns内没有再次触发滚动事件，那么就执行函数 如果在Ns内再次触发滚动事件，那么当前的计时取消，重新开始计时 最后一次输入后的Ns执行 */
-function useDebounceFn<T extends (...args: T[]) => any>(
+function debounce<T extends (...args: T[]) => any>(
   func: (...args: T[]) => any,
   wait: number = 0,
   options?: DebounceOptions
@@ -34,16 +34,16 @@ function useDebounceFn<T extends (...args: T[]) => any>(
   /* 传入函数返回值 */
   let result: any;
   /* 计时器返回的ID值 */
-  let timerId: NodeJS.Timeout;
+  let timerId: NodeJS.Timeout | undefined;
   /*最大的等待时间*/
   let maxWait: number = 5000;
-  let maxing: number = 0;
+  let maxing: number | undefined = 0;
   /*执行函数在每个等待时延的开始被调用*/
   let leading: boolean = false;
   /*执行函数函数在每个等待时延的结束被调用 false则不调用*/
   let trailing: boolean = true;
   /*最后一次触发时间* */
-  let lastCallTime: number = 0;
+  let lastCallTime: number | undefined = 0;
   /*func上一次执行的时间戳*/
   let lastInvokeTime: number = 0;
 
@@ -65,13 +65,12 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     leading = !!options?.leading;
     maxing = options?.maxWait;
     /*默认5s 优先取传入值*/
-    // maxWait = maxing ? Math.max(+options.maxWait || 0, wait) : maxWait;
     maxWait = maxing ? Math.max(+(options.maxWait || 0), wait) : maxWait;
     trailing = "trailing" in options ? !!options.trailing : trailing;
   }
 
   // step 2
-  function startTimer(pendingFunc?: () => void, wait?: number): NodeJS.Timeout {
+  function startTimer(pendingFunc: () => void, wait?: number): NodeJS.Timeout {
     if (useRAF) {
       root.cancelAnimationFrame(timerId);
       return root.requestAnimationFrame(pendingFunc);
@@ -88,8 +87,6 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     /*设置函数最后执行的时间 */
     lastInvokeTime = time;
     /* result为返回值 当传入有函数返回值 */
-
-    console.log("555", thisArg, "----", args);
     result = func.apply(thisArg, args);
     return result;
   }
@@ -101,20 +98,10 @@ function useDebounceFn<T extends (...args: T[]) => any>(
       time - (lastCallTime === undefined ? 0 : lastCallTime);
     /* 判断时间是否到延迟时间 */
     const timeSinceLastInvoke = time - lastInvokeTime;
+
     /* 判断时间是否到达最大等待时间 (maxing && timeSinceLastInvoke >= maxWait) */
 
     if (!maxWait) return;
-
-    console.log(
-      "222",
-      lastCallTime === undefined ||
-        timeSinceLastCall >= wait ||
-        timeSinceLastCall < 0 ||
-        (maxing && timeSinceLastInvoke >= maxWait),
-      time,
-      lastCallTime,
-      lastInvokeTime
-    );
 
     // Either this is the first call, activity has stopped and we're at the
     // trailing edge, the system time has gone backwards and we're treating
@@ -131,7 +118,6 @@ function useDebounceFn<T extends (...args: T[]) => any>(
   // step 3
   function timerExpired() {
     const time = Date.now();
-    console.log("444", shouldInvoke(time), time, lastCallTime, lastInvokeTime);
     /* 在第一次倒计时触发false */
     if (shouldInvoke(time)) {
       //TODO
@@ -151,7 +137,6 @@ function useDebounceFn<T extends (...args: T[]) => any>(
         ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
         : timeWaiting;
     };
-    console.log("555", remainingWait(time));
     /* 重置计时 */
     timerId = startTimer(timerExpired, remainingWait(time));
   }
@@ -175,7 +160,6 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     //TODO
     /*   */
     if (trailing && lastArgs) {
-      console.log("666", trailing && lastArgs);
       return invokeFunc(time);
     }
     lastArgs = lastThis = undefined;
@@ -184,7 +168,7 @@ function useDebounceFn<T extends (...args: T[]) => any>(
   }
 
   // step 0
-  function debounced(...args: Array<T>) {
+  function debounced(...args: Array<any>) {
     const time = Date.now();
     const isInvoking = shouldInvoke(time);
 
@@ -192,10 +176,8 @@ function useDebounceFn<T extends (...args: T[]) => any>(
     lastThis = this;
     lastArgs = args;
     lastCallTime = time;
-    console.log("111", time, isInvoking, "THIS", lastThis);
     if (isInvoking) {
       if (timerId === undefined) {
-        console.log("111-1", lastCallTime);
         return leadingEdge(lastCallTime);
       }
 
@@ -242,4 +224,4 @@ function useDebounceFn<T extends (...args: T[]) => any>(
   return debounced;
 }
 
-export default useDebounceFn;
+export default debounce;

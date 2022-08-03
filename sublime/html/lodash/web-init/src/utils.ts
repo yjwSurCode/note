@@ -27,8 +27,6 @@ const identity = function (value: any) {
 
 const push = Array.prototype.push;
 
-// const argv = process ? process.argv : undefined;
-
 // const root = (typeof global === "object" && global) || this;
 // const process = root.process;
 // const argv = process ? process.argv : undefined;

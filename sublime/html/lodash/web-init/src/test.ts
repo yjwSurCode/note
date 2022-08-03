@@ -22,10 +22,11 @@ import _ from "lodash"; //npm i --save-dev @types/lodash
 var callCounts = 0;
 
 const _debounced = debounced(
-  () => {
+  (e: any) => {
     console.log("触发-debounce");
     // _debounced.cancel;
     callCounts++;
+    return e;
   },
   1000
   // { trailing: false } // false 0 0    true 0 1
@@ -39,54 +40,58 @@ const _useDebounceFn = useDebounceFn(
     // _useDebounceFn.cancel;
     // _useDebounceFn.flush;
   },
-  200,
-  { maxWait: 200 }
+  2000,
+  { maxWait: 3000, trailing: false }
 );
 
 const lodashDebounce = _.debounce(
-  () => {
+  (e) => {
     console.log("触发-lodashDebounce");
     // _debounced.cancel;
     callCounts++;
+    return e;
   },
-  2000,
+  0,
   { leading: true, maxWait: 2000 }
 );
 
 // var lodash_runInContext = _.runInContext();
-var dateCount = 0;
-var lodash_runInContext = _.runInContext({
-  Date: {
-    now: function () {
-      return ++dateCount < 4 ? 0 : +new Date();
-    },
-  },
-});
-console.log(
-  "lodash_runInContext",
-  lodash_runInContext,
-  lodash_runInContext.throttle
-);
-lodash_runInContext.throttle(function (value) {
-  callCounts++;
-  return value;
-}, 32);
+// var dateCount = 0;
+// var lodash_runInContext = _.runInContext({
+//   Date: {
+//     now: function () {
+//       return ++dateCount < 4 ? 0 : +new Date();
+//     },
+//   },
+// });
+// console.log(
+//   "lodash_runInContext",
+//   lodash_runInContext,
+//   lodash_runInContext.throttle
+// );
+// lodash_runInContext.throttle(function (value) {
+//   callCounts++;
+//   return value;
+// }, 32);
+//************************ */
+
 
 const _useThrottleFn = useThrottleFn(
   function (e) {
     callCounts++;
     console.log("触发-_useThrottleFn", e);
+    return e;
   },
-  1000,
-  { leading: true }
+  32
+  // { leading: true }
 );
 
 window.addEventListener("click", (e) => {
-  console.log("用户点击", e);
+  // console.log("用户点击", e);
   // _debounced();
-  // _useDebounceFn();
-  _useThrottleFn(e);
-  // lodashDebounce();
+  _useDebounceFn();
+  // _useThrottleFn(e);
+  // lodashDebounce(e);
   // useDebounceFn(
   //   () => {
   //     console.log("触发-useDebounceFn");
@@ -95,7 +100,16 @@ window.addEventListener("click", (e) => {
   //   { maxWait: 3000 }
   // )();
 
-  console.log("callCounts[0]", callCounts);
+  // console.log(
+  //   // lodashDebounce("a"),
+  //   "_debounced()",
+  //   _useThrottleFn("a"),
+  //   _useThrottleFn("b"),
+  //   '("a")("a")("a")'
+  // );
+  // console.log(_useDebounceFn("b"), '("b")("b")("b")');
+
+  // console.log("callCounts[0]--", callCounts);
 
   // setTimeout(function () {
   //   console.log("callCounts[1]", callCounts);
@@ -110,12 +124,16 @@ window.addEventListener("click", (e) => {
   //   console.log("callCounts[0]----333333333", callCounts); //2
   // }, 384);
 
-  setTimeout(_useDebounceFn, 190);
-  setTimeout(_useDebounceFn, 200);
-  setTimeout(_useDebounceFn, 210);
+  // setTimeout(_useDebounceFn, 190);
+  // setTimeout(_useDebounceFn, 200);
+  // setTimeout(_useDebounceFn, 210);
 
   setTimeout(function () {
-    console.log("callCounts[0]----_useDebounceFn", callCounts);
+    // console.log(
+    //   "callCounts[0]----_useDebounceFn",
+    //   _useThrottleFn("b"),
+    //   callCounts
+    // );
   }, 500);
 });
 

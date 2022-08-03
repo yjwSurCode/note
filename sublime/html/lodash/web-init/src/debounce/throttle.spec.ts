@@ -1,11 +1,11 @@
 import assert from "power-assert";
-import useThrottleFn from "../useThrottleFn";
+import throttle from "./throttle";
 import { identity, push } from "../utils";
 
 describe("throttle", function () {
   it("should throttle a function", function (done) {
     var callCount = 0,
-      throttled = useThrottleFn(function () {
+      throttled = throttle(function () {
         callCount++;
       }, 32);
 
@@ -23,7 +23,7 @@ describe("throttle", function () {
   });
 
   it("subsequent calls should return the result of the first call", function (done) {
-    var throttled = useThrottleFn(identity, 32),
+    var throttled = throttle(identity, 32),
       results = [throttled("a"), throttled("b")];
 
     assert.deepStrictEqual(results, ["a", "a"]);
@@ -41,7 +41,7 @@ describe("throttle", function () {
 
   it("should not trigger a trailing call when invoked once", function (done) {
     var callCount = 0,
-      throttled = useThrottleFn(function () {
+      throttled = throttle(function () {
         callCount++;
       }, 32);
 
@@ -57,7 +57,7 @@ describe("throttle", function () {
   it("should trigger a second throttled call as soon as possible", function (done) {
     var callCount = 0;
 
-    var throttled = useThrottleFn(
+    var throttled = throttle(
       function () {
         callCount++;
       },
@@ -84,7 +84,7 @@ describe("throttle", function () {
 
   it("should apply default options", function (done) {
     var callCount = 0,
-      throttled = useThrottleFn(
+      throttled = throttle(
         function () {
           callCount++;
         },
@@ -103,10 +103,10 @@ describe("throttle", function () {
   });
 
   it("should support a `leading` option", function () {
-    var withLeading = useThrottleFn(identity, 32, { leading: true });
+    var withLeading = throttle(identity, 32, { leading: true });
     assert.strictEqual(withLeading("a"), "a");
 
-    var withoutLeading = useThrottleFn(identity, 32, { leading: false });
+    var withoutLeading = throttle(identity, 32, { leading: false });
     assert.strictEqual(withoutLeading("a"), undefined);
   });
 
@@ -114,7 +114,7 @@ describe("throttle", function () {
     var withCount = 0;
     var withoutCount = 0;
 
-    var withTrailing = useThrottleFn(
+    var withTrailing = throttle(
       function (value: any) {
         withCount++;
         return value;
@@ -123,7 +123,7 @@ describe("throttle", function () {
       { trailing: true }
     );
 
-    var withoutTrailing = useThrottleFn(
+    var withoutTrailing = throttle(
       function (value: any) {
         withoutCount++;
         return value;
@@ -148,7 +148,7 @@ describe("throttle", function () {
   it("should not update `lastCalled`, at the end of the timeout, when `trailing` is `false`", function (done) {
     var callCount = 0;
 
-    var throttled = useThrottleFn(
+    var throttled = throttle(
       function () {
         callCount++;
       },
@@ -176,7 +176,7 @@ describe("throttle", function () {
 
     var callCount = 0;
 
-    var throttled = useThrottleFn(function (value) {
+    var throttled = throttle(function (value) {
       callCount++;
       return value;
     }, 32);
@@ -199,7 +199,7 @@ describe("throttle", function () {
 
     var callCount = 0;
 
-    var throttled = useThrottleFn(function () {
+    var throttled = throttle(function () {
       callCount++;
     }, 32);
     throttled();

@@ -1,4 +1,4 @@
-import useDebounceFn from "./useDebounceFn";
+import useDebounceFn from "./debounce";
 
 interface ThrottleOptions {
   /*执行函数在每个等待时延的开始被调用*/

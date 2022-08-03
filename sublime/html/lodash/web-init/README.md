@@ -1,6 +1,7 @@
 yarn add webpack webpack-cli @webpack-cli/generators webpack-dev-server -g
 
 npx webpack init
+npx webpack-cli init
 
 npm i jest ts-jest @types/jest
 
@@ -36,9 +37,11 @@ options != null &&
 (typeof options === "object" || typeof options === "function")
 ) {
 
-if (Object.values(options).length > 0) {
+// if (Object.values(options).length > 0 && options != null) { //Object.value 值为 null 报错
 
 if (isObject(options)) {
+
+# // thrown: "Exceeded timeout of 5000 ms for a test. Use jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test."
 
 F5-继续：直接跳到下一个断点
 单步跳过：运行到当前文件夹的下一行，跳过当前语句，调用其他文件夹的所有语句。比如 a = func_b©，如果 func_b 是其他文件夹定义的复杂函数，直接跳过；

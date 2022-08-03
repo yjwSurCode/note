@@ -144,14 +144,14 @@ var maxSubArray = function (arr) {
 
 };
 
-if (val.value) {
-    console.log(1111111111111)
-    if (!opt.data.imgUrl.split("=")[1]) {
-        console.log(1111111111111)
-        const newUrl = opt.data.imgUrl.split("=");
-        newUrl[1] = val.value;
-    }
-}
+// if (val.value) {
+//     console.log(1111111111111)
+//     if (!opt.data.imgUrl.split("=")[1]) {
+//         console.log(1111111111111)
+//         const newUrl = opt.data.imgUrl.split("=");
+//         newUrl[1] = val.value;
+//     }
+// }
 
 
 
@@ -209,6 +209,9 @@ var isAnagram = function (s) {
     return obj
 };
 
+
+
+
 // 4:移动零(给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。)
 var moveZeroes = function (nums) {
     // return nums.sort((a, b) => {
@@ -236,7 +239,7 @@ var moveZeroes = function (nums) {
 
 // 4:解析url 
 var analysisUrl = function (nums) {
-    let nums = 'http://localhost:8080/?id=2&type=1&age=20&score=88&score=99'; // 模拟url 地址
+    nums = 'http://localhost:8080/?id=2&type=1&age=20&score=88&score=99'; // 模拟url 地址
     let urlIndex = nums.indexOf("?"); // 查看? 位置为多少  22
     // 截取字符串,urlIndex是从下标开始的,应此加一
     let str = nums.substr(urlIndex + 1, nums.toString().length);
@@ -258,3 +261,64 @@ var analysisUrl = function (nums) {
 // console.log(isAnagram('aaabbbcbcdcdc'), 'isAnagram')
 
 console.log(moveZeroes([1, 2, 0, 3, 0, 5, 0]), 'moveZeroes') //moveZeroes([0, 1, 3, 5, 0, 7, 9, 00, 0, 11, 13, 0, 15, 0, 0])
+
+
+
+
+// 异步执行 
+1
+2
+999
+3
+4
+5
+6
+7
+8
+9
+10
+11
+console.log('1');
+
+setTimeout(function () {
+    console.log('5');
+
+    new Promise(function (resolve) {
+        console.log('6');
+        resolve();
+    }).then(function () {
+        console.log('7')
+    })
+})
+
+
+new Promise(function (resolve) {
+    console.log('2');
+    resolve();
+}).then(function () {
+    console.log('4')
+})
+
+setTimeout(function () {
+    console.log('8');
+
+    new Promise(function (resolve) {
+        console.log('9');
+        resolve();
+    }).then(function () {
+        console.log('10')
+    })
+})
+
+async function aaa() {
+    await console.log('999');
+    return;
+}
+aaa()
+
+setTimeout(function () {
+    console.log('11');
+
+}, 10)
+
+console.log('3');

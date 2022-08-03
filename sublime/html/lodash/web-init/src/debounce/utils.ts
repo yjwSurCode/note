@@ -21,4 +21,18 @@ const freeSelf =
 const root =
   freeGlobalThis || freeGlobal || freeSelf || Function("return this")();
 
-export default root
+const identity = function (value: any) {
+  return value;
+};
+
+const push = Array.prototype.push;
+
+// const root = (typeof global === "object" && global) || this;
+// const process = root.process;
+// const argv = process ? process.argv : undefined;
+// const phantom = root.phantom;
+// const isPhantom = phantom || typeof callPhantom === "function";
+
+export { identity, push };
+
+export default root;

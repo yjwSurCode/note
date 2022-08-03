@@ -109,6 +109,32 @@ rules：:[
 1. html-webpack-plugin能自动将改名后的文件加载到原先引用它的文件中
 1. DefinePlugin能将常量插入文件中
 
+
+
+# webpack-dev-server 热更新原理 
+    //添加一些 hooks 插件，这里主要关注 webpack compiler 的 done 钩子，即每次编译完成后的钩子 (编译完成触发 _sendStats 方法给客户端广播消息 )
+    this.setupHooks();
+    // 实例化 express 服务器
+    this.setupApp();
+    //检查更新
+    this.setupHostHeaderCheck();
+    //设置 webpack-dev-middleware,用于处理对静态资源的处理,后面解析
+    this.setupDevMiddleware();
+    this.setupBuiltInRoutes();
+    this.setupWatchFiles();
+    this.setupWatchStaticFiles(); 
+
+    # HMR Socket Server是一个socket长连接
+
+    this.setupMiddlewares();
+    //创建 HTTP 服务器
+    this.createServer();
+
+    具体是 liveReload（刷新整个页面）还是 hotReload（更新改动过的模块）就取决于我们传入的 hot 选项。
+
+    webpack-dev-server在编译之后不会写入到任何输出文件。而是将bundle文件保留在内存中
+    事实上webpck-dev-server使用了一个叫memfs的库。
+
 # webpack配置demo(https://github1s.com/ruanyf/webpack-demos)
 
 
@@ -136,17 +162,24 @@ plugin：扩展插件,在 Webpack 构建流程中的特定时机会广播出对�
 但是webpack这类工具的做法是将所有模块提前编译、打包进bundle里,换句话说,不管模块是否会被执行,都要被编译和打包到bundle里。随着项目越来越大,打包后的bundle也越来越大,打包的速度自然会越来越慢。
 
 
+### VITE https://vitejs.dev/config/
+
+# vite 中的「HMR」热更新
+Vite实现热更新和webpack的方式也大同小异 主要是通过创建WebSocket建立浏览器与服务器建立通信，通过监听文件的改变像客户端发出消息，客户端对应不同的文件进行不同的操作的更新
+
 # vite打包流程:::::::::::::::::::::::
+在dev开发时基于浏览器ESM，访问哪个文件就只打包哪个文件，相比webpack极速启动，毫秒级别，
+vite只用打包1个文件，webpack需要打包整个项目上百个文件
+
 先启动开发服务器，利用新一代浏览器的ESM能力，无需打包，直接请求所需模块并实时编译
 
 HMR时只需让浏览器重新请求该模块，同时利用浏览器的缓存（源码模块协商缓存，依赖模块强缓存）来优化请求
 
+# vite使用esbuild预构建
+vite将代码分为源码和依赖两部分并分别处理,所谓依赖便是应用使用的第三方包,一般存在于node_modules目录中,一个较大项目的依赖及其依赖的依赖,加起来可能达到上千个包
+这些代码可能远比我们源码代码量要大,这些依赖通常是不会改变的(除非你要进行本地依赖调试)所以无论是webpack或者vite在启动时都会编译后将其缓存下来。
 
-# webpack-dev-server 中的「HMR」
-核心就是 HotModuleReplacementPlugin
-HMR时需要把改动模块及相关依赖全部编译
-
-# vite 中的「HMR」
+区别是：vite会使用esbuild进行依赖编译和转换(commonjs包转为esm)而webpack则是使用acorn或者tsc进行编译,而esbuild是使用Go语言写的,其速度比使用js编写的acorn速度要快得多。
 
 
 # webpack 会需要打包一个一个大体积的bundle.js？之前会产生打包需求的主要原因：
@@ -167,6 +200,16 @@ vite 在构建过程中使用esbuild进行构建,esbuild 是一个新的代码�
 它使用go编写,并编译成了机器码,具有大量的并行算法 利用paralleljs的高并行优势,
 
 vite 的作用就是体现在了这里,vite的任务就是用koa起一个http请求,然后利用拦截器去拦截修改这些请求内容
+
+
+
+# terser 
+
+
+#rollup (https://juejin.cn/user/3263006243296440)
+
+
+
 
 
 
@@ -395,6 +438,43 @@ export default {
 };
 
 
+
+
+ 
+### vite  dev  源码分析   https://blog.csdn.net/huangyilinnuli/article/details/117757135
+    const { createServer } = await Promise.resolve().then(function () { return require('./chunks/dep-713b45e1.js'); }).then(function (n) { return n.index$1; });
+    try {
+        const server = await createServer({
+            root,
+            base: options.base,
+            mode: options.mode,
+            configFile: options.config,
+            logLevel: options.logLevel,
+            clearScreen: options.clearScreen,
+            server: cleanOptions(options)
+        });
+        if (!server.httpServer) {
+            throw new Error('HTTP server not available');
+        }
+        await server.listen();
+        const info = server.config.logger.info;
+        info(build.source.cyan(`\n  vite v${require('vite/package.json').version}`) +
+            build.source.green(` dev server running at:\n`), {
+            clear: !server.config.logger.hasWarned
+        });
+        server.printUrls();
+        // @ts-ignore
+        if (global.__vite_start_time) {
+            // @ts-ignore
+            const startupDuration = perf_hooks.performance.now() - global.__vite_start_time;
+            info(`\n  ${build.source.cyan(`ready in ${Math.ceil(startupDuration)}ms.`)}\n`);
+        }
+    }
+    catch (e) {
+        build.createLogger(options.logLevel).error(build.source.red(`error when starting dev server:\n${e.stack}`), { error: e });
+        process.exit(1);
+    }
+});
 
 
 

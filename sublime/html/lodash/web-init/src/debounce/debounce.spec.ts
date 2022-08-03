@@ -1,5 +1,5 @@
 import assert from "power-assert";
-import debounce from "../useDebounceFn";
+import debounce from "./debounce";
 import { identity, push } from "../utils";
 
 describe("debounce", function () {

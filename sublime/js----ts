@@ -422,15 +422,12 @@ export function GenNonDuplicateID() {
 
 
 * 获取一个时间标准对象: const time = new Date(时间戳); Wed Jun 01 2022 12: 00: 00 GMT + 0800(中国标准时间)
+* 获取一个时间戳: new Date('2022-06-01 16:00:00').getTime()  //获取一个时间戳 1654070400000
 
-  * 获取一个时间戳: new Date('2022-06-01 16:00:00').getTime()  //获取一个时间戳 1654070400000
+* 获取当前时间日期格式： new Date().toLocaleString()      //'2022/6/1 13:55:02'
 
-
-
-    * 获取当前时间日期格式： new Date().toLocaleString()      //'2022/6/1 13:55:02'
-
-      * 获取当天的时间戳： let startTime1 = new Date(new Date().toLocaleDateString()).getTime();  当天0点 1654012800000
-        * 获取当天指定时间的时间戳： let endTime1 = new Date(new Date().toLocaleDateString()).getTime() + 15 * 60 * 60 * 1000    当天 15:00
+* 获取当天的时间戳： let startTime1 = new Date(new Date().toLocaleDateString()).getTime();  当天0点 1654012800000
+* 获取当天指定时间的时间戳： let endTime1 = new Date(new Date().toLocaleDateString()).getTime() + 15 * 60 * 60 * 1000    当天 15:00
 * 获取当天指定时间的时间戳： let endTime1 = new Date(new Date().toLocaleDateString()).getTime() + 15 * 60 * 60 * 1000 - 1   当天 14:59:59
 
 * 两个时间戳相隔时间：
@@ -449,7 +446,8 @@ function intervalTime(startTime, endTime) {
   return 111
 }
 
-* 标准时间转日期格式： dateFormat("YYYY-mm-dd HH:MM:SS", new Date())  //2022-06-01 11:22:30
+* 标准时间转日期格式：dateFormat("YYYY-mm-dd HH:MM:SS", new Date())  //2022-06-01 11:22:30
+
 function dateFormat(fmt, date) {
   let ret
   const opt = {
@@ -469,7 +467,6 @@ function dateFormat(fmt, date) {
   }
   return fmt
 }
-
 
 
 获取今天周几：
@@ -507,6 +504,9 @@ console.log(getTime(-13));
 
 
 
+
+
+
 eventBus：：：：：：：：：：：：：：：：：：：：：：：
 
 
@@ -519,6 +519,14 @@ const myFilter2 = function (fn, context) {
     return fn.call(context, current, index, this) ? [...total, current] : [...total]
   }, [])
 }
+
+
+
+# 使用 "use strict" 指令
+"use strict" 指令在 JavaScript 1.8.5 (ECMAScript5) 中新增。
+它不是一条语句，但是是一个字面量表达式，在 JavaScript 旧版本中会被忽略。
+"use strict" 的目的是指定代码在严格条件下执行。
+严格模式下你不能使用未声明的变量。
 
 
 // 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
@@ -575,6 +583,7 @@ export function eventBus() {
 }
 
 
+##TYPESCRIPT（ts）
 
 
 ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
