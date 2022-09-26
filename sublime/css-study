@@ -453,7 +453,16 @@ img {
 
 
 
-table布局：：：：：：
+## table布局：：：：：：
+属性：
+<table border="1" align="center" width="500px" height="150px">
+<th colspan="4" align="center">1123</th>
+<tr align="center">
+        <td>第一行第一列</td>
+        <td colspan="3">第一行第二列</td>
+      </tr>
+<td rowspan="3">第二行第一列</td>
+
 border-collapse:collapse;/* 让边框合并，不让出现双边框*/
 
 <table border="1" cellspacing="0">
@@ -471,7 +480,7 @@ border-collapse:collapse;/* 让边框合并，不让出现双边框*/
       </table>
 
 
-手风琴：
+## 手风琴：
  <div class="tab-content">
             <p>
               隐藏的文字<br />

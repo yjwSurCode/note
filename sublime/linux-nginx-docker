@@ -55,20 +55,23 @@ nginx 安装--使用--配置：http://fgj.wuhan.gov.cn/bsfw_44/zxsbhcxxt/spfxm/
 Docker：：：：：：：：：：：：：：：：
 Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的镜像中，
 然后发布到任何流行的 Linux 或 Windows 操作系统的机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口
-
 Docker 作为轻量级虚拟化技术，拥有持续集成、版本控制、可移植性、隔离性和安全性等优势
 Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux 内核 的 cgroup,namespace,以及 AUFS 类的 UnionFS 等技术，对进程进行封装隔离，属于操作系统层面的虚拟化技术。 由于隔离的进程独立于宿主和其它的隔离的进
 程,因此也称其为容器。Docker 最初实现是基于 LXC.
 Docker 能够自动执行重复性任务，例如搭建和配置开发环境，从而解放了开发人员以便他们专注在真正重要的事情上，构建杰出的软件。
 用户可以方便地创建和使用容器，把自己的应用放入容器。容器还可以进行版本管理、复制、分享、修改，就像管理普通的代码一样。
 
-$ sudo yum install -y yum-utils #安装 yum-utils，因为 utils 提供了 yum-config-manager 能力
+## 1: sudo yum install -y yum-utils #安装 yum-utils，因为 utils 提供了 yum-config-manager 能力
 
-$ yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo #安装国内的仓库保证我们后续下载 docker 中的各个应用可以快速执行，因为从国外的镜像下载实在太慢了
+## 2: sudo  yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo #安装国内的仓库保证我们后续下载 docker 中的各个应用可以快速执行，因为从国外的镜像下载实在太慢了
 
-$ sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+## 3: sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-#安装最新的 docker engine
+# reload docker
+systemctl restart docker.service
+
+
+# 安装最新的 docker engine
 $ sudo systemctl start docker
 
 # 启动 docker
@@ -81,40 +84,48 @@ $ sudo docker run hello-world
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
-查看镜像
+# 查看镜像
 docker images
 
-删除镜像：
+## 删除镜像：删除之前要停止！！！！
 docker rmi test-build-docker
-docker rmi image_id
+docker rmi  2f232153cc95       //  2f232153cc95是   IMAGE ID
 669513347104
 
-docker ps -a 查看运行镜像 name 是容器
-1:停止运行镜像 docker stop CONTAINER ID
+# 干掉对应容器
+docker rm 容器 ID(或容器名称)CONTAINER ID 
 
-2:干掉对应容器
-docker rm 容器 ID(或容器名称)
+
+
+#  docker ps -a 查看运行镜像   name 是容器
+ docker ps -a
+
+1:停止运行镜像 docker stop CONTAINER ID
 
 使用 inspect 命令可以获取镜像的详细信息
 docker inspect 镜像名 docker_project/node-web-app //默认 node-web-app
 
 https://www.cnblogs.com/zhaobowen/p/13337441.html
 
-在项目地址目录构建：
-docker build . -t docker_project/node-web-app
+
+# 111  在有dockerfile文件的地址打包镜像
+
+docker build -t robot .    //robot是名称 robot是RESPOSITOYRY
+
+//! NPM INSTALL 问题需要删除 package.local.json
+
+# 2222222  加上tag   robot是RESPOSITOYRY
+docker tag robot robot:v2
 
 build 命令用来制作镜像，-t 是给镜像打标签，-f 参数是指定 Dockerfile 路径，由于我们使用的是默认 Dockerfile 名称，
 所以可以不同填写该参数。最后一个.也不要省略，表示 Dockerfile 文件的所在目录, 代表是当前路径，
 
-通过镜像 dockerstudy 创建一个容器并运行。
-
+# 222222 通过镜像 dockerstudy 创建一个容器并运行。
 docker 容器开机自启动:sudo docker run --net host -itd --name robot --restart=always --privileged -v /dev:/dev 116.62.202.42:5001/robot_amd_v4 /sbin/ini
 
-打包镜像
-docker build -t robot .
-
-docker run --name dockercontainer -d -p 3000:3000 robot
-docker run --name robotnameroute -d -p 3002:3002 robotroute
+# 333333 
+命令：：： docker run --name dockercontainer -d -p 3000:3000 robot
+docker run --name robotnameroute（容器名称自取） -d -p 3002:3002 robot（镜像名称）
 
 
 返回 35e1181e650c70f6b1de75a0ed62e3a007699a6733c13a3e47496eb12d0dc115
@@ -127,7 +138,8 @@ docker exec -u 0 -it bead089df688（容器ID 不是镜像） /bin/bash
 
 
 
-优雅部署方式DockerCompose     docker-compose.yml
+
+# 优雅部署方式DockerCompose     docker-compose.yml
 
 
 

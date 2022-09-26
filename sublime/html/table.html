@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Personal pronouns table</title>
+    <link href="minimal-table.css" rel="stylesheet" type="text/css" />
+  </head>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    table {
+      border-collapse: collapse;
+      border: 2px solid rgb(250, 40, 40);
+      letter-spacing: 1px;
+      font-size: 0.8rem;
+    }
+
+    td,
+    th {
+      border: 1px solid rgb(190, 190, 190);
+      padding: 10px 20px;
+    }
+
+    th {
+      background-color: rgb(243, 139, 139);
+    }
+
+    td {
+      text-align: center;
+    }
+
+    tr:nth-child(even) td {
+      background-color: rgb(250, 250, 250);
+    }
+
+    tr:nth-child(odd) td {
+      background-color: rgb(245, 245, 245);
+    }
+
+    caption {
+      padding: 10px;
+    }
+
+    .title-tr {
+      background-color: #ff0000;
+    }
+  </style>
+  <body>
+    <h1>Personal pronouns table</h1>
+
+    <table>
+      <caption>
+        Personal pronouns
+      </caption>
+      <tr class="title-tr">
+        <td colspan="1">&nbsp;</td>
+        <th scope="col">正常</th>
+        <th scope="col">促销</th>
+        <th scope="col">印花</th>
+      </tr>
+      <tr>
+        <th scope="rowgroup">总</th>
+        <th >1111</th>
+        <td>I</td>
+        <td>me</td>
+      </tr>
+      <tr>
+        <th scope="rowgroup">门店</th>
+        <th colspan="2" scope="row">1111</th>
+        <td>I</td>
+        <td>me</td>
+      </tr>
+      <!-- <tr>
+        <th rowspan="5" scope="rowgroup">Singular</th>
+        <th colspan="2" scope="row">1st Person</th>
+        <td>I</td>
+        <td>me</td>
+      </tr>
+      <tr>
+        <th colspan="2" scope="row">2nd Person</th>
+        <td>you</td>
+        <td>you</td>
+      </tr>
+      <tr>
+        <th rowspan="3" scope="rowgroup">3rd Person</th>
+        <th class="symbol" scope="row">♂</th>
+        <td>he</td>
+        <td>him</td>
+      </tr>
+      <tr>
+        <th class="symbol" scope="row">♀</th>
+        <td>she</td>
+        <td>her</td>
+      </tr>
+      <tr>
+        <th class="symbol" scope="row">o</th>
+        <td>it</td>
+        <td>it</td>
+      </tr>
+      <tr>
+        <th rowspan="3" scope="rowgroup">Plural</th>
+        <th colspan="2" scope="row">1st Person</th>
+        <td>we</td>
+        <td>we</td>
+      </tr>
+      <tr>
+        <th colspan="2" scope="row">2nd Person</th>
+        <td>you</td>
+        <td>you</td>
+      </tr>
+      <tr>
+        <th colspan="2" scope="row">3rd Person</th>
+        <td>they</td>
+        <td>they</td>
+      </tr> -->
+    </table>
+  </body>
+</html>

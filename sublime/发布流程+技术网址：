@@ -94,22 +94,50 @@ canvas 教程视频： https://www.bilibili.com/video/BV1Ri4y1M7NT?spm_id_from=3
 react路由拦截：https://juejin.cn/post/6871018004289683463
 
 
-在线ps ：https://zhuanlan.zhihu.com/p/120390258
+在线ps ：https://zhuanlan.zhihu.com/p/120390258 
+https://www.photopea.com/
 
 在线postman：https://identity.getpostman.com/login?addAccount=1&email=1424800753%40qq.com
 
-在线接口文档地址：https://www.apifox.cn/web?c=195.51161095197057
+在线接口文档地址 MOCK ：https://www.apifox.cn/web?c=195.51161095197057
+
+在线mock：https://www.fastmock.site/?code=8c98ea42bec4077a6e90#/project/ba088b140a5d219455dc2d1453a51ed6
 
 在线开发UI网址：https://modao.cc/
 
+在线PPT https://www.office.com/launch/powerpoint?ui=zh-CN&rs=CN&auth=1
 
+gitlab clone :https://www.cnblogs.com/yinzhengjie2020/p/12446233.html
+
+ JSON数据格式转ts接口： http://ww7.jsontots.com/
+
+小程序开放平台：
+https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Resource_Center_Homepage.html?action=dir_list&t=resource%2Fres_list&verify=1&lang=zh_CN&token=b04f52feae6e132cbca9c4685c5c17ed1188e32f
+
+小程序公众平台：https://mp.weixin.qq.com/wxamp/home/guide?lang=zh_CN&token=1911103417
 
 debounce：https://zhuanlan.zhihu.com/p/539736568
 
 
 
+https://react-guide.github.io/react-router-cn/docs/guides/advanced/DynamicRouting.html
+https://www.sequelize.cn/core-concepts/raw-queries
+https://reach.tech/router/
 
+https://blog.51cto.com/u_15490526/5299215
+https://esbuild.github.io/faq/#upcoming-roadmap
+https://juejin.cn/post/7047479540850884645
+https://juejin.cn/editor/drafts/7124583831574675469
+https://tehub.com/a/8xqeW3Ri1a
+https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/
 
+https://juejin.cn/post/7003278731171069982
+https://juejin.cn/post/7044157768445460487
+https://juejin.cn/post/7057776355450028045
+
+https://zhuanlan.zhihu.com/p/545912545
+https://socket.io/
+https://stackblitz.com/github/remix-run/react-router/tree/main/tutorial?file=src%2FApp.jsx
 公司发布流程：
 第一步： 切换正确分支
 修改代码：提交代码到分支
@@ -150,6 +178,11 @@ charles的Map Local（请求重定向到本地文件）功能，说白了就是�
 configure proxy   server：10.211.242.183   port 8888
 
 
+
+
+##  PPT ppt学习
+
+http://graphicriver.net
 
 
 第一步：： 先获取guid  获取不到guid 就去登录

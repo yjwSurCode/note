@@ -30,7 +30,7 @@ TodoAPIUtil
       .then(todos => dispatch(receiveTodos(todos)))
 
 
-#教师端(公众号)：https://xqmcm.com/app/teacher/index.html （https://github1s.com/gezi666/xingGouWeChat/blob/HEAD/src/router/index.js#L456）
+#教师端(公众号)：https://xqmcm.com/app/teacher/index.html 
 
 2.1-----history模式配置失败的原因可能是url带参数没有用encodeURIComponent
 
@@ -191,5 +191,11 @@ vite不是基于webpack为什么不可以引入loader怎么写插件解决？
 
 
 
+# 大厂代码规范
 
+eslint 
+
+prettier
+
+husky
 

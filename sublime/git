@@ -101,6 +101,9 @@ git stash list
 （8）git stash clear ：删除所有缓存的stash
 
 
+#更改分支名称
+git branch -m oldName newName
+
 # 创建本地分支
 git checkout -b 新分支名
 
@@ -181,6 +184,9 @@ accept incoming change  选择git最新的
 //git branch --set-upstream-to=origin/<分支> test
 // git branch --set-upstream-to=origin/test  test
 
+提交当前分支：
+git push --set-upstream origin modesign-project
+
 
 // git push - u origin dev
 // 想将 dev 分支合并到 master 分支，操作如下：
@@ -242,9 +248,45 @@ example:
 }
 
 
+## github  CI/CD  自动化持续集成部署代码到服务器
 
-SVN
-SVN
-SVN：：：：：：：：：：：：：：：：：：：：：：：：：：
+CI - 持续集成（Continuous Integration）
+CD - 持续交付 (Continuous Delivery)
+CD - 持续部署 (Continuous Deployment)
+
+GitHub Actions 是一个持续集成和持续交付 (CI/CD) 平台，可用于自动执行构建、测试和部署管道。
+
+
+
+GitHub Actions 有一些自己的术语。
+
+(1)workflow （工作流程）：持续集成一次运行的过程，就是一个 workflow。
+
+(2)job （任务）：一个 workflow 由一个或多个 jobs 构成，含义是一次持续集成的运行，可以完成多个任务。
+
+(3)step  (步骤)：每个 job 由多个 step 构成，一步步完成。
+
+(4)action （动作）：每个 step 可以依次执行一个或多个命令(action)
+
+
+on:
+  push:
+    branches:    
+      - master
+上面代码指定，只有master分支发生push事件时，才会触发 workflow。
+
+
+actions/setup-node@74bc508 # 指向一个 commit
+actions/setup-node@v1.0    # 指向一个标签
+actions/setup-node@master  # 指向一个分支
+
+
+
+
+
+
+
+
+## SVN：：：：：：：：：：：：：：：：：：：：：：：：：：
 
 svn checkout http://wh-svn.fn.com/feiniu-website/code/ui/branch/project/rt-supplier-openapi

@@ -411,6 +411,55 @@ f 的隐式原型 __proto__ 和 Foo.prototype
 Array.isArray(target)
 
 
+# 循环遍历函数集合： https://www.xiabingbao.com/post/loop/js-loop-speed.html
+
+for循环 for (let k = 0; k < 10; k++) {}    能够随时 break 停止
+
+for (let k = 0; k < 10; k++) { if(k>5){ 
+ break;} console.log(k) }
+
+while (i < len) {
+    sum += arr[i] % 100;
+    i++;
+  }
+
+   do {
+    sum += arr[i] % 100;
+    i++;
+  } while (i < len);
+
+forEach, map, reduce这几种方法是无法停止循环的，无论使用break还是return
+forEach, map, reduce 3 个循环的时间差不多
+
+forEach
+[1, 2, 3, 4, 5].forEach((item) => {}
+
+
+for-of 的简要介绍  for-of 循环速度前两次很低
+一个数据结构只要部署了 Symbol.iterator 属性，就被视为具有 iterator 接口，就可以用 for...of 循环遍历它的成员。也就是说，for...of 循环内部调用的是数据结构的 Symbol.iterator 方法。
+
+for...of 循环可以使用的范围包括数组、Set 和 Map 结构、某些类似数组的对象（比如 arguments 对象、DOM NodeList 对象）、后文的 Generator 对象，以及字符串。
+
+for-of 拿到的就是 value 本身，而 for-in 则拿到的是 key，然后通过 key 再获取到当前数据。
+
+for (const value of arr) {
+    sum += value % 100;
+  }
+
+
+for-in 循环   循环效率真的很低!!!!!!
+for-in 通常用于 object 类型的循环，但也可以用来循环数组，毕竟所有数据类型的祖先都是 object 类型。
+
+for (let key in arr) {
+    sum += arr[key] % 100;
+  }
+
+
+
+
+
+
+
 获取一个永不重复的ID：
 export function GenNonDuplicateID() {
   let str: string = "";
@@ -420,8 +469,24 @@ export function GenNonDuplicateID() {
 }
 
 
+* 时间戳转日期
+
+function timestampToTime(timestamp) {
+        var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        var Y = date.getFullYear() + '-';
+        var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        var D = date.getDate() + ' ';
+        var h = date.getHours() + ':';
+        var m = date.getMinutes() + ':';
+        var s = date.getSeconds();
+        return Y+M+D+h+m+s;
+    }
+    timestampToTime(1403058804);
+    console.log(timestampToTime(1403058804));//2014-06-18 10:33:24
+
 
 * 获取一个时间标准对象: const time = new Date(时间戳); Wed Jun 01 2022 12: 00: 00 GMT + 0800(中国标准时间)
+
 * 获取一个时间戳: new Date('2022-06-01 16:00:00').getTime()  //获取一个时间戳 1654070400000
 
 * 获取当前时间日期格式： new Date().toLocaleString()      //'2022/6/1 13:55:02'

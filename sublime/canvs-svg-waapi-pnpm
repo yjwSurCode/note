@@ -77,12 +77,167 @@ waapi:
 
 
 
+## 包管理
+## pnpm： https://zhuanlan.zhihu.com/p/457698236
+
+npm install -g pnpm
+
+配置环境变量：
+
+http://106.12.154.161/images/huan1.png
+
+http://106.12.154.161/images/huan2.png
 
 
-pnpm：
+命令：
+pnpm install
+pnpm add name
+pnpm add -D name
+
+
+# 问题 pnpm: ENOENT: no such file or directory, 
+stat 'D:\VUE2-TS\rt-ued-scaffolding\node_modules\.pnpm\@types+react@17.0.47\node_modules\csstype'
+
+
+
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2187b2c861fd4b469203ff222364ebd9~tplv-k3u1fbpfcp-watermark.image" alt=""  width="50%" />
+
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2187b2c861fd4b469203ff222364ebd9~tplv-k3u1fbpfcp-watermark.image" alt=""  width="49%" />
+
+
+
+
+更新项目依赖包： https://www.npmjs.com/package/npm-check-updates
+
+npm-check-updates
+
+更新包  ncu -u
+
+
+# upgrade only mocha
+ncu mocha
+ncu -f mocha
+ncu --filter mocha
+
+# upgrade packages that start with "react-"
+ncu react-*
+ncu "/^react-.*$/"
+
+# upgrade everything except nodemon
+ncu \!nodemon
+ncu -x nodemon
+ncu --reject nodemon
+
+# upgrade only chalk, mocha, and react
+ncu chalk mocha react
+ncu chalk, mocha, react
+ncu -f "chalk mocha react"
+
+# upgrade packages that do not start with "react-".
+ncu \!react-*
+ncu '/^(?!react-).*$/' # mac/linux
+ncu "/^(?!react-).*$/" # windows
+
+
+
+
+
 
 yarn：
 
 npm：
 
 cnpm：
+
+
+
+
+
+
+{/* <Uploader
+						value={[
+							{
+								status: 'failed',
+								name: 'leaf',
+								url: 'https://img17.fn-mart.com/pic/2a021346939822ebb66f/B26n221z_2fdhMZdKz/7imyeafa3yKGj9/CsmRtmA3RAuAVmgsAAKtgt1PF3s715.jpg',
+							},
+						]}
+						showFileList={false}
+					/> */}
+
+
+
+<Form.Item name="uploader">
+						<Uploader
+							multiple={true}
+							onRead={(fileList) => {
+								if (fileList.length > 5) {
+									Toast.fail(`最多只能传5个`);
+									return [];
+								}
+
+								return fileList.map((file) => ({
+									...file,
+									status: 'done',
+								}));
+							}}
+							// className={}
+							// style={{ top: '60px' }}
+							// onChange={(v) => setUploaderData('uploadStatus', v)}
+							// onUpload={handleUploadChange}
+							onUpload={handleUpload}
+							onChange={handleUploadChange}
+							slots={{
+								filePreviewCover: ({ file }) => {
+									console.log(file, 'file-----888	');
+									return (
+										<div
+											style={{
+												height: '100%',
+												display: 'flex',
+												justifyContent: 'center',
+												alignItems: 'center',
+											}}
+										>
+											{/* <Circle progress={progress} style={{ width: '100%', height: '100%' }}>
+												<div style={{ color: '#1989fa' }}>{progress}%</div>
+											</Circle> */}
+
+											{/* //! 接口一直延迟怎么办 */}
+											{/* {progress !== 100 && ( // && successFileRef.current.includes(file?.name)
+												<div>
+													<Icon.Spinner color="#358afa" />
+													<div style={{ color: '#1989fa' }}>{progress}%</div>
+												</div>
+											)} */}
+											{!failedFlag && (
+												<div>
+													<Icon.Spinner color="#358afa" />
+													<div style={{ color: '#1989fa' }}>上传中</div>
+												</div>
+											)}
+											{/* {!failedFlag.includes(file?.name) && (
+												<div>
+													<Icon.Spinner color="#358afa" />
+													<div style={{ color: '#1989fa' }}>{progress}%</div>
+												</div>
+											)} */}
+											<div className={bem('preview-cover')}>
+												{failedFlag && successFileList.includes(file?.name) && (
+													<div style={{ color: 'red', fontWeight: 'bold' }}>
+														<Icon name="fail" color="#ee0a24" />
+													</div>
+												)}
+												{file && file.name}
+											</div>
+											{/* failed不是最后出来  */}
+										</div>
+									);
+								},
+							}}
+						>
+							<Button icon={<Icon name="plus" />} type="primary" plain>
+								添加附加
+							</Button>
+						</Uploader>
+					</Form.Item>

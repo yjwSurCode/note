@@ -215,17 +215,42 @@ react 性能优化 ：：：：：：：：：：：：：：：：：：：：�
 使用 lazyload 和 placeholder 提升加载体验。
 
 
+## react-router  https://github.com/remix-run/react-router/blob/main/docs/getting-started/tutorial.md
+lerna管理包 里面包含:
+https://s2.51cto.com/images/blog/202202/14100830_6209b99e7c41892667.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_30,g_se,x_10,y_10,shadow_20,type_ZmFuZ3poZW5naGVpdGk=
+
+
+
+## react-router-dom
+
+react-router-dom 只是多了下面四个组件 BrowserRouter、 Link、NavLink、HashRouter， 其他其实都是直接引用 react-router 的。
+
+
+
 # 下一代路由 reach router   (官网:https://reach.tech/router)
 
 
 
-一文吃透 React SSR 服务端渲染和同构原理::::::::
+
+
+# 一文吃透 React SSR 服务端渲染和同构原理::::::::
 
 
 
-新版react18：
+## 新版react18：
 在老版并发的React中，表示优先级的是一个被称为expirationTime的时间戳。比较更新是否应该被跳过 之后再来计算
 在新版并发的React中，优先级被保存在31位的二进制数中。
+
+
+
+
+
+
+
+
+##  源码解析
+
+
 
 export function render(
   element: React$Element<any>,

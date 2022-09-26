@@ -269,10 +269,23 @@ module.exports = {
 
 
 
+# esbuild打包流程简解析
+Makefile----------main.go-----------基础依赖的 package 导入
+import (
+    "fmt"  fmt 用于格式化输出 I/O 的函数
+    "os"   os 提供系统相关的接口
+    "runtime/debug"   runtime/debug 提供程序在运行时进行调试的功能
+    "strings"    strings 用于操作 UTF-8 编码的字符串的简单函数
+    "time"   time 用于测量和展示时间
+
+    "github.com/evanw/esbuild/internal/api_helpers"   用于检测计时器是否正在使用
+    "github.com/evanw/esbuild/internal/logger"   用于格式化日志输出
+    "github.com/evanw/esbuild/pkg/cli"   提供 esbuild 的命令行接口
+)
 
 
 
-vite配置：：：：：：：：：：：：：：：：：：：：：
+#  vite配置：：：：：：：：：：：：：：：：：：：：：
 /**
  * https://vitejs.dev/config/
  * @type {import('vite').UserConfig}

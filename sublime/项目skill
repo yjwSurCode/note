@@ -33,6 +33,18 @@ const decrypt = (txt: string) => {
 # 4: 图片加载失败 可优化的地方
 	<img src={activityInfo.userIcon} onError={(e) => (e.target.src = defaultUserHeadImg)}></img>
 
+# 5：钉钉 支付宝 title
+<script src="http://g.alicdn.com/dingding/dingtalk-jsapi/2.3.0/dingtalk.open.js"></script>
+  <script src="https://a.alipayobjects.com/g/component/antbridge/1.1.4/antbridge.min.js"> </script>
+
+    // dd.ready(function () {
+    //   dd.biz.navigation.setTitle({
+    //     title: "123",
+    //   })
+    // })
+
+    // ant.setTitle('123');
+
 # 如何让localStorage支持过期时间设置：：：：：：：：：：：：：：  https://juejin.cn/post/7040671388025225229
 const store = {
   // 存储过期时间映射
