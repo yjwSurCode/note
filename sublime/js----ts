@@ -139,6 +139,41 @@ async function getABC() {
 
 
 # new操作符的作用
+1；创建了一个空对象
+var obj=new Object();
+
+2：设置原型链
+obj.__proto__= Func.prototype;
+
+3：(改变this指向)让Func中的this指向obj，并执行Func的函数体。
+var result =Func.call(obj);
+
+
+# asnyc await    try catch   promise
+
+async function fn() {
+    try {
+        await new Promise(() => {
+            throw new Error('new promise throw error');
+        })
+        // 如果加上promise的catch 那么优先抛出
+        .catch(error=>{
+            console.log('.catch',error);
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+fn()
+
+这次Promise异常能被捕获到,
+是因为async和await,
+正常不加async,await的时候,
+执行promise后,在等待promise回调的时候,
+try,catch已经执行完了,所以捕获不到,
+然而加了async和await后,try,catch必须等promise的回调执行完后
+,才能继续往下走,这个时候trycatch没执行完,promise抛出异常,自然而然能被catch捕获到
+
 
 
 
@@ -571,6 +606,13 @@ console.log(getTime(-13));
 
 
 
+)
+
+
+
+
+
+
 
 eventBus：：：：：：：：：：：：：：：：：：：：：：：
 
@@ -578,12 +620,144 @@ eventBus：：：：：：：：：：：：：：：：：：：：：：：
 
 JS的20个实用技巧：：：：：：：：：：：：：：：：：   https://juejin.cn/post/7083016475547533348
 
+
+const {a,b,c,d,e} = obj || {};
+
+
+const a = [1,2,3];
+const b = [1,5,6];
+const c = [...new Set([...a,...b])];//[1,2,3,5,6]
+
+const obj1 = {
+  a:1,
+}
+const obj2 = {
+  b:1,
+}
+const obj = {...obj1,...obj2};
+
+如果是精确搜索不会用ES6中的find吗？性能优化懂么，find方法中找到符合条件的项，就不会继续遍历数组。
+const a = [1,2,3,4,5];
+const result = a.find( 
+  item =>{
+    return item === 3
+  }
+
+
+
+
 使用reduce实现数组filter方法
 const myFilter2 = function (fn, context) {
   return this.reduce((total, current, index) => {
     return fn.call(context, current, index, this) ? [...total, current] : [...total]
   }, [])
 }
+
+
+
+#!!!  前端遍历合集
+https://owen027.github.io/2019/07/03/performance/
+
+1：for
+for (int i = 0; i < 10; i++) {
+
+	continue // 后面的语句不执行，进入下一次 //  continue一般配合判断条件使用
+
+  break // 跳出当前循环	 // 一般配合判断语句使用
+
+  return 当程序运行到 return; 语句时，会终止循环，结束当前方法。
+}
+
+2： for( ...in )
+for (let key in {a:1, b:2, c:3}) {
+  console.log(key); /a b c
+}
+
+3： for( ...of )
+for (let value of [1,2,3]) {
+  console.log(value); /1 2 3
+}
+配合使用 Object.keys({a:1,b:2}) //[a,b]
+for(var key of Object.keys({a:1, b:2, c:3})){
+    console.log(key); 
+}
+
+4： while 
+var n = 0;
+var x = 0;
+while (n < 3) {
+  n++;
+  x += n;
+}
+console.log(n,x);//3 6
+
+4.1：do-while
+var i = 0;
+do {
+   i += 1;
+   result += i + ' ';
+} while (i < 5); 1 2 3 4 5
+
+5： switch case 
+const expr = 'Mangoes';
+switch (expr) {
+  case 'Oranges':
+    console.log('Oranges are $0.59 a pound.');
+    break;
+  case 'Mangoes':
+  case 'Papayas1':
+    console.log('Mangoes and papayas are $2.79 a pound.');
+    // expected output: "Mangoes and papayas are $2.79 a pound."
+    break;
+  default:
+    console.log(`Sorry, we are out of ${expr}.`);
+}
+
+6：forEach()
+遍历数组全部元素，利用回调函数对数组进行操作，自动遍历数组.length次 .无法break中途跳出循环 不可控
+forEach删除自身元素index不会被重置
+arr.forEach((item, index) => {
+    arr.splice(index, 1);
+}); 当index=0,时 进入删除,然后进入下一次遍历index=1,而此时index=1 的项是第三项
+
+创建新数组 不改变原数组  输出的是 return什么就输出什么 新数组
+map 生成的新数组元素是可自定义。与filter相反
+回调函数参数,item(数组元素)、index(序列)、arr(数组本身)
+
+8：find()
+和filter相似 输出的是一旦判断为true 则跳出循环输出符合条件的数组元素
+
+9：some()
+判断出一个符合条件则跳出循环并输出true
+
+10：every()
+判断出一个符合条件则跳出循环并输出true
+
+11：filter
+创建新数组 不改变原数组 输出的是 判断为true的数组元素 组成的新数组
+filter 生成的新数组元素不可自定义，与对应原数组元素一致。
+回调函数参数，item(数组元素)、index(序列)、arr(数组本身)
+arr.filter(function(item,index){ return item>2&&item<5 })
+
+12：findIndex 和 find一样 只是返回的是索引
+
+13：reduce
+创建新数组 不改变原数组 输出的是return叠加什么就输出什么 新数组
+pre(第一次为数组第一项，之后为上一操作的结果)
+next(数组的下一项)
+index(next项的序列)
+arr(数组本身)
+回调函数后的改变第一项参数。（不影响原数组）
+
+
+
+
+## forEach 解决方案
+[...arr].forEach((item, index) => {
+    arr.splice(index, 1);
+    console.log(1);
+});
+
 
 
 

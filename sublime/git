@@ -1,10 +1,12 @@
 # 原理：git ls-files --stage
-index文件git暂存区存放index文件中，所以我们把暂存区有时也叫作索引（index）。索引是一个二进制格式的文件，里面存放了与当前暂存内容相关的信息，
-包括暂存的文件名、文件内容的SHA1哈希串值和文件访问权限。
-暂存区是贯穿于整个Git使用流程的重要概念，所以index文件就很重要。由于是二进制所以我们无法查看具体内容，但是可以用git ls-files --stage 命令查看暂存区里面的文件
-objects目录
+index文件git暂存区存放index文件中，所以我们把暂存区有时也叫作索引（index）。
+索引是一个二进制格式的文件，里面存放了与当前暂存内容相关的信息，包括暂存的文件名、文件内容的SHA1哈希串值和文件访问权限。
+暂存区是贯穿于整个Git使用流程的重要概念，所以index文件就很重要。由于是二进制所以我们无法查看具体内容，
+但是可以用git ls-files --stage 命令查看暂存区里面的文件
 
-Git对象(blob,tree,commit,tag)都保存在objects目录里面，所以objects目录就是真正的仓库。objects里面的目录结构组织的很有特点，是以SHA值的前2位作为目录，后38位作为这个目录下的文件名。
+# objects目录
+Git对象(blob,tree,commit,tag)都保存在objects目录里面，
+所以objects目录就是真正的仓库。objects里面的目录结构组织的很有特点，是以SHA值的前2位作为目录，后38位作为这个目录下的文件名。
 
 # Tree 对象
 一个tree对象有一串(bunch)指向blob对象或是其它tree对象的指针，它一般用来表示内容之间的目录层次关系。
@@ -15,9 +17,8 @@ git ls-tree 或 git cat-file -p 命令还可以用来查看tree对象，现在�
 git hash-object<file>
 git update-index --add<file>
 
-# 查看远程地址 git remote -v
-
-
+# 查看远程地址 
+git remote -v
 
 HEAD：当前提交你的回购。大多数时候都  HEAD 指向分支中的最新提交，但情况并非如此。 HEAD 真的只是意味着“我的回购目前指向的是什么”。
 master：git在首次创建repo时为您创建的默认分支的名称。在大多数情况下，“主”意味着“主要分支”。大多数商店都有人推动掌握，而主人被认为是回购的最终观点。但是发布分支也很常见，因为发布分支是由master发布的。您的本地仓库有自己的主分支，几乎总是跟随远程仓库的主人。
@@ -26,6 +27,7 @@ origin：git为主远程仓库提供的默认名称。你的盒子有自己的�
 
 git push origin master
 解决办法：强行让本地分支覆盖远程分支git push origin master -f
+
 git push的一般形式为 git push <远程主机名> <本地分支名>  <远程分支名>  eg:git push origin master：refs/for/master 
 1.1 git push origin master
 如果远程分支被省略，如上则表示将本地分支推送到与之存在追踪关系的远程分支（通常两者同名），如果该远程分支不存在，则会被新建
@@ -43,7 +45,6 @@ git stash save '备注信息'
 git cherry-pick可以选择某一个分支中的一个或几个commit(s)来进行操作。
 例如，假设我们有个稳定版本的分支，叫v2.0，另外还有个开发版本的分支v3.0，我们不能直接把两个分支合并，这样会导致稳定版本混乱，但是又想增加一个v3.0中的功能到v2.0中，这里就可以使用cherry-pick了。
 
-
 # 查看commit： git log
 commit 150f539d430015ba682a3dd95d4f68937eb6533b
 Author: 贾季帮 <1424800753@qq.com>
@@ -53,7 +54,8 @@ git show  150f539d430015ba682a3dd95d4f68937eb6533b
 
 # 如何撤销 git commit
 
-git reset  HEAD~1
+git reset  HEAD~1   回到上一次commit
+
 git reset--soft HEAD~2   撤销两次 可以包括commit push
 
 # Git撤销对远程仓库的push & commit提交::!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -112,10 +114,15 @@ git checkout -b 新分支名
 # 创建远程分支
 git checkout -b 新分支名
 
+!!!!!推送
+git push origin master-preview:master-preview
+
 删除本地分支：git branch -d 分支名  (不能删除当前所在分支)
 
 删除远程分支
 git push origin --delete 分支名
+
+example： 
 
 
 查看本地和远程分支：git branch -a
@@ -283,10 +290,47 @@ actions/setup-node@master  # 指向一个分支
 
 
 
+# Github上 fork了别人的代码 本地更新主分支代码
+在GitHub上我们会去fork别人的一个项目，这就在自己的Github上生成了一个与原作者项目互不影响的副本，自己可以将自己Github上的这个项目再clone到本地进行修改，修改后再push，只有自己Github上的项目会发生改变，而原作者项目并不会受影响，避免了原作者项目被污染。但经过一段时间， 有可能作者原来的代码变化很大， 你想接着在他最新的代码上修改， 这时你需要合并原作者的最新代码过来， 让你的项目变成最新的。
+1、先克隆项目到本地：
+Git clone https://github.com/iakuf/mojo
+cd mojo
+2、添加原作者项目的 remote 地址， 然后将代码 fetch 过来
+git remote add sri https://github.com/kraih/mojo
+git fetch sri
+‘sri’相当于一个别名
+查看本地项目目录： git remote -v
+3、合并
+git checkout master
+git merge sri/master
+如果有冲突的话，需要丢掉本地分支：
+git reset –hard sri/master
+4、这时你的当前本地的项目变成和原作者的主项目一样了，可以把它提交到你的GitHub库
+git commit -am ‘更新到原作者的主分支’
+git push origin
+git push -u origin master -f –强制提交
+
+http://blog.csdn.net/u013647382/article/details/53400530
 
 
 
 
-## SVN：：：：：：：：：：：：：：：：：：：：：：：：：：
 
+
+## SVN：：：：：：：：：：：：：：https://blog.csdn.net/songxi_bo/article/details/116232203
+
+安装svn 
+brew install svn
+
+5、更新文件
+svn　update
+
+新建分支branchs，在分支上继续开发
+1、svn mkdir branches
+2、svn copy svn://server/trunk svn://server/branches/ep -m "init ep"
+
+剪切代码：
 svn checkout http://wh-svn.fn.com/feiniu-website/code/ui/branch/project/rt-supplier-openapi
+
+svn add    svn commit -m “提
+新建分支：

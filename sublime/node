@@ -31,10 +31,6 @@ Node.js遇到I/O事件,并不会先处理,而是先放在事件队列中,主线�
 3、当主线程代码执行完毕完成后，通过事件循环机制，从“事件队列”的开头取出一个事件，从线程池中分配一个线程去执行这个事件，接下来继续取出第二个事件，再从线程池中分配一个线程去执行，一直执行到事件队列的尾部。期间主线程不断的检查事件队列中是否有未执行的事件，直到事件队列中所有事件都执行完，此后每当有新的事件加入到事件队列中，都会通知主线程按顺序取出交代码循环处理。当有事件执行完毕后，会通知主线程，主线程执行回调，线程归还给线程池。
 
 
-
-
-
-
 # 运行 npm run xxx 的时候发生了什么 ：：：：：：：：：：：：----------- https://zhuanlan.zhihu.com/p/487431985
 
 npm run serve的时候，实际上就是执行了vue-cli-service serve
@@ -194,9 +190,50 @@ Sequelize 是一个基于 promise 的 Node.js ORM,
 
 
 
-# REDIS缓存：
+# REDIS缓存：https://www.jianshu.com/p/65e805c85500
 
 可视化工具：https://juejin.cn/post/7072537112834211847
+
+RedisInsight
+
+用法：
+const redis = require("redis");
+// 连接 Redis
+const client = redis.createClient({ host: "127.0.0.1", port: 6379 });
+
+// 使用事件发射器，检测错误
+client.on("error", function (error) {
+    console.error(error);
+});
+
+// console 来验证 Redis 的 API 是异步
+console.log("🦋🦋🦋🦋");
+// 存储一个 key value
+client.set("name", "Condor Hero", redis.print);
+console.log("🐥🐥🐥🐥");
+// 读取 name 这个 key 的值
+client.get("name", redis.print); 
+console.log("🐝🐝🐝🐝");
+// 退出 Redis
+client.quit();
+console.log("🦄🦄🦄🦄");
+结果：
+Reply: OK
+Reply: Condor Hero
+
+const { redis } = require("./db");
+const chalk = require("chalk");
+
+const { redis } = require("./db");
+const chalk = require("chalk");
+
+redis.set("name", "Condor Hero").then(res => {
+    redis.get("name").then(val => {
+        console.log(chalk.green(val));
+        process.exit(1);
+    });
+});
+
 
 消息队列：
 

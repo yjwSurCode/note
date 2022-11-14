@@ -1,5 +1,4 @@
 #1: react 引入大图片
-
 	style={{
 						backgroundImage: `url(${wheel_bg})`,
 					}}
@@ -29,7 +28,6 @@ const decrypt = (txt: string) => {
 	return CryptoJS.AES.decrypt(txt, secretKey).toString(CryptoJS.enc.Utf8);
 };
 
-
 # 4: 图片加载失败 可优化的地方
 	<img src={activityInfo.userIcon} onError={(e) => (e.target.src = defaultUserHeadImg)}></img>
 
@@ -45,7 +43,7 @@ const decrypt = (txt: string) => {
 
     // ant.setTitle('123');
 
-# 如何让localStorage支持过期时间设置：：：：：：：：：：：：：：  https://juejin.cn/post/7040671388025225229
+# 6: 如何让localStorage支持过期时间设置：：：：：：：：：：：：：：  https://juejin.cn/post/7040671388025225229
 const store = {
   // 存储过期时间映射
   setExpireMap: (key, expire) => {
@@ -89,7 +87,7 @@ store.set("dooring", "xuxiaoxi", Date.now() + 1000, (status, key, value) => {
 });
 
 
-# 5:offlineHandle 断网处理
+# 7:offlineHandle 断网处理
 import React, { useState, useEffect } from "react";
 import { notification } from "antd";
 import "antd/dist/antd.css";
@@ -153,7 +151,13 @@ export default OfflineHandle;
 
 
 
-# debug 用法
+# 8:第一次访问页面的时候很可能会存在“白屏”等待
+
+
+next12使用 swc 替换掉 babel和ts部分
+
+
+# debug 用法 https://juejin.cn/post/7030584939020042254
 按钮1：运行/继续 F5，真正的一步一步运行
 按钮2：单步跳过(又叫逐过程) F10，按语句单步执行。当有函数时，不会进入函数。
 按钮3：单步调试（又叫逐语句）F11：当有函数时，点击这个按钮，会进入这个函数内

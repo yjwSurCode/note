@@ -1,0 +1,91 @@
+
+# 前端模块化：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+window----IIFE-------AMD-------CMD---------CommonJs----ESM
+
+1：IIFE 创建自执行函数
+var testUtils = function () {
+    function test(data){
+        console.log(data)
+    }
+    return {
+      test
+    }
+}()
+
+
+：AMD（RequireJS）
+ 依赖必须一开始就写好
+define(['./utils'], function(utils) {
+  utils.request();
+});
+
+异步模块定义规范(AMD)制定了定义模块的规则,这样模块和模块的依赖可以被异步加载。
+这和浏览器的异步加载模块的环境刚好适应(浏览器同步加载模块会导致性能、可用性、调试和跨域访问等问题)
+AMD 是一种异步模块规范,RequireJS 是 AMD 规范的实现
+
+// CMD----跟requireJS解决同样问题，只是运行机制不同。
+define(function(require) {
+  依赖可以就近书写
+  var utils = require('./utils');
+  utils.request();
+});
+
+：CommonJS
+随着 node 诞生，服务器端的模块规范 CommonJS 被创建出来。
+var config = require('./config');
+const {
+    notExistFold,
+    prompt,
+} = require('./util.js');
+
+module.exports = NAME
+exports = NAME
+
+
+：ES6 module：(目前的浏览器还没有全部兼容 需要使用bable进行处理)
+import api from './config.js';
+import { api as myApi } from './config.js';
+
+export const prefix = 'https://github.com';
+export default function foo() {}
+
+ES6 module 使用import导入模块接口
+import { api as myApi } from './config.js';
+import()实现按需加载
+
+为什么webpack需要注入这么多代码？
+因为webpack比rollup早出2年，诞生在esm标准出来前，commonjs出来后
+
+当时的浏览器只能通过script标签加载模块
+
+script标签加载代码是没有作用域的，只能在代码内 用iife的方式 实现作用域效果，
+
+这就是webpack打包出来的代码 大结构都是iife的原因
+并且每个模块都要装到function里面，才能保证互相之间作用域不干扰。
+这就是为什么 webpack打包的代码为什么乍看会感觉乱，找不到自己写的代码的真正原因
+
+
+
+
+关于webpack的代码注入问题，是因为浏览器不支持cjs，所以webpack要去自己实现require和module.exports方法（才有很多注入）（webpack自己实现polyfill）
+
+这么多年了，甚至到现在2022年，浏览器为什么不支持cjs？
+
+cjs是同步的，运行时的，node环境用cjs，node本身运行在服务器，无需等待网络握手，所以同步处理是很快的
+浏览器是 客户端，访问的是服务端资源，中间需要等待网络握手，可能会很慢，所以不能 同步的 卡在那里等服务器返回的，体验太差
+
+
+
+
+后续出来esm后，webpack为了兼容以前发在npm上的老包（并且当时心还不够决绝，导致这种“丑结构的包”越来越多，以后就更不可能改这种“丑结构了”），所以保留这个iife的结构和代码注入，导致现在看webpack打包的产物，乍看结构比较乱且有很多的代码注入，自己写的代码都找不到
+
+
+
+
+例如，lodash-es 有超过 600 个内置模块！当我们执行 import { debounce } from 'lodash-es' 时，浏览器同时发出 600 多个 HTTP 请求！尽管服务器在处理这些请求时没有问题，但大量的请求会在浏览器端造成网络拥塞，导致页面的加载速度相当慢。
+
+
+
+
+
+acorn 是一个 JavaScript 语法解析器，它将 JavaScript 字符串解析成语法抽象树 AST 如果想了解 AST 语法树可以点下这个网址https://astexplorer.net/

@@ -53,6 +53,13 @@ scrollTo()
 
 
 
+# 回流重绘的优化：：：：：：：：：：：：：：：：：
+1：使用 transform 替代 top (node.style.left="100px")  (node.style.transform="translateX(100px)")
+2：不要一次一次的修改样式,而是预先定义好class,直接修改DOM的className,这样只会引发一次重排重绘
+3：使用 visibility 替换 display: none ,因为前者只会引起重绘,后者会引发回流
+4：改变了布局避免使用table布局,可能很小的一个小改动会造成整个 table 的重新布局。
+
+
 # 浏览器渲染机制:::::::::::::::::::::::::::::::::
 DOM：Document Object Model，浏览器将HTML解析成树形的数据结构,简称DOM。
 CSSOM：CSS Object Model，浏览器将CSS解析成树形的数据结构,简称CSSOM。
@@ -63,21 +70,16 @@ reflow 几乎是无法避免的。现在界面上流行的一些效果，比如�
 注：display: none会触发reflow，而visibility: hidden只会触发repaint，因为没有发现位置变化。
 
 
-
-# 回流重绘的优化：：：：：：：：：：：：：：：：：
-1：使用 transform 替代 top (node.style.left="100px")  (node.style.transform="translateX(100px)")
-2：不要一次一次的修改样式,而是预先定义好class,直接修改DOM的className,这样只会引发一次重排重绘
-3：使用 visibility 替换 display: none ,因为前者只会引起重绘,后者会引发回流
-4：改变了布局避免使用table布局,可能很小的一个小改动会造成整个 table 的重新布局。
-
-
-
-
  # css 加载会造成阻塞吗？:::::::::::::::::::::::::::::::::::::::::::::
- DOM 和 CSSOM 通常是并行构建的,所以 CSS 加载不会阻塞DOM 的解析。
- 然而由于 Render Tree 是依赖于 DOM Tree 和 CSSOM Tree 的,所以他必须等待到 CSSOM Tree 构建完成,也就是 CSS 资源加载完成(或者 CSS 资源加载失败)后,才能开始渲染。
+
+css加载不会阻塞DOM树的解析?
+css加载会阻塞DOM树的渲染?
+css加载会阻塞后面js语句的执行?
+
+ 1:DOM 和 CSSOM 通常是并行构建的,所以 CSS 加载不会阻塞DOM 的解析。
+ 2:然而由于 Render Tree 是依赖于 DOM Tree 和 CSSOM Tree 的,所以他必须等待到 CSSOM Tree 构建完成,也就是 CSS 资源加载完成(或者 CSS 资源加载失败)后,才能开始渲染。
  因此,CSS 加载会阻塞 DOM 的渲染。
-css动画会阻塞页面吗？(css动画会触发重绘  重绘阻塞js页面)
+ 3:css动画会触发重绘,重绘阻塞js页面
 
 # 谈一谈你对requestAnimationFrame（RAF）理解::::::::::::::::::
 window.requestAnimationFrame() 告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。
@@ -98,38 +100,11 @@ RAF 的执行步伐跟着系统的绘制频率走。它能保证回调函数在�
 浏览器处于安全方面的考虑,只允许本域名下的接口交互,不同源的客户端脚本,在没有明确授权的情况下,不能读写对方的资源。
 
 
+# 深度剖析TCP与UDP的区别
+https://juejin.cn/post/6992743999756845087
 
-# 浏览器兼容性问题 ：：：：：：：：：：：
-1： terser + Rollup 兼容旧浏览器
-import { terser } from 'rollup-plugin-terser';
-import getBabelOutputPlugin from '@rollup/plugin-babel';
-
-export default {
-  input: 'src/load.js',
-  plugins: [
-    // https://github.com/terser/terser#minify-options
-    terser({
-      ecma: '5',
-      compress: true,
-      mangle: true,
-    }),
-    getBabelOutputPlugin({
-      babelHelpers: 'bundled',
-      presets: [
-        ['@babel/preset-env', {
-          targets: '> 0.25%, last 2 versions, Firefox ESR, not dead',
-        }],
-      ],
-    }),
-  ],
-  output: {
-    file: 'dist/load.js',
-    format: 'iife',
-    sourcemap: false,
-  },
-};
-
-
+#解读 HTTP1/HTTP2/HTTP3
+https://juejin.cn/post/6995109407545622542
 
 
 # 浏览器的本地存储 ：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
@@ -138,7 +113,7 @@ localStorage :只存在客户端，默认不参与与服务端的通信。这样
 sessionStorage：会话结束,也就是页面关闭,这部分sessionStorage就不复存在了。
 
 
-web安全(https://juejin.cn/post/6844903842635579405#heading-5) ：：：：：：：：：：：
+# web安全(https://juejin.cn/post/6844903842635579405#heading-5) ：：：：：：：：：：：
 1 XSS 攻击的本质是将用户数据当成了 HTML 代码一部分来执行，从而混淆原本的语义，产生新的语义。
 2 CSRF 英文全称是 Cross-site request forgery,所以又称为“跨站请求伪造”,是指黑客引诱用户打开黑客的网站,在黑客的网站中,利用用户的登录状态发起的跨站请求。简单来讲,「CSRF 攻击就是黑客利用了用户的登录状态，并通过第三方的站点来做一些坏事。」
 
@@ -177,6 +152,39 @@ HTTP是无状态的,HTTPS是有状态的
 被忘记的定时器或者回调函数
 闭包
 DOM泄漏
+
+
+
+# 浏览器兼容性问题 ：：：：：：：：：：：
+1： terser + Rollup 兼容旧浏览器
+import { terser } from 'rollup-plugin-terser';
+import getBabelOutputPlugin from '@rollup/plugin-babel';
+
+export default {
+  input: 'src/load.js',
+  plugins: [
+    // https://github.com/terser/terser#minify-options
+    terser({
+      ecma: '5',
+      compress: true,
+      mangle: true,
+    }),
+    getBabelOutputPlugin({
+      babelHelpers: 'bundled',
+      presets: [
+        ['@babel/preset-env', {
+          targets: '> 0.25%, last 2 versions, Firefox ESR, not dead',
+        }],
+      ],
+    }),
+  ],
+  output: {
+    file: 'dist/load.js',
+    format: 'iife',
+    sourcemap: false,
+  },
+};
+
 
 
 
@@ -324,6 +332,34 @@ export default function foo() {}
 ES6 module 使用import导入模块接口
 import { api as myApi } from './config.js';
 import()实现按需加载
+
+##  对比差异
+// Named export/import  具名导出/导入:
+export { sum }   
+import { sum } from 'sum'  
+
+// Default export/import  默认导出/导入:
+export default sum   
+import sum from 'sum'
+
+exports 仅仅是 module.exports 的引用
+// 实际上的 exports
+exports = module.exports
+
+本质是导出exports对象{}
+
+## CommonJS与ES6 Module最本质的区别是：动态vs静态
+
+CommonJS对模块依赖的解决是“动态的”（只能在运行时，分析出对应的依赖关系）
+ES6 Module是“静态的”（可以在编译时，就分析出对应的依赖关系，才能做tree shaking）
+
+22222:
+require的模块路径可以动态指定，支持传入一个表达式，我们甚至可以通过if语句判断是否加载某个模块。
+因此，在CommonJS模块被执行前，并没有办法确定明确的依赖关系，模块的导入、导出发生在代码的运行阶段。
+
+33333:
+对于CommonJS来说获取的是一份导出值的拷贝；
+而在ES6 Module中则是值的动态映射，并且这个映射是只读的。
 
 
 # CDN原理::::::::::::::::::::::::::::::::::::::::::::::::::::::

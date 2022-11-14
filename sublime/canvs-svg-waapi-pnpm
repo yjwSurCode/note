@@ -1,9 +1,11 @@
-区别：：：：：；：：：
+# canvas avg 区别：：：：：；：：：
 1：Canvas是基于像素的位图，而SVG却是基于矢量图形
 2：从结构上说，Canvas没有图层的概念，所有的修改整个画布都要重新渲染，而SVG则可以对单独的标签进行修改。
 3：Canvas是基于HTML canvas标签，通过宿主提供的Javascript API对整个画布进行操作的，而SVG则是基于XML元素的。
-4： svg可以直接嵌入html代码 
-canvas:基于像素的位图
+4：svg可以直接嵌入html代码 
+
+！！如果你绘制出来的图像是扭曲的，尝试用 width 和 height 属性为<canvas>明确规定宽高，而不是使用 CSS。
+
 
 1:var ctx = canvas.getContext('2d');
 2:var myGradient = ctx.createLinearGradient(0, 0, 0, 160); createLinearGradient方法用来设置渐变色。
@@ -72,7 +74,7 @@ https://jxnblk.github.io/paths/?d=M40%2032%20L32%2024%20L32%2010%20L16%2010%20L1
 
 
 
-waapi:
+### waapi：Web Animation API 动画
 
 
 
@@ -89,6 +91,9 @@ http://106.12.154.161/images/huan1.png
 http://106.12.154.161/images/huan2.png
 
 
+pnpm up --latest
+
+
 命令：
 pnpm install
 pnpm add name
@@ -98,6 +103,21 @@ pnpm add -D name
 # 问题 pnpm: ENOENT: no such file or directory, 
 stat 'D:\VUE2-TS\rt-ued-scaffolding\node_modules\.pnpm\@types+react@17.0.47\node_modules\csstype'
 
+
+#
+pnpm add -g pnpm
+
+surcode@surcodedeMacBook-Pro ~ % pnpm setup      
+Created /Users/surcode/.zshrc
+
+Next configuration changes were made:
+export PNPM_HOME="/Users/surcode/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+
+To start using pnpm, run:
+source /Users/surcode/.zshrc
+surcode@surcodedeMacBook-Pro ~ % source /Users/surcode/.zshrc
+surcode@surcodedeMacBook-Pro ~ % pnpm add -g pnpm  
 
 
 <img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2187b2c861fd4b469203ff222364ebd9~tplv-k3u1fbpfcp-watermark.image" alt=""  width="50%" />

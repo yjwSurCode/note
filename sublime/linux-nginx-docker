@@ -87,7 +87,7 @@ This message shows that your installation appears to be working correctly.
 # 查看镜像
 docker images
 
-## 删除镜像：删除之前要停止！！！！
+## 删除镜像：删除之前要停止容器！！！！
 docker rmi test-build-docker
 docker rmi  2f232153cc95       //  2f232153cc95是   IMAGE ID
 669513347104
@@ -97,7 +97,7 @@ docker rm 容器 ID(或容器名称)CONTAINER ID
 
 
 
-#  docker ps -a 查看运行镜像   name 是容器
+#  docker p镜像   name 是容器
  docker ps -a
 
 1:停止运行镜像 docker stop CONTAINER ID

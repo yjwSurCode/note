@@ -14,8 +14,8 @@ export interface FetchInitOptions extends Omit<RequestInit, "headers"> {
   demo: string;
 }
 
-//未传必传项
-const aa: FetchInitOptions = { body: null, headers: { aaaa: 1111 } };
+//未传必传项 编译器报错
+// const aa: FetchInitOptions = { body: null, headers: { aaaa: 1111 } };
 
 //Partial<T> 将后面的类型全部定义为可选
 export type FetchOptions = Partial<FetchInitOptions> &
@@ -93,3 +93,9 @@ const obj: { options?: FetchWithResultOptions<PerformanceResponseData> } = {
     },
   },
 };
+
+
+
+// async request(url:string){
+//   return 
+// }

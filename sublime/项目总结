@@ -1,5 +1,4 @@
 #鑫青盟官网：https://www.xqmcm.com/#/。 ：：：：：：：：：：：
-
 react ts 类组件 redux  redux-thunk  -----------Redux store 仅支持同步数据流。使用 thunk 等中间件可以帮助在 Redux 应用中实现异步性。
 
 const mapStateToProps = (state) => ({
@@ -23,14 +22,14 @@ export  function  mapDispatchToProps(dispath:any){
 
 bar(connect(mapStateToProps, mapDispatchToProps)(home))
 
-有thunk 可以进行异步请求：：：：：：：：：：：：
+有thunk可以进行异步请求：：：：：：：：：：：：
 
 TodoAPIUtil
       .fetchTodos()
       .then(todos => dispatch(receiveTodos(todos)))
 
 
-#教师端(公众号)：https://xqmcm.com/app/teacher/index.html 
+#教师端(公众号 vue )：https://xqmcm.com/app/teacher/index.html 
 
 2.1-----history模式配置失败的原因可能是url带参数没有用encodeURIComponent
 
@@ -50,7 +49,7 @@ setTimeout(function(){undefined
         return Get(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=**yourappid**&redirect_uri=${serverUrl}/oauth/val&response_type=code&scope=snsapi_base&state=${params}#wechat_redirect`)
     },
     /**
-     * 购买支付-充值-从后台获取微信返回的openid   --- 2   备注：充值时先看cookie中openid是否有值，若没有值，则从后台请求openid，请求回来也要存入cookie；然后调接口获取微信支付接口所需信息--打开支付界面进行支付
+     * 购买支付-充值-从后台获取微信返回的openid   --- 2 备注：充值时先看cookie中openid是否有值，若没有值，则从后台请求openid，请求回来也要存入cookie；然后调接口获取微信支付接口所需信息--打开支付界面进行支付
      */
     getOpenid(params) {
         // return Get(`/wechatusercenter/getOpenid?userid=${params.userid}`)
@@ -66,8 +65,6 @@ setTimeout(function(){undefined
      * 购买支付-充值-打开微信支付界面进行支付   --- 4
      */
 2.5-----微信登陆
-
-
 
 
 #:团长端微信小程序。
@@ -97,6 +94,7 @@ function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): v
 		return unSubscribe;
 	}, [cbFn]);
 }
+
 3.2-----解锁 上锁：：：：：：：：：：：：：：：：：：：：：：：：：
 只允许一个线程写入（其他线程既不能写入也不能读取）当完成是其他的线程可以继续
 没有写入时，多个线程允许同时读（提高性能）
@@ -114,7 +112,6 @@ const debouncedValue = useDebounce(values, 200);
 	);
 
 # 转盘游戏(桥接至app 支付宝小程序 微信小程序)。 
-
 4.1-----页面跳转
 loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');  RwMutex  writeLock
 
@@ -132,9 +129,11 @@ const androidBridge = win.FNJSBridge;
 iosBridge.postMessage(msg);
 androidBridge.callHandler(method, param ? JSON.stringify(param) : '', id);
 
-4.4-----usePersistFn可以保证函数地址永远不会变化：：：：：：：：：：：
-setSelectKey(_index + 1);
-子组件依赖key  
+4.4-----usePersistFn可以保证函数地址永远不会变化：：：：：：：：：：：   将函数存在useRef中
+父组件 setSelectKey(_index + 1) 改变 selectKey
+子组件依赖key   selectKey  
+当其改变的时候会触发 handleLuckDraw  这个函数回调会触发(回调展示抽中奖品)onViewPrize  改变 setSelectKey(null);
+
   useEffect(() => {
         if (selectKey !== null) {
             handleLuckDraw(selectKey);   //这个方法又触发父组件的回调    父组件的回调中又改变selectKey
@@ -145,10 +144,42 @@ usePersistFn可以保证函数地址永远不会变化(useRef)
 4.5-----web-animations-js polyfill：：：：：：：：：
 没有找到 window.requestAnimationFrame 
 
+(function () {
+	let lastTime = 0;
+	if (!window.requestAnimationFrame)
+		window.requestAnimationFrame = function (callback) {
+			const currTime = new Date().getTime();
+			const timeToCall = Math.max(0, 16 - (currTime - lastTime));
+			const id = window.setTimeout(function () {
+				callback(currTime + timeToCall);
+			}, timeToCall);
+			lastTime = currTime + timeToCall;
+			return id;
+		};
+
+	if (!window.cancelAnimationFrame)
+		window.cancelAnimationFrame = function (id) {
+			clearTimeout(id);
+		};
+})();
+
+
+4.6
+rafPolyfill  raf
+
+
+
+
+
+
+# 秒杀系统(taro node  express  sequelize  mysql  redis  nginx  docker  docker-compose)
+
+
+# taro 小程序 
+
 
 #:fnx react-hooks移动端组件 (https://rockcookies.github.io/fnx-ui/#/zh-CN/components/badge)
 
-rafPolyfill  raf
 
 .umi   是可扩展的企业级前端应用框架
 gulp   gulp是一个基于流的构建工具
@@ -159,16 +190,6 @@ lerna  是一个专门用于管理带有多个包的JavaScript项目的工具，
 3：项目使用vite构建
 4：开发一个符合公司的脚手架
 
-
-#  webpack知识点
-
-手写webpack打包工具的loader
-手写webpack打包工具的插件plugin
-实现简易版webpack
-
-6.1：vite
-
-
 6.2：问题
 不能识别md文件？
 为什么webpack可以引入loader的方式加载md文件？
@@ -176,10 +197,7 @@ lerna  是一个专门用于管理带有多个包的JavaScript项目的工具，
 vite不是基于webpack为什么不可以引入loader怎么写插件解决？
 
 
-# 秒杀系统(taro node  express  sequelize  mysql  redis  nginx  docker  docker-compose)
-
-
-(前提创建一个项目需要用别人的脚手架 比如: vue-cli create-react-app )
+(前提创建一个项目需要用别人的脚手架 比如: vue-cli create-react-app)
 # 定制公司项目脚手架 
 
 
@@ -188,6 +206,11 @@ vite不是基于webpack为什么不可以引入loader怎么写插件解决？
 
 
 
+# webpack
+
+手写webpack打包工具的loader
+手写webpack打包工具的插件plugin
+实现简易版webpack
 
 
 

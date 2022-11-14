@@ -17,9 +17,12 @@
 import useDebounceFn from "./useDebounceFn";
 import useThrottleFn from "./useThrottleFn";
 import debounced from "./debounce";
-import _ from "lodash"; //npm i --save-dev @types/lodash
-
-var callCounts = 0;
+// import _ from "lodash"; //npm i --save-dev @types/lodash
+// import { isEmpty, forIn, cloneDeep } from "lodash-es";
+import { debounce } from "lodash-es";
+// console.log("1111111", _, _.chunk(["a", "b", "c", "d"], 2));
+console.log("1111111", debounce);
+var callCounts = 11111111111221;
 
 const _debounced = debounced(
   (e: any) => {
@@ -44,16 +47,16 @@ const _useDebounceFn = useDebounceFn(
   { maxWait: 3000, trailing: false }
 );
 
-const lodashDebounce = _.debounce(
-  (e) => {
-    console.log("触发-lodashDebounce");
-    // _debounced.cancel;
-    callCounts++;
-    return e;
-  },
-  0,
-  { leading: true, maxWait: 2000 }
-);
+// const lodashDebounce = _.debounce(
+//   (e) => {
+//     console.log("触发-lodashDebounce");
+//     // _debounced.cancel;
+//     callCounts++;
+//     return e;
+//   },
+//   0,
+//   { leading: true, maxWait: 2000 }
+// );
 
 // var lodash_runInContext = _.runInContext();
 // var dateCount = 0;
@@ -74,7 +77,6 @@ const lodashDebounce = _.debounce(
 //   return value;
 // }, 32);
 //************************ */
-
 
 const _useThrottleFn = useThrottleFn(
   function (e) {

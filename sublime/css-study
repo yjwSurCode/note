@@ -1,17 +1,11 @@
-# 浮动(float)与绝对定位(position:absolute/fixed)之间的区别：
-(1)浮动会使元素脱离文档流,但是不会脱离文本流,在于其他盒子的文本内容计算布局的时候,还是占位置的。
-(2)绝对定位会使元素脱离文档流,同时也会脱离文本流, 在于其他盒子的文本内容计算布局的时候,不占位置。
-设置float属性之后,父元素的高度为0,这就是所谓的高度塌陷
-
-
 # 伪类(pseudo-classes) 伪元素(Pseudo-elements)
 
 伪类：其核心就是用来选择那些不能够被普通选择器选择的文档之外的元素，比如 :focus :hover :first-child 
 :active选择活动的链接
 :checked选择每个被选中的 元素
 :disabled选择每个被禁用的元素。
-:empty选择没有子元素的每个  元素。
-:enabled选择每个已启用的  元素。
+:empty选择没有子元素的每个元素。
+:enabled选择每个已启用的元素。
 :first-child选择作为其父的首个子元素的每个元素。
 :first-of-type选择作为其父的首个元素的每个元素。
 :last-child 选择作为其父的最后一个子元素的每个元素。
@@ -25,10 +19,16 @@
 伪类和伪元素分别用单冒号:和双冒号::来表示
 
 
+# 浮动(float)与绝对定位(position:absolute/fixed)之间的区别：
+(1)浮动会使元素脱离文档流,但是不会脱离文本流,在于其他盒子的文本内容计算布局的时候,还是占位置的。
+(2)绝对定位会使元素脱离文档流,同时也会脱离文本流, 在于其他盒子的文本内容计算布局的时候,不占位置。
+设置float属性之后,父元素的高度为0,这就是所谓的高度塌陷
+
+
 # 清除浮动： 
 clear: both;
 父元素  overflow: auto;
-父级 div 定义 伪类 :after 和 zoom 。
+父级 div 定义 伪类 :after 和 zoom。
 
 .container::after {
   content: "";
@@ -50,17 +50,17 @@ padding-box：padding计算入宽度内
 border-box：border和padding计算入宽度之内
 
 # vertical-align (inline-block依赖型元素)  https://www.zhangxinxu.com/wordpress/2010/05
+inline/inline-block/block 液态/固液混合态/固态
+
 vertical-align只应用于行内元素和替换元素(不影响块级元素的内容对齐 但是影响表单元素的垂直对齐)
 只能应用于内联元素以及 display 值为 table-cell inline 的元素。
-
-inline/inline-block/block 液态/固液混合态/固态
 
 触发条件：
 父元素设置 display: inline-block   line-height: 200px;
 子元素中设置inline-block
 
 
-text-align:center 这个只对行内元素有效，所以我们要使用 text-align:center 就必须将子元素设置为 display: inline; 或者 display: inline-block;；
+text-align:center 这个只对行内元素有效，所以我们要使用 text-align:center 就必须将子元素设置为 display: inline  或者 display: inline-block
 
 # vertical-align 与 line-height 之间的关系
 
@@ -82,10 +82,10 @@ input, textarea, img, video, object {
   }
 
 
-水平垂直居中：：：：：：：：
-1: position:reletive 对应的子元素要设置 position:absolute，然后使用 top:50%;left:50%
-2: width:100% height:100% line-height  text-aglin：center
-3: display:flex +margin：auto
+# 水平垂直居中：：：：：：：：
+1: position:reletive 对应的子元素要设置 position:absolute,然后使用 top:50%;left:50%
+2: width:100% height:100% line-height  text-aglin:center
+3: display:flex +margin:auto
 4: 父：position: relative height: 600px;
    子：position: absolute----top: 0----left: 0-----right: 0------bottom: 0-----margin: auto-----width: 300px----height: 300px;
 5:文档fixed+ :after {
@@ -110,18 +110,16 @@ input, textarea, img, video, object {
   vertical-align: middle;
   }
   
-9：  父：position: relative width: 500px height: 500px
-     子：position: absolute  width: 100px height: 100px left: 50%  top: 50%  margin-left: -50px  margin-top: -50px;  /* margin-top值为自身高度的一半 宽度同理*/
-     子：position: absolute  top: 50% left:50%  transform: translate(-50%,-50%); 
+9:父：position: relative width: 500px height: 500px
+  子：position: absolute  width: 100px height: 100px left: 50%  top: 50%  margin-left: -50px  margin-top: -50px;  /* margin-top值为自身高度的一半 宽度同理*/
+  子：position: absolute  top: 50% left:50%  transform: translate(-50%,-50%); 
 
 
 图片和文字垂直居中 ：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 display: inline-block;
 vertical-align: middle;
 
-
-GRID(grid)布局 ：：：：：：：：：：：：：：：：：：：：：：：：
-
+# GRID(grid)布局 ：：：：：：：：：：：：：：：：：：：：：：：：
 1:两栏布局(一侧固定，一侧自适应)
 .container{
   display: grid;
@@ -164,7 +162,7 @@ container{
 
 
 
-圣杯布局：：：：：：：：
+# 圣杯布局：：：：：：：：
 float + 左元素margin-left:-100%;+右元素 margin-left:`width`px
 flex + flex：1  
 
@@ -180,7 +178,7 @@ flex:1是： flex-grow, flex-shrink 和 flex-basis的简写
 
 footer底部自适应：https://www.cnblogs.com/xiaonian8/p/15143779.html
 
-
+#BFC
 BFC 规范（块级格式化上下文：blockformattingcontext）：：：：：：：：
 （1）根元素或包含根元素的元素
 （2）浮动元素float＝left|right或inherit（≠none）
@@ -199,7 +197,7 @@ FFC（Flex formatting contexts）:自适应格式上下文
 &.normal {
     border: 1px solid #f66;
   }
-  &.thin {
+  &.thin{
     position: relative;
     &::after {
       position: absolute;
@@ -241,7 +239,6 @@ dpr指的是设备像素和设备独立像素的比值，一般的pc屏幕，dpr
 ppi指的是每英寸的物理像素的密度，ppi越大，屏幕的分辨率越大
 
 EG:::::
-
 .box {
  height: 160px;
  padding: 30px;
@@ -360,9 +357,6 @@ EG：：：：：自适应高宽
 
 css知识点：：：https://juejin.cn/post/6844904185847087111#heading-104 
 
-css加载不会阻塞DOM树的解析
-css加载会阻塞DOM树的渲染
-css加载会阻塞后面js语句的执行
 
 
 CSS选择符：：：：
@@ -443,8 +437,6 @@ https://blog.csdn.net/geekmubai/article/details/81152774
 滚动条：npm i perfect-scrollbar
 
 
-
-
 改变主题：html{filter: invert(1) hue-rotate(180deg)} 
 img {
     filter: invert(1) hue-rotate(180deg);
@@ -508,7 +500,7 @@ css 固定footer
 
   background: #f5f5f5;
 }
-.tool_pager_foot {
+.tool_pager_foot {  
   height: 125px;
   margin-top: -125px;
   background: #f5f5f5;
