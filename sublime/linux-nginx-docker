@@ -18,7 +18,7 @@ tar -zcvf test.tar.gz a 打包并 gzip 压缩。 #解压
 tar xvf test.tar
 
 
-Nginx：：：：：：：：：：：：：：：：：：：：：：：：：：
+# Nginx：：：：：：：：：：：：：：：：：：：：：：：：：：
 Nginx 是开源、高性能、高可靠的 Web 和反向代理服务器，而且支持热部署，几乎可以做到 7 \* 24 小时不间断运行，
 即使运行几个月也不需要重新启动，还能在不间断服务的情况下对软件版本进行热更新。性能是 Nginx 最重要的考量，其占用内存少、并发能力强、能支持高达 5w 个并发连接数，
 最重要的是，Nginx 是免费的并可以商业化，配置使用也比较简单。
@@ -48,7 +48,11 @@ eg： 🌰晚高峰乘坐地铁的时候，入站口经常会有地铁工作人�
 
 动静分离:服务器访问量特别大的时候需要考虑 cdn
 
-nginx 安装--使用--配置：http://fgj.wuhan.gov.cn/bsfw_44/zxsbhcxxt/spfxm/
+nginx 安装--使用--配置：
+
+
+重启nginx
+nginx -s reload
 
 
 
@@ -83,6 +87,17 @@ $ sudo docker run hello-world
 出现：
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
+
+# 安装  docker-compose
+
+1:curl -L https://get.daocloud.io/docker/compose/releases/download/v2.15.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+2:sudo chmod +x /usr/local/bin/docker-compose
+3:$ docker-compose --version
+
+输出：
+docker-compose version 1.25.1, build a82fef07
+
+参考网站:https://www.kongzid.com/archives/docker10
 
 # 查看镜像
 docker images

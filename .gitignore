@@ -16,3 +16,6 @@ sublime/html/virtualImage.html
 sublime/html/lodash/web-init/*node_modules/
 sublime/html/lodash/web-init/yarn.lock
 sublime/html/lodash/simple-web-init/*node_modules
+
+sublime/note/ts-depot/*node_modules
+ts-depot/*node_modules/

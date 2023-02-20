@@ -119,7 +119,7 @@ https://www.photopea.com/
 
 gitlab clone :https://www.cnblogs.com/yinzhengjie2020/p/12446233.html
 
- JSON数据格式转ts接口： http://ww7.jsontots.com/
+JSON数据格式转ts接口： http://ww7.jsontots.com/
 
 小程序开放平台：
 https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Resource_Center_Homepage.html?action=dir_list&t=resource%2Fres_list&verify=1&lang=zh_CN&token=b04f52feae6e132cbca9c4685c5c17ed1188e32f
@@ -128,7 +128,11 @@ https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Resource_Center_Homepa
 
 debounce：https://zhuanlan.zhihu.com/p/539736568
 
+扁平数据结构转tree：https://juejin.cn/post/6983904373508145189
 
+// 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
+
+// 算法基础知识-http://www.360doc.com/content/21/0518/19/37113458_977788938.shtml
 
 https://react-guide.github.io/react-router-cn/docs/guides/advanced/DynamicRouting.html
 https://www.sequelize.cn/core-concepts/raw-queries
@@ -148,6 +152,8 @@ https://juejin.cn/post/7057776355450028045
 https://zhuanlan.zhihu.com/p/545912545
 https://socket.io/
 https://stackblitz.com/github/remix-run/react-router/tree/main/tutorial?file=src%2FApp.jsx
+
+全屏幕居中弹窗：https://demo.cssworld.cn/5/3-10.php
 
 
 
@@ -196,6 +202,13 @@ configure proxy   server：10.211.242.183   port 8888
 ##  PPT ppt学习
 
 http://graphicriver.net
+
+
+
+# Jest	80.1%
+
+
+# Testing Library	49%
 
 
 第一步：： 先获取guid  获取不到guid 就去登录

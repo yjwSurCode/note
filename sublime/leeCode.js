@@ -168,10 +168,63 @@ var maxSubArray = function (arr) {
 
 console.log(maxSubArray([1, 2, -3, 5, -5]), 'maxSubArray')
 
+//! [1,2,3]-------->[[1,2,3],[1,3,2],[2,3,1],....]  
+
+// 一共有 3*2*1
+
+let func = (arr) => {
+    let len = arr.length
+    let res = [] // 所有排列结果
+
+    /**
+     * @param tempArr：排列好的元素
+     * @param leftArr：待排列元素
+     */
+    let arrange = (tempArr, leftArr) => {
+        //每一次一个元素遍历玩
+        if (tempArr.length === len) {
+            res.push(tempArr)
+        } else {
+            leftArr.forEach((item, index) => {
+                let temp = [].concat(leftArr)  // 根据temp.splice(index, 1) 重置temp
+                temp.splice(index, 1)
+                // 第一次遍历 tempArr
+                console.log('aa-tempArr.concat(item)', tempArr.concat(item), temp) //[1] [2,3]   [1,2] [3]
+                arrange(tempArr.concat(item), temp) // 这里使用了递归
+            })
+        }
+    }
+    arrange([], arr)
+    return res
+}
 
 
+const com = (arr1 = '', arr2 = '') => { //1 2 ,2 3 
+    console.log(arr1, arr2, '(arr1, arr2')
+    let index = 0
+    const res = []
+    // for (let a1 of arr1) {
+    //     for (let a2 of arr2) {
+    //         if (Array.isArray(a1)) {
+    //             res[index++] = [...a1, a2]
+    //         } else {
+    //             res[index++] = [a1, a2]
+    //         }
+    //     }
+    // }
+    return res
+}
 
+const _func = (arr) => {
+    return arr.reduce((prev, current) => {
+        console.log(prev, current, 'prev, current')
+        return com(prev, current)
+    }
+    )
+}
 
+_func([1, 2, 3])
+console.log(_func([1, 2, 3]), 'result')
 
 
 // !简单类型题目

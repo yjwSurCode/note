@@ -183,6 +183,20 @@ const nodemailer = require('nodemailer');
 # connect-history-api-fallback 
 
 
+# node-sass 
+npm rebuild node-sass
+
+
+问题：
+npm ERR! node-sass@4.13.0 postinstall: `node scripts/build.js`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the node-sass@4.13.0 postinstall script.
+
+npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
+
+
+
 
 # Sequelize：操作数据库的方式
 Sequelize 是一个基于 promise 的 Node.js ORM, 
@@ -191,6 +205,69 @@ Sequelize 是一个基于 promise 的 Node.js ORM,
 
 
 # REDIS缓存：https://www.jianshu.com/p/65e805c85500
+
+# 安装教程：https://www.cnblogs.com/xuwenjin/p/14355901.html
+
+速度快
+单节点读110000次/s，写81000次/s
+基于内存运行，性能高效
+用 C 语言实现，离操作系统更近
+
+持久化
+数据的更新将异步地保存到硬盘（RDB 和 AOF
+
+多种数据结构
+不仅仅支持简单的 key-value 类型数据
+还支持：字符串、hash、列表、集合、有序集合
+
+
+安装
+1、redis是C开发的，所以安装 redis 需要C语言的编译环境，即安装gcc
+
+yum install gcc
+2、切到 /usr/local 目录下，下载 redis-5.0.7.tar.gz
+
+wget http://download.redis.io/releases/redis-5.0.7.tar.gz
+3、解压并修改文件名
+
+tar xzf redis-5.0.7.tar.gz
+mv redis-5.0.7 redis
+4、进入redis目录，然后进行编译
+
+make
+5、安装（这个PREFIX是编译时用于指定程序存放的路径）
+
+make PREFIX=/usr/local/redis install
+6、修改redis.conf文件里的daemonize为yes，表示后台启动
+
+vim redis.conf
+7、在redis/目录下，启动并指定配置文件
+
+./src/redis-server redis.conf
+
+
+8、进入redis客户端。出现如下命令行表示安装成功
+
+/usr/local/redis/bin/redis-cli
+
+查看 redis 进程
+
+ps -ef | grep redis
+
+[root@ls ~]# ps -ef | grep redis
+root     2307908       1  0  2022 ?        02:25:02 redis-server *:6379
+root     2997163 2996919  0 14:48 pts/0    00:00:00 grep --color=auto redis
+
+
+关闭 redis 服务(杀掉进程)
+
+kill -9 pid
+
+
+ redis-server /usr/local/etc/redis.conf
+
+
+
 
 可视化工具：https://juejin.cn/post/7072537112834211847
 

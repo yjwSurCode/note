@@ -174,9 +174,12 @@ accept incoming change  选择git最新的
 // chore: 改变构建流程、或者增加依赖库、工具等
 // revert: 回滚到上一个版本
 
+// 创建本地新的分支： git branch -b newbranch
 // 创建新的分支：git branch gh-dev（分支名字）   
 // 删除branch：git branch -d 名称
 // git branch -r ，查看远程的分支名   git branch -a
+
+
 //切换分支 git checkout preview
 
 //  git checkout -b  test master 在master分支上创建一个test分支
@@ -334,3 +337,26 @@ svn checkout http://wh-svn.fn.com/feiniu-website/code/ui/branch/project/rt-suppl
 
 svn add    svn commit -m “提
 新建分支：
+
+
+
+
+查看npm
+npm config ls -l
+
+
+查看npm包安装位置
+npm root -g 
+
+
+设置NPM全局安装位置
+npm config set prefix "E:/Developer/nodejs/npm_global"
+npm config set cache "E:/Developer/nodejs/npm_cache"
+
+
+修改Yarn全局包安装位置：
+yarn config set global-folder "E:\Developer\Yarn\global"
+
+查看当前Yarn的bin位置
+
+yarn global dir     .config 同级

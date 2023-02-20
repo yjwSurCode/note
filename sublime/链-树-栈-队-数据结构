@@ -171,9 +171,12 @@ js 深拷贝vs浅拷贝：：：：：：：：：：：：
     var b = a; // 新建一个b对象，地址指向a指向的堆 --------------引用类型的赋值是传址。只是改变指针的指向
     a.name='ww' console.log(b.name); // 'ww' 
 
-浅拷贝方法：JSON.parse(JSON.stringify())----------------这种方法虽然可以实现数组或对象深拷贝,但不能处理函数
+# 浅拷贝方法
+1: JSON.parse(JSON.stringify())----------------这种方法虽然可以实现数组或对象深拷贝,但不能处理函数
+2:  const a= Object.assgin({id:1},{id:2})    //会覆盖前面的对象的重复属性
 
-深拷贝方法：
+
+# 深拷贝方法：
 function clone(target, map = new Map()) {
     if (typeof target === 'object') {
         let cloneTarget = Array.isArray(target) ? [] : {}; //考虑到数组情况了
@@ -269,4 +272,3 @@ console.log(isPalindrome("level")); // true
                                       --------------如果不为空的话,就会一次性执行完所有的微任务队列
 
 
-扁平数据结构转tree：https://juejin.cn/post/6983904373508145189

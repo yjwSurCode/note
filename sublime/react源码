@@ -122,6 +122,14 @@ fiber 树渲染：：：：：：：：：：：：：：：：：：
 
 React 算法之深度优先遍历：：：：：：：：：：：：：：：：：：：：
 
+# !! react  this指向  https://blog.csdn.net/weixin_54217534/article/details/127788679
+在 React 的类组件中，当我们把事件处理函数引用作为回调传递过去，如下所示：
+<button type="button" onClick={this.handleClick}>Click Me</button>
+
+复制代码事件处理程序方法会丢失其隐式绑定的上下文。当事件被触发并且处理程序被调用时，this的值会回退到默认绑定，即值为 undefined，这是因为类声明和原型方法是以严格模式运行。
+当我们将事件处理程序的 this 绑定到构造函数中的组件实例时，我们可以将它作为回调传递，而不用担心会丢失它的上下文。
+箭头函数可以免除这种行为，因为它使用的是词法 this 绑定，会将其自动绑定到定义他们的函数上下文。
+
 
 
 
@@ -245,13 +253,45 @@ react-router-dom 只是多了下面四个组件 BrowserRouter、 Link、NavLink�
 
 
 
+# react hooks -------- useImperativeHandle
+
+import React, { useRef, useImperativeHandle } from 'react';
+import ReactDOM from 'react-dom';
+
+const FancyInput = React.forwardRef((props, ref) => {
+  const inputRef = useRef();
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      inputRef.current.focus();
+    }
+  }));
+  return <input ref={inputRef} type="text" />
+});
+
+const App = props => {
+  const fancyInputRef = useRef();
+  return (
+    <div>
+      <FancyInput ref={fancyInputRef} />
+      <button
+        onClick={() => fancyInputRef.current.focus()}      // 调用子组件的方法
+      >父组件调用子组件的 focus</button>
+    </div>
+  )
+}
+ReactDOM.render(<App />, root);
+
+
+# forwardRef
+
+A————B——————C
+forwardRef  直接 A---------C
+
+
 
 
 
 ##  源码解析
-
-
-
 export function render(
   element: React$Element<any>,
   container: Container, 

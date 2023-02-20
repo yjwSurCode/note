@@ -1,8 +1,7 @@
 # 伪类(pseudo-classes) 伪元素(Pseudo-elements)
-
 伪类：其核心就是用来选择那些不能够被普通选择器选择的文档之外的元素，比如 :focus :hover :first-child 
 :active选择活动的链接
-:checked选择每个被选中的 元素
+:checked选择每个被选中的元素
 :disabled选择每个被禁用的元素。
 :empty选择没有子元素的每个元素。
 :enabled选择每个已启用的元素。
@@ -15,9 +14,28 @@
 :nth-last-of-type(2)选择作为父的第二个元素的每个元素，从最后一个子元素计数
 
 伪元素：核心就是需要创建通常不存在于文档中的元素，比如::before ::after ::first-line ::first-letter 
-
 伪类和伪元素分别用单冒号:和双冒号::来表示
 
+# CSS选择符
+（1）id选择器(#myid）
+（2）类选择器(.myclassname)
+（3）标签选择器(div,h1,p)
+（4）后代选择器(h1 p )
+（5）相邻后代选择器(子)选择器(ul>li)
+（6）兄弟选择器(li~a)
+（7）相邻兄弟选择器(li+a)
+（8）属性选择器(a[rel="external"])
+（9）伪类选择器(a:hover,li:nth-child)
+（10）伪元素选择器()::before、::after)
+（11）通配符选择器(*)
+
+input:not([type="submit"]){
+  border:1px solid red;
+} 使type不是submit的input边框变化
+
+:empty  空元素
+
+elem:first-of-type选中父元素下第一个elem类型元素。
 
 # 浮动(float)与绝对定位(position:absolute/fixed)之间的区别：
 (1)浮动会使元素脱离文档流,但是不会脱离文本流,在于其他盒子的文本内容计算布局的时候,还是占位置的。
@@ -28,8 +46,7 @@
 # 清除浮动： 
 clear: both;
 父元素  overflow: auto;
-父级 div 定义 伪类 :after 和 zoom。
-
+父级 div定义伪类:after 和 zoom。
 .container::after {
   content: "";
   display: table;
@@ -43,7 +60,6 @@ width = 内容宽度（content + border + padding）+ margin
 
 #box-sizing是什么
 设置CSS盒模型为标准模型或IE模型。标准模型的宽度只包括content,IE模型包括border和padding
-
 box-sizing属性可以为三个值之一：
 content-box：默认值,只计算内容的宽度,border和padding不计算入width之内
 padding-box：padding计算入宽度内
@@ -56,12 +72,10 @@ vertical-align只应用于行内元素和替换元素(不影响块级元素的�
 只能应用于内联元素以及 display 值为 table-cell inline 的元素。
 
 触发条件：
-父元素设置 display: inline-block   line-height: 200px;
+父元素设置 display:inline-block   line-height: 200px;
 子元素中设置inline-block
 
-
 text-align:center 这个只对行内元素有效，所以我们要使用 text-align:center 就必须将子元素设置为 display: inline  或者 display: inline-block
-
 # vertical-align 与 line-height 之间的关系
 
 
@@ -71,8 +85,6 @@ text-align:center 这个只对行内元素有效，所以我们要使用 text-al
 input, textarea, img, video, object {
  box-sizing: border-box;
 } 
-
-全屏幕居中弹窗：https://demo.cssworld.cn/5/3-10.php
 
 全屏显示 100vh 
 &::before {
@@ -118,6 +130,22 @@ input, textarea, img, video, object {
 图片和文字垂直居中 ：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 display: inline-block;
 vertical-align: middle;
+
+#css 控制防抖：：：：：：：：：：：：https://juejin.cn/post/7165828047520661534
+@keyframes throttle {
+  from {
+    pointer-events: none;
+  }
+  to {
+    pointer-events: all;
+  }
+}
+
+button{
+  animation: throttle 2s step-end forwards;
+}
+
+
 
 # GRID(grid)布局 ：：：：：：：：：：：：：：：：：：：：：：：：
 1:两栏布局(一侧固定，一侧自适应)
@@ -193,7 +221,7 @@ IFC（Inline formatting contexts）：内联格式上下文
 
 FFC（Flex formatting contexts）:自适应格式上下文
 
-使用transform描绘1px边框：：：：：：：：：：：：：：：：：：：：
+# 使用transform描绘1px边框：：：：：：：：：：：：：：：：：：：：
 &.normal {
     border: 1px solid #f66;
   }
@@ -211,7 +239,7 @@ FFC（Flex formatting contexts）:自适应格式上下文
       transform-origin: left top;
     }
 
-使用max-height切换自动高度：
+# 使用max-height切换自动高度：
       .tab-content {
         max-height: 0;
         overflow: hidden;
@@ -237,6 +265,57 @@ dpr指的是设备像素和设备独立像素的比值，一般的pc屏幕，dpr
 为2。屏幕的缩放会改变dpr的值。
 
 ppi指的是每英寸的物理像素的密度，ppi越大，屏幕的分辨率越大
+
+# css浏览器兼容性：：：：：：：：：：：：：：：：
+-moz代表firefox浏览器私有属性
+-ms代表IE浏览器私有属性
+-webkit代表chrome、safari私有属性
+-o代表opera私有属性
+
+# z-index 点击穿透：pointer-events: none;
+
+eg:
+ -webkit-transform:rotate(-3deg); /*为Chrome/Safari*/ 
+ -moz-transform:rotate(-3deg); /*为Firefox*/ 
+ -ms-transform:rotate(-3deg); /*为IE*/ 
+ -o-transform:rotate(-3deg); /*为Opera*/ 
+ transform:rotate(-3deg);
+ （自动化插件Autoprefixer）
+
+正则表达式：https://juejin.cn/post/6844903430637486088
+
+
+# css 性能优化：：：：
+首次有效绘制（First Meaningful Paint，简称FMP）
+文件压缩
+去除无用CSS
+优化重排与重绘   https://csstriggers.com/
+使用 fontmin-webpack 插件对字体文件进行压缩
+有选择地使用选择器（CSS选择器的匹配是从右向左进行的）
+
+
+# css 响应式开发
+https://juejin.cn/post/6844903814332432397
+https://juejin.cn/post/6844903479681499150
+
+
+#  css rem em vh vw 是什么 自适应怎么写 https://blog.csdn.net/geekmubai/article/details/81152774
+// em 根据父元素的大小变化而变化 良好
+// rem  单位是根据根节点的大小来设置的，也就是根据 html 的大小来设置的，跟父元素没有关系 IE9+、火狐 3.6+、 safari5.0+
+// vw   相对于视口的宽度， 视口被均分为 100 单位的vw  高版本浏览器均支持
+// vh   相对于视口的宽度， 视口被均分为 100 单位的vh  高版本浏览器均支持
+// 通过js来实现自适应
+
+
+滚动条：npm i perfect-scrollbar
+
+
+改变主题：html{filter: invert(1) hue-rotate(180deg)} 
+img {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
+
 
 EG:::::
 .box {
@@ -358,29 +437,6 @@ EG：：：：：自适应高宽
 css知识点：：：https://juejin.cn/post/6844904185847087111#heading-104 
 
 
-
-CSS选择符：：：：
-（1）id选择器（#myid）
-（2）类选择器（.myclassname）
-（3）标签选择器（div,h1,p）
-（4）后代选择器（h1p）
-（5）相邻后代选择器（子）选择器（ul>li）
-（6）兄弟选择器（li~a）
-（7）相邻兄弟选择器（li+a）
-（8）属性选择器（a[rel="external"]）
-（9）伪类选择器（a:hover,li:nth-child）
-（10）伪元素选择器（::before、::after）
-（11）通配符选择器（*）
-
-input:not([type="submit"]){
-  border:1px solid red;
-} 使type不是submit的input边框变化
-
-:empty  空元素
-
-elem:first-of-type选中父元素下第一个elem类型元素。
-
-
 CSS书写顺序::
 1.位置属性(position, top, right, z-index,display, float等)　
 2.大小(width, height, padding, margin)　
@@ -388,59 +444,6 @@ CSS书写顺序::
 4.背景(background, border等)　
 5.其他(animation, transitions等)
 
-
-
-
-css浏览器兼容性：：：：：：：：：：：：：：：：
--moz代表firefox浏览器私有属性
--ms代表IE浏览器私有属性
--webkit代表chrome、safari私有属性
--o代表opera私有属性
-
-
-z-index 点击穿透：pointer-events: none;
-
-eg:
- -webkit-transform:rotate(-3deg); /*为Chrome/Safari*/ 
- -moz-transform:rotate(-3deg); /*为Firefox*/ 
- -ms-transform:rotate(-3deg); /*为IE*/ 
- -o-transform:rotate(-3deg); /*为Opera*/ 
- transform:rotate(-3deg);
- （自动化插件Autoprefixer）
-
-正则表达式：https://juejin.cn/post/6844903430637486088
-
-
-css 性能优化：：：：
-首次有效绘制（First Meaningful Paint，简称FMP）
-文件压缩
-去除无用CSS
-优化重排与重绘   https://csstriggers.com/
-使用 fontmin-webpack 插件对字体文件进行压缩
-有选择地使用选择器（CSS选择器的匹配是从右向左进行的）
-
-
-css 响应式开发
-https://juejin.cn/post/6844903814332432397
-https://juejin.cn/post/6844903479681499150
-
-
-// 3.2 css rem em vh vw 是什么 自适应怎么写
-https://blog.csdn.net/geekmubai/article/details/81152774
-// em 根据父元素的大小变化而变化 良好
-// rem  单位是根据根节点的大小来设置的，也就是根据 html 的大小来设置的，跟父元素没有关系 IE9+、火狐 3.6+、 safari5.0+
-// vw   相对于视口的宽度， 视口被均分为 100 单位的vw  高版本浏览器均支持
-// vh   相对于视口的宽度， 视口被均分为 100 单位的vh  高版本浏览器均支持
-// 通过js来实现自适应
-
-
-滚动条：npm i perfect-scrollbar
-
-
-改变主题：html{filter: invert(1) hue-rotate(180deg)} 
-img {
-    filter: invert(1) hue-rotate(180deg);
-  }
 
 
 
@@ -490,8 +493,91 @@ border-collapse:collapse;/* 让边框合并，不让出现双边框*/
         max-height: 500px;
       }
 
+# 展开 收起
+<div class="recruit" v-for="(item, index) in recruitList" :key="index">
+            <el-descriptions :title="index + 1 + ': 意向合伙人'">
+              <el-descriptions-item label="岗位名称">{{
+                item.post
+              }}</el-descriptions-item>
+              <el-descriptions-item label="岗位要求">
+                <!-- //! -->
 
-css 固定footer
+                <div class="wrapper2">
+                  <input :id="'exp' + index" class="exp" type="checkbox" />
+                  <div class="text">
+                    <label class="btn" :for="'exp' + index"></label>
+                    <div v-for="(_item, _index) in item.reuqirement || []" :key="_index">
+                      {{ _item }}
+                    </div>
+                  </div>
+                </div>
+              </el-descriptions-item>
+              <el-descriptions-item label="操作">
+                <el-tag size="small" type="danger">申请</el-tag>
+              </el-descriptions-item>
+            </el-descriptions>
+          </div>
+
+.wrapper2 {
+  display: flex;
+  /* margin: 50px auto; */
+  width: 700px;
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 2px 2px 6px #bebebe, -2px -2px 6px #ffffff;
+
+  .text {
+    font-size: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: justify;
+    /* display: flex; */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    position: relative;
+  }
+  .text::before {
+    content: "";
+    height: calc(100% - 24px);
+    float: right;
+  }
+  .btn {
+    height: 25px;
+    width: 40px;
+    float: right;
+    clear: both;
+    margin-left: 10px;
+    font-size: 16px;
+    padding: 0 8px;
+    background: #3f51b5;
+    line-height: 24px;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    /* margin-top: -30px; */
+  }
+  .btn::before {
+    content: "展开";
+    width: 34px;
+    display: block;
+  }
+  .exp {
+    display: none;
+  }
+  .exp:checked + .text {
+    -webkit-line-clamp: 999;
+  }
+  .exp:checked + .text .btn::before {
+    content: "收起";
+  }
+}
+# css 固定footer
+.header{
+  height:125px
+}
+
 .container {
   /* footer+header 70 +125  如果header占布局就只减header高度125 */
   min-height: calc(100% - 71px);
@@ -500,6 +586,7 @@ css 固定footer
 
   background: #f5f5f5;
 }
+
 .tool_pager_foot {  
   height: 125px;
   margin-top: -125px;

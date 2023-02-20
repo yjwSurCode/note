@@ -1,3 +1,5 @@
+～ Vue 2 的终止支持时间是 2023年12月31日。在此之后，Vue 2 在已有的分发渠道 (各类 CDN 和包管理器) 中仍然可用，但不再进行更新，包括对安全问题和浏览器兼容性问题的修复等。
+
 # v2.x 与 vue3.0之间的区别:
 基于 Proxy 观察者机制以满足全语言覆盖以及更好的性能；
 放弃 Object.defineProperty ，使用更快的原生Proxy；
@@ -10,21 +12,53 @@ updated -> onUpdated
 beforeDestroy -> onBeforeUnmount
 destroyed -> onUnmounted
 
+# vue2 是 options API  vue3 是composition API
+options API 耦合度相对较高  composition API 根据逻辑相关性组织代码，提高可读性和可维护性
 
-# v-modal 发布者 订阅者
+
+# v-model
+addProp(el, 'value', `(${value})`)
+addHandler(el, event, code, null, true)
 Object.defindProperty
 observer.js 数据劫持  geter seter
 compile.js 判断元素  添加监听数据的订阅者 数据变化 更新试图
 watcher 订阅者 oserver compile之间通信的桥梁
 mvvm
-数据绑定的入口 整合三者 通过observer监听modal数据的变化 通过compile来解析编译模板的指令 watcher 数据变化----》视图更新----》视图交互变化
+
+#v-model源码精髓  https://ustbhuangyi.github.io/vue-analysis/v2/extend/v-model.html#%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0
+addProp(el, 'value', `(${value})`)
+addHandler(el, event, code, null, true)
+
+# vue2操作数据原理
+通过Object.defineProperty()把data对象中所有属性添加到vm上。 为每一个添加到vm上的属性，都指定一个getter/setter。
+在getter/setter内部去操作(读/写)data中对应的属性
+
+tip；在vue3中允许你写多个v-model,这也是强烈的说明了，v-model就是一个语法糖，只是帮你减少了代码量，仅此而已
 
 # Object.defindProperty 对比 proxy  (https://juejin.cn/post/6844904150560423950)
+
+
+vue2：总的来说就是通过 Object.defineProperty 监听对象的每一个属性，当读取数据时会触发 getter，修改数据时会触发 setter。
+Vue3：是通过 Proxy 对数据实现 getter/setter 代理，从而实现响应式数据
+
 1:不需要递归遍历每个属性，添加劫持，深层对象属性只有在访问的时候才转换成 Proxy
 2:对新增的属性不需要另外做劫持处理
 3:不需要对数组的方法进行重定义
 缺点：不兼容 ie
 
+const obj2 = {
+    a: 1,
+    b: 2
+}
+const p4 = new Proxy(obj2, {
+    defineProperty(target, property, descriptor) {
+        return Object.defineProperty(...arguments)
+    }
+})
+Object.defineProperty(p4, 'a', {
+    value: 'a'
+})
+console.log(obj2)
 
 
 setup() {
@@ -38,6 +72,29 @@ setup() {
  
         return {};
     }
+
+
+# vue编译器， template到render过程
+Vue中有个独特的编译器模块，称为“compiler”，它的主要作用是将用户编写的template编译为js中可执行的render函数。
+之所以需要这个编译过程是为了便于前端程序员能高效的编写视图模板。相比而言，我们还是更愿意用HTML来编写视图，直观且高效。手写render函数不仅效率底下，而且失去了编译期的优化能力。
+在Vue中编译器会先对template进行解析，这一步称为parse，结束之后会得到一个JS对象，我们成为抽象语法树AST，然后是对AST进行深加工的转换过程，这一步成为transform，最后将前面得到的AST生成为JS代码，也就是render函数。
+
+
+
+#vue2为什么只能有一个根节点
+因为vdom是一个单根树形结构描述当前视图结构，patch方法在遍历的时候从根节点开始遍历，它要求只有一个根节点。组件也是会转换成vdom，所以也必须满足单根节点要求
+
+# vue3为什么可以多根节点
+因为vue3引入了fragment概念，这是一个抽象的节点，如果发现组件是多根的会自动创建一个fragment节点，把多根节点视为自己的children。在patch时，如果发现这是一个fragment节点，则直接遍历children创建或更新
+
+
+#teleport
+<teleport to="#teleport-target">
+  <div v-if="visible" class="toast-wrap">
+       <div class="toast-msg">我是一个 Toast 文案</div>
+  </div>
+</teleport>
+
 
 
 Vue3新特性:：：：：：：：：：：：：：：：：：：：：：：
@@ -61,64 +118,12 @@ export default defineConfig({     // vite umi??
 参考链接：https://juejin.cn/post/6986838175062687752	
 
 
-
-// import { nextTick } from 'vue'
-
-// <template>
-//     <div v-if >
-//         优先级提升比v-for大
-//     </div>
-//     <input type="text" name="" id="" v-focus></input>
-// </template>
-// export default {
-//     components: {
-//         Testd,
-//         Testdd,
-//     },
-//     props: {
-//         msg: String,
-//         propsMsg: "propsMsg",
-//     },
-//     directives: {
-//         focus: {
-//             // 参数 el, binding, vnode, oldVnode
-//             mounted: function (el) {
-//                 el.focus()
-//             }
-//         }
-//     },
-//     setup(props) {
-//         const repositories = ref < string | null > ([]) // 定义一个变量
-//         repositories.value = newContent;
-//         const getUserRepositories = async () => { // 定义一个方法
-//             await api()
-//         }
-//         const img = computed(() => {
-//             return (props.type && IMG.get(props.type)) || defaultImg;
-//         });
-//         const stated = reactive({ allPageLength: 0, moreText: "加载更多" });
-//         onMounted(() => {
-//             getUserRepositories,// 生命周期钩子 当实例mounted后调用getUserRepositories方法
-//                 nextTick(() => {
-// ----------------------------------一些和DOM有关的东西
-//                 })
-//         })
-//         return {
-//             img,
-//             repositories, // 返回一个data
-//             ...toRefs(stated),
-//             getUserRepositories // 返回一个method
-//         }
-//     }
-// }
-
-
-computed watch 区别：：：：：：：：：：
+# computed watch 区别：：：：：：：：：：
 computed  是计算属性,依赖其它属性值，并且 computed 的值有缓存,只有它依赖的属性值发生改变,下一次获取 computed 的值时才会重新计算 computed  的值；
 watch 更多的是「观察」的作用,类似于某些数据的监听回调 ,每当监听的数据变化时都会执行回调进行后续操作；
 
 
-// 异步组件
+# 异步组件
 // const AsyncCategory = defineAsyncComponent(() => import("./AsyncCategory.vue"))
 
 //   import Loading from './Loading.vue';
@@ -292,3 +297,60 @@ const internalInstance = getCurrentInstance()
 
 ##  pinia
 https://stackblitz.com/github/piniajs/example-vue-3-vite?file=src%2FApp.vue
+
+
+
+
+# vue2 用法
+<template>
+  <div class="hello">
+    <button @click="change(value - 1)">-</button>
+    <span>{{value}}</span>
+    <button @click="change(value + 1)">+</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "HelloWorld",
+  props: {
+    value: Number,
+  },
+  methods: {
+    change(val) {
+      this.$emit("update:value", val);
+    },
+  },
+};
+</script>
+复制代码
+APP 来使用
+<HelloWorld :value="inputVal" @update:value="inputVal = $event" />
+等效于
+<HelloWorld v-model="inputVal" />
+
+
+<!-- vue2 -->
+<Comp :title="inputVal" @update:title="inputVal = $event" />
+<!-- 简写为 -->
+<Comp :title.sync="inputVal" />
+
+<!-- vue3 -->
+<Comp :title="inputVal" @update:title="inputVal = $event" />
+<!-- 简写为 -->
+<Comp v-model:title="inputVal" />
+
+
+
+多个v-model
+
+<ChildComponent v-model:title="pageTitle" v-model:content="pageContent" />
+
+<!-- 是以下的简写： -->
+
+<ChildComponent
+  :title="pageTitle"
+  @update:title="pageTitle = $event"
+  :content="pageContent"
+  @update:content="pageContent = $event"
+/>

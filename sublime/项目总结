@@ -1,5 +1,6 @@
 #鑫青盟官网：https://www.xqmcm.com/#/。 ：：：：：：：：：：：
-react ts 类组件 redux  redux-thunk  -----------Redux store 仅支持同步数据流。使用 thunk 等中间件可以帮助在 Redux 应用中实现异步性。
+react ts 类组件 redux  redux-thunk  -----------Redux store 仅支持同步数据流。
+使用 thunk 等中间件可以帮助在 Redux 应用中实现异步性。
 
 const mapStateToProps = (state) => ({
   valueS: state
@@ -15,7 +16,7 @@ const store =  createStore(reducers, {     //合并多个 reducer     reducers�
 export  function  mapDispatchToProps(dispath:any){
     return{
                derM:()=> dispath(actions.decrementCount('ni')),
-               todoM:()=>dispath(actions.todolistAction(1) )       // 在这里定义  就要在 render 里面 实现
+               todoM:()=>dispath(actions.todolistAction(1) )// 在这里定义  就要在 render 里面 实现
 
     }
 }
@@ -216,9 +217,10 @@ vite不是基于webpack为什么不可以引入loader怎么写插件解决？
 
 # 大厂代码规范
 
-eslint 
+# ! eslint 
+作用：代码质量检查  代码格式化
 
-prettier
+# ! prettier
 
 husky
 

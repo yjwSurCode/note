@@ -1,16 +1,18 @@
-##TYPESCRIPT（ts）
+// ##TYPESCRIPT（ts）
 
 
-# 箭头函数 泛型写法：
-const foo = <T,>(x: T): T => x;
+// # 箭头函数 泛型写法：
+const foo1 = <T,>(x: T): T => x;
 
-const foo = <T extends {}>(x: T): T => x;
+const foo2 = <T extends {}>(x: T): T => x;
 
-const foo = <T extends Record<string, unknown>>(x: T): T => x;
+const foo3 = <T extends Record<string, unknown>>(x: T): T => x;
 
-const foo: <T>(x: T) => T = x => x;
 
-const identity = <T,>(arg: T): T => {
+
+const foo4 : <T>(x: T) => T = x => x;
+
+const identity1 = <T,>(arg: T): T => {
     console.log(arg);
     return arg;
 };
@@ -84,3 +86,14 @@ E（Element）：表示元素类型。
 type Partial<T> = {
     [P in keyof T]?: T[P];
 };
+
+/**
+ * Obtain the parameters of a function type in a tuple
+ */
+type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
+
+
+/**
+ * Obtain the return type of a function type
+ */
+type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;

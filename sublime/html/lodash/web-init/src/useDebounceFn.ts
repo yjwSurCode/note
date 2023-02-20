@@ -20,7 +20,7 @@ interface DebouncedFuncLeading<T extends (...args: T[]) => any>
   pending(): void;
 }
 
-/* 防抖 如果在Ns内没有再次触发滚动事件，那么就执行函数 如果在Ns内再次触发滚动事件，那么当前的计时取消，重新开始计时 最后一次输入后的Ns执行 */
+/* 防抖 如果在Ns内没有再次触发事件，那么就执行函数 如果在Ns内再次触发滚动事件，那么当前的计时取消，重新开始计时 最后一次输入后的Ns执行 */
 function useDebounceFn<T extends (...args: T[]) => any>(
   func: (...args: T[]) => any,
   wait: number = 0,

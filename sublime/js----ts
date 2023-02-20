@@ -25,41 +25,13 @@ for (let [key, value] of Object.entries(myObj)) {
 }
 
 
-宏任务和微任务 -：：：：：：：：：：：：：：：：：：：：
-function add(xPromise, yPromise) {
-  // Promise.all([ .. ])接受一个promise数组并返回一个新的promise，
-  // 这个新promise等待数组中的所有promise完成
-  return Promise.all([xPromise, yPromise])
-    // 这个promise决议之后，我们取得收到的X和Y值并加在一起
-    .then(function (values) {
-      // values是来自于之前决议的promisei的消息数组
-      return values[0] + values[1];
-    });
-}
-// fetchX()和fetchY()返回相应值的promise，可能已经就绪，
-// 也可能以后就绪
-add(fetchX(), fetchY())
-  // 我们得到一个这两个数组的和的promise
-  // 现在链式调用 then(..)来等待返回promise的决议
-  .then(function (sum) {
-    console.log(sum); // 这更简单！
-  });
 
-
-eg例子：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
-1  7 6 8 2 4 3 5 9  10 11 12
-
-eg: 6之后执行8  是因为 6是第一个微服务 执行完微服务要执行所有的微服务
-
-eg: 2，4 ，3，5,, 24之后要执行完这里的微服务再执行下面的微服务。下面的setimeOut是第三轮的事件循环宏服务
-
+# 宏任务，微任务例子
+eg: 1,3,2,4,5 之后要执行完这里的微服务再执行下面的微服务。下面的setimeOut是第三轮的事件循环宏服务
 
 console.log('1');
 setTimeout(function () {
   console.log('2');
-  process.nextTick(function () {
-    console.log('3');
-  })
   new Promise(function (resolve) {
     console.log('4');
     resolve();
@@ -67,33 +39,12 @@ setTimeout(function () {
     console.log('5')
   })
 })
-
-process.nextTick(function () {
-  console.log('6');
-})
-
-new Promise(function (resolve) {
-  console.log('7');
-  resolve();
-}).then(function () {
-  console.log('8')
-})
-
-setTimeout(function () {
-  console.log('9');
-  process.nextTick(function () {
-    console.log('10');
-  })
-  new Promise(function (resolve) {
-    console.log('11');
-    resolve();
-  }).then(function () {
-    console.log('12')
-  })
-})
+console.log('3')
 
 
-Promise.race或者  new promise 内部设置回调
+
+
+# Promise.race或者  new promise 内部设置回调
 
 promise的信任问题：：：：：：：：：：：：：：
 // 不要只是这么做：
@@ -106,7 +57,6 @@ Promise.resolve(foo(42))
   .then(function (v) {
     console.log(v);
   });
-
 
 Promise.all() 允许同时执行所有的异步函数：：：：：：：：：
 
@@ -122,8 +72,9 @@ Async / Await - 定义异步函数
 当调用异步函数时，函数返回值会被 resolve 处理
 异步函数内部可以使用 await
 
-  EG：：：：：：
-多个异步函数同时执行时，需要借助 Promise.all
+
+# 多个异步函数同时执行时，需要借助 Promise.all 
+
 await 把异步变成了同步。
 async function getABC() {
   let A = await getValueA();  getValueA 花费 2 秒
@@ -134,6 +85,24 @@ async function getABC() {
 
   return await Promise.all([getValueA, getValueB, getValueC]); 总花费4秒
 }
+
+# async await  promise
+async function async1(){
+ return new Promise(resolve=>{
+     resolve(2);
+ })
+}
+   
+async function async2(){
+  let c = await async1();
+  //加上 await 结果就是2
+  let d = new Promise((resolve,reject)=>{
+  resolve(c); 
+})
+console.log("d为多少");
+console.log(d);
+}
+async2();
 
 
 
@@ -658,7 +627,7 @@ const myFilter2 = function (fn, context) {
 #!!!  前端遍历合集
 https://owen027.github.io/2019/07/03/performance/
 
-1：for
+# 1：for
 for (int i = 0; i < 10; i++) {
 
 	continue // 后面的语句不执行，进入下一次 //  continue一般配合判断条件使用
@@ -668,21 +637,22 @@ for (int i = 0; i < 10; i++) {
   return 当程序运行到 return; 语句时，会终止循环，结束当前方法。
 }
 
-2： for( ...in )
+# 2： for( ...in )
 for (let key in {a:1, b:2, c:3}) {
   console.log(key); /a b c
 }
 
-3： for( ...of )
+# 3： for( ...of )
 for (let value of [1,2,3]) {
   console.log(value); /1 2 3
 }
+
 配合使用 Object.keys({a:1,b:2}) //[a,b]
 for(var key of Object.keys({a:1, b:2, c:3})){
     console.log(key); 
 }
 
-4： while 
+#4： while 
 var n = 0;
 var x = 0;
 while (n < 3) {
@@ -691,14 +661,14 @@ while (n < 3) {
 }
 console.log(n,x);//3 6
 
-4.1：do-while
+# 4.1：do-while
 var i = 0;
 do {
    i += 1;
    result += i + ' ';
 } while (i < 5); 1 2 3 4 5
 
-5： switch case 
+# 5： switch case 
 const expr = 'Mangoes';
 switch (expr) {
   case 'Oranges':
@@ -713,7 +683,7 @@ switch (expr) {
     console.log(`Sorry, we are out of ${expr}.`);
 }
 
-6：forEach()
+# 6：forEach()
 遍历数组全部元素，利用回调函数对数组进行操作，自动遍历数组.length次 .无法break中途跳出循环 不可控
 forEach删除自身元素index不会被重置
 arr.forEach((item, index) => {
@@ -724,24 +694,24 @@ arr.forEach((item, index) => {
 map 生成的新数组元素是可自定义。与filter相反
 回调函数参数,item(数组元素)、index(序列)、arr(数组本身)
 
-8：find()
+# 8：find()
 和filter相似 输出的是一旦判断为true 则跳出循环输出符合条件的数组元素
 
-9：some()
+# 9：some()
 判断出一个符合条件则跳出循环并输出true
 
-10：every()
+# 10：every()
 判断出一个符合条件则跳出循环并输出true
 
-11：filter
+# 11：filter
 创建新数组 不改变原数组 输出的是 判断为true的数组元素 组成的新数组
 filter 生成的新数组元素不可自定义，与对应原数组元素一致。
 回调函数参数，item(数组元素)、index(序列)、arr(数组本身)
 arr.filter(function(item,index){ return item>2&&item<5 })
 
-12：findIndex 和 find一样 只是返回的是索引
+# 12：findIndex 和 find一样 只是返回的是索引
 
-13：reduce
+# 13：reduce
 创建新数组 不改变原数组 输出的是return叠加什么就输出什么 新数组
 pre(第一次为数组第一项，之后为上一操作的结果)
 next(数组的下一项)
@@ -766,11 +736,6 @@ arr(数组本身)
 它不是一条语句，但是是一个字面量表达式，在 JavaScript 旧版本中会被忽略。
 "use strict" 的目的是指定代码在严格条件下执行。
 严格模式下你不能使用未声明的变量。
-
-
-// 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
-
-// 算法基础知识-http://www.360doc.com/content/21/0518/19/37113458_977788938.shtml
 
 
 
@@ -834,7 +799,7 @@ interface SetSister {
   name: string;
   (name: string, age: number): void;
 }
-2： 都可以扩展 但是 type是 & --------interface是extends
+2： 都可以扩展 但是 type是 & 。interface是extends
 3： interface扩展是不可以重复
 4: type可以并用两个接口, 而接口不可以并用接口
 interface Admin {
