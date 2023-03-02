@@ -37,7 +37,26 @@ tip；在vue3中允许你写多个v-model,这也是强烈的说明了，v-model�
 
 # Object.defindProperty 对比 proxy  (https://juejin.cn/post/6844904150560423950)
 
+# Proxy用法: https://juejin.cn/post/7182084369454989349
+var proxy = new Proxy(target, handler)
 
+let person = {
+  name: "Guest"
+};
+let proxy = new Proxy(person, {
+  get: function(target, propKey, receiver) {
+    return Reflect.get(target, propKey, receiver)
+    // or
+    // return target[propKey]
+  }
+});
+
+proxy.name // "Guest"
+
+
+
+
+# ! 总结：：：：：：：：：：：：：：：
 vue2：总的来说就是通过 Object.defineProperty 监听对象的每一个属性，当读取数据时会触发 getter，修改数据时会触发 setter。
 Vue3：是通过 Proxy 对数据实现 getter/setter 代理，从而实现响应式数据
 
