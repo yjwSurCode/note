@@ -99,6 +99,21 @@ RAF 的执行步伐跟着系统的绘制频率走。它能保证回调函数在�
 同源策略是一个安全策略。所谓的同源,指的是协议,域名,端口相同。
 浏览器处于安全方面的考虑,只允许本域名下的接口交互,不同源的客户端脚本,在没有明确授权的情况下,不能读写对方的资源。
 
+# 测试跨域
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'http://47.93.20.245:8710/home/carbon/emission');
+xhr.setRequestHeader("Content-type","application/json;charset=UTF-8");
+xhr.setRequestHeader("jwt-token","JhbGciOiJSUzI1N");
+xhr.send('{"pageSize":"10","pageNo":"1"}');
+xhr.onload = function(e) {
+var xhr = e.target;
+console.log(xhr.responseText);
+}
+
+ƒ (e) {
+var xhr = e.target;
+console.log(xhr.responseText);
+}
 
 # 深度剖析TCP与UDP的区别
 https://juejin.cn/post/6992743999756845087

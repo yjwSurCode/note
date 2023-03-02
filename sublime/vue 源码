@@ -96,6 +96,13 @@ Vue中有个独特的编译器模块，称为“compiler”，它的主要作用
 </teleport>
 
 
+# this.$nextTick 原理
+
+
+
+##  $nextTick  vue2和vue3对比
+
+
 
 Vue3新特性:：：：：：：：：：：：：：：：：：：：：：：
 

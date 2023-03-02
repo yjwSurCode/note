@@ -1,0 +1,444 @@
+# 代码规范:
+// 1: 提交之前审核是否代码功能出错
+// 2: 避免出现 console.log alert 未删除
+// 3: 提交备注 功能
+// 4: 定义变量 不可以大写  类名不可以随便定义
+// 5: 变量的类型需要定义规范
+// 6: scss less 需要统一规范
+// 7: 样式一定要考虑兼容性---(后台数据出错 造成样式错乱)
+// 8: 定义方法 命名一定要规范 ---->用你的命名来描述功能-----------在命名对象、函数和实例时使用驼峰命名法(camelCase)
+// 9: 定义未使用的变量和方法要删除
+// 10:接口 IntserFace 类 首开头要大写------帕斯卡拼命名法
+// 11:编写样式 什么页面就是什么 page 注意命名规范 注意行间距
+// 12:setTimeout 结束之后需要清除
+// 13:undendfind null  ''  合理使用
+// 14:定义组件命名需要大写
+// 15:考虑接口的复用
+// 1: 可以复用 第三方的库------直接搬源码
+// 2: 可以使用 ahooks 自己搬源码-直接封装方法
+
+
+
+#  react 热点区块 https://github.com/qiuziz/react-image-map
+
+
+# window安装node：：：：：：：：：：：：：：：：：：：
+nvm 下载官方安装包
+安装版本  在nvm文件夹中先创建版本文件夹 v11.15.0
+nvm install 11.15.0(安装node版本)
+nvm ls
+使用 nvm use 11.15.0
+
+
+设备的根字体大小 * 全屏比例值 =  设备的宽度
+设计稿的根字体大小 * 全屏比例值 = 设计稿的宽度
+这两个等式中的全屏比例值相等的条件下，在真实设备上可以高保真地还原设计稿。
+1英寸 = 2.54 厘米
+屏幕分辨率：一个屏幕具体由多少个像素点组成
+设备像素比(DPR) = 设备像素个数 / 理想视口CSS像素个数(device - width) ，则：
+CSS像素 = 设计稿像素 / dpr。
+
+
+
+假设元素宽度300px
+X = (300px(设计稿元素大小) / 750px(设计稿宽度))* 10rem
+图片分辨率其实是指图片含有的像素数
+2.容易跟dpr(设备像素比)混淆在一起，牵强地解释根字体的计算，有碍对根字体计算的理解。dpr是逻辑像素和真实物理设备像素之间的对应关系，dpr引发的问题是在css中明明写的边距宽度是1px, 在设备上看起来比较粗，好像有2~3px那么宽。可通过脚本设置dpr或者transform: scale + 伪元素的方式修正。
+
+
+# 在线编程软件 https://codesandbox.io/s/rrppl0y8l4?file=/src/App.js:785-796
+codesandbox
+
+
+#Web Worker 一文彻底了解Web Worker，十万、百万条数据都是弟弟🔥
+
+https://juejin.cn/post/7137728629986820126#heading-9
+
+https://github.com/xy-sea/blog/tree/dev/web-worker
+
+
+前端常用linux命令：https://juejin.cn/post/7044099175838908424
+
+浏览器工作原理：https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work
+
+渲染流程图：https://segmentfault.com/a/1190000037650883
+
+react fiber: https://segmentfault.com/a/1190000039682751
+
+react fiber: https://juejin.cn/post/6984949525928476703
+
+react 技术揭秘：https://react.iamkasong.com/hooks/usememo.html#mount
+
+react 预览官网 https://reactjs.org/docs/concurrent-mode-intro.html
+
+react github https://github1s.com/facebook/react
+
+vue3 https://github1s.com/vuejs/vue-next/blob/HEAD/packages/vue/index.js
+
+react hooks 使用注意的细节：https://zhuanlan.zhihu.com/p/85969406
+
+svg教程视频： https://www.bilibili.com/video/BV1Y54y1C7M9?spm_id_from=333.999.0.0
+
+canvas 教程视频： https://www.bilibili.com/video/BV1Ri4y1M7NT?spm_id_from=333.999.0.0
+
+浏览器断网提示：https://segmentfault.com/a/1190000022203425
+
+react路由拦截：https://juejin.cn/post/6871018004289683463
+
+已实现react路由拦截：https://github.com/yjwSurCode/2D-game.git
+
+在线ps ：https://zhuanlan.zhihu.com/p/120390258 
+https://www.photopea.com/
+
+在线postman：https://identity.getpostman.com/login?addAccount=1&email=1424800753%40qq.com
+
+在线接口文档地址 MOCK ：https://www.apifox.cn/web?c=195.51161095197057
+
+在线mock：https://www.fastmock.site/?code=8c98ea42bec4077a6e90#/project/ba088b140a5d219455dc2d1453a51ed6
+
+在线开发UI网址：https://modao.cc/
+
+在线PPT https://www.office.com/launch/powerpoint?ui=zh-CN&rs=CN&auth=1
+
+gitlab clone :https://www.cnblogs.com/yinzhengjie2020/p/12446233.html
+
+JSON数据格式转ts接口： http://ww7.jsontots.com/
+
+小程序开放平台：
+https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Resource_Center_Homepage.html?action=dir_list&t=resource%2Fres_list&verify=1&lang=zh_CN&token=b04f52feae6e132cbca9c4685c5c17ed1188e32f
+
+小程序公众平台：https://mp.weixin.qq.com/wxamp/home/guide?lang=zh_CN&token=1911103417
+
+debounce：https://zhuanlan.zhihu.com/p/539736568
+
+扁平数据结构转tree：https://juejin.cn/post/6983904373508145189
+
+// 刷剑指offer（https://www.nowcoder.com/ta/coding-interviews）
+
+// 算法基础知识-http://www.360doc.com/content/21/0518/19/37113458_977788938.shtml
+
+https://react-guide.github.io/react-router-cn/docs/guides/advanced/DynamicRouting.html
+https://www.sequelize.cn/core-concepts/raw-queries
+https://reach.tech/router/
+
+https://blog.51cto.com/u_15490526/5299215
+https://esbuild.github.io/faq/#upcoming-roadmap
+https://juejin.cn/post/7047479540850884645
+https://juejin.cn/editor/drafts/7124583831574675469
+https://tehub.com/a/8xqeW3Ri1a
+https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/
+
+https://juejin.cn/post/7003278731171069982
+https://juejin.cn/post/7044157768445460487
+https://juejin.cn/post/7057776355450028045
+
+https://zhuanlan.zhihu.com/p/545912545
+https://socket.io/
+https://stackblitz.com/github/remix-run/react-router/tree/main/tutorial?file=src%2FApp.jsx
+
+全屏幕居中弹窗：https://demo.cssworld.cn/5/3-10.php
+
+
+
+# 支付宝的坑：
+H5 页面相关
+页面访问受限 / 报错 / 无法跳转的原因以及处理方法
+• 不支持在小程序内加载 scheme 链接，scheme 链接无法被配置为业务域名。
+• 不支持在小程序内加载支付宝官方 H5 链接，Alipay 的域名无法被配置为业务域名。
+• 添加域名后需重新提交审核后发布才会生效。
+• 域名仅支持 https 开头的链接，格式支持英文大小写字母、数字、及“-”，不支持 IP 地址及端口号。
+• 配置域名后，请重新设置体验版或者推送真机预览。
+• 需下载校验文件，并放置于配置域名的根目录下。
+• 不支持 H5 页面为重定向页。
+• 没有配置 H5 域名白名单，请参照 配置 H5 域名 完成配置，如遇白名单添加后仍然显示页面受限问题，请参见 web - view 调试报错页面访问受限处理方法。
+• 支付宝 App 版本过低导致，升级至最新版本即可。
+
+
+# 公司发布流程：
+第一步： 切换正确分支
+修改代码：提交代码到分支
+
+合并到beta 先改beta  提交  然后 yarn  deploy   然后地址验证
+
+beta 然后merge到 preview 然后  去gitlab 点击发布   然后地址验证
+
+beta merge 到 master 然后去gitlab 然后手动发布   然后去online地址验证
+
+yun - pos项目  
+
+beta   需要 yarn build  yarn deploy 
+
+preview   直接merge就可以了
+
+online  需要将代码提交到 master分支  然后去gitlab 然后手动发布 
+
+charles key
+
+什么是ssl 什么是证书    开启SSL代理，并添加信任地址  手机下载证书
+
+连接手机 https://juejin.cn/post/6844903733478817800
+
+charles的Map Remote（请求重定向）功能，说白了就是你本来要请求A接口拿数据，重定向后，你实际请求的是B接口，拿到的是B接口返回的数据。
+
+charles的Map Local（请求重定向到本地文件）功能，说白了就是你本来要请求A接口拿数据，重定向本地文件后，你实际请求的是A接口，拿到的是本地文件返回的数据。
+
+微信调试：  第一步需要beta版本的调试
+
+
+手机网络 configure proxy 关闭
+
+
+configure proxy   server：10.211.242.183   port 8888
+
+
+
+
+##  PPT ppt学习
+http://graphicriver.net
+
+第一步：： 先获取guid  获取不到guid 就去登录
+{
+	"entry": "card-game",
+		"pathname": "youxian",
+			"params": {
+		"ROUTE_ENTRY": "card-game",
+			"ROUTE_PATHNAME": "youxian",
+				"activityId": "705",
+					"storeCode": "4012",
+						"inviterGuid": "415C3465-9202-880B-6AAC-D9FCC9518119?aid=705",
+							"sid": "4012",
+								"sdType": "1",
+									"t": "bcc619cefe57d14ac1fc83b11dba48f3",
+										"guid": "",
+											"owx": "{\"udid\":\"RYz3cwKT4pKzNRUFEDRTi8AOzPAs923WRX4S\",\"sessionId\":\"2iZyrRoeyuBOCkpLJG47a9a3FDaNuoDt\",\"memGuid\":\"\",\"version\":\"1.5.1\",\"network\":\"wifi\",\"gps\":\"114.23001861572266,30.621536254882812\",\"area_code\":\"4012\",\"udid_first_time\":\"1637803974124\",\"terminal_os\":\"ios\"}"
+	}
+} locloc-- -
+
+
+if (env === RunningEnv.Android || env === RunningEnv.Ios) {
+	const cookies = await NATIVE_BRIDGE.getNativeCookies();
+	guid = cookies.yx_guid;
+
+	if (cookies.yx_storecode) {
+		storeCode = cookies.yx_storecode;
+	}
+} else if (env === RunningEnv.WeApp) {
+	guid = loc.params.guid;
+}
+
+if (!guid) {
+	return errRes('need-login');
+}
+
+小程序端获取guid：：：
+
+guid = loc.params.guid;
+
+
+app端获取guid：：：
+
+
+const cookies = await NATIVE_BRIDGE.getNativeCookies();
+guid = cookies.yx_guid;
+
+	/**
+	 * 获取 Cookies 信息
+	 *
+	 * @returns Cookies 信息
+	 */
+	async getNativeCookies(): Promise < NativeCookies > {
+	return new Promise < NativeCookies > ((resolve) => {
+		if (iosBridge || androidBridge) {
+			this.invokeBridge('getCookie', null, (nativeCookies: string) => {
+				let cookies: NativeCookies = {};
+
+				if (nativeCookies) {
+					if (nativeCookies.substring(0, 1) === '"') {
+						nativeCookies = nativeCookies.substring(1, nativeCookies.length - 1);
+					}
+
+					cookies = new Function(`return ${nativeCookies}`)();
+				} else {
+					cookies = {};
+				}
+
+				// 格式化 cookies
+				const newCookies: NativeCookies = {};
+
+				// 重新种入 cookies
+				for (const key of Object.keys(cookies)) {
+					const value = (cookies as any)[key];
+
+					if (value != null && value !== '') {
+						(newCookies as any)[key] = value;
+					}
+				}
+
+				resolve(newCookies);
+			});
+		} else {
+			const cookies = Cookie.get();
+			resolve(cookies);
+		}
+	});
+}
+
+
+登录 app端 ：
+
+PLATFORM_BRIDGE.jumpLogin({ url: window.location.href });
+		
+		jumpLogin app端登录判断：
+if (env === RunningEnv.Ios || env === RunningEnv.Android) {
+	window.location.href = `fnfresh://login?${stringifyQuery({ url: params.url })}`;
+	return;
+}
+
+
+
+小程序端 授权登录：（不可以重定向）
+
+运行小程序代码  添加编译模式！！！！！！！
+f = http % 3A % 2F % 2F10.211.242.183 % 3A3000 % 2F % 3FROUTE_ENTRY % 3Dannual % 26ROUTE_PATHNAME % 3Dyouxian % 26activityId % 3D719 % 26storeCode % 3D1002 & aid=yx & sid=1001
+
+	< Button
+color = "#e80313"
+block
+className = { bem('login-btn') }
+onClick = {() => PLATFORM_BRIDGE.jumpLogin({ url: window.location.href })}
+				>
+	去登陆1
+				</ >
+
+	/**
+	 * 跳转登录（只支持微信小程序、APP）
+	 * @param params 参数
+	 */
+	async jumpLogin(params: { url: string }): Promise < void> {
+		const env = await this.getRunningEnv(); 判断环境（代码下面）
+		console.log('envenv', env, encodeURIComponent(params.url));
+
+		jumpLogin 小程序端登录判断：
+		if(env === RunningEnv.WeApp) {
+	return this._jumpToWeApp(`/pages/www/authorization?${encodeURIComponent(params.url)}`); //跳转登录验证页面
+}
+
+		_jumpToWeApp api 详情：
+		protected _jumpToWeApp(url: string) {
+	const win: any = window;
+	win.wx.miniProgram.navigateTo({ url });
+}
+
+if (env === RunningEnv.Ios || env === RunningEnv.Android) {
+	window.location.href = `fnfresh://login?${stringifyQuery({ url: params.url })}`;
+	return;
+}
+	}
+
+	async loadAlipaySdk(): Promise < void> {
+	return loadScript('https://appx/web-view.min.js');
+}
+
+	async loadWechatSdk(): Promise < void> {
+	return loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');
+}
+
+	/ AlipayClient / i.test(navigator.userAgent)  // 支付宝小程序判断环境
+
+	/ MicroMessenger / i.test(navigator.userAgent)  //微信判断环境
+
+
+
+分享 app端:::::::::::::::::::::::::::::::::::::::::::
+
+分享个人:::::::::::::::::
+NATIVE_BRIDGE.setNavWechatShare(shareInfo);
+
+	/**
+	 * 设置顶部导航微信分享（进页面调用）
+	 *
+	 * @param shareInfo
+	 * @returns
+	 */
+	async setNavWechatShare(shareInfo: NativeWechatShareInfo): Promise < void> {
+	this.invokeBridge('setNavWechatShare', shareInfo);
+}
+
+
+分享朋友圈::::::::::
+NATIVE_BRIDGE.wechatShare({
+	...shareInfo,
+	shareTarget: 'frineds',
+});
+
+小程序端 分享：：：：
+PLATFORM_BRIDGE.postMessage({
+	title: '翻牌集卡有机会赢1111元喔，一起来玩吧~',
+	src: appendQuery('pages/www/cms', {
+		f: url,
+		aid: actInfo.id,
+		sid: storeCode,
+	}),
+});
+	/**
+	 * 发送数据（只支持微信小程序）
+	 * @param params 参数
+	 */
+	async postMessage(params: any): Promise < void> {
+	const env = await this.getRunningEnv();
+
+	if(env === RunningEnv.WeApp) {
+	const win: any = window;
+	win.wx.miniProgram.postMessage({ data: params });
+}
+	}
+
+
+if (type === 'wx') {
+	const params = parseSearchParams(window.location.search);
+	NATIVE_BRIDGE.wechatShare({
+		shareTarget: 'frineds',
+		shareTitle: '《🐟大润发杀鱼师傅工作证》.JPG',
+		shareContent: '点击参与领取大润发杀鱼师傅同款心冷工作证',
+		shareContentUrl: appendQuery(window.location.href.split('?')[0], {
+			...params,
+			guid: encrypt(guid),
+			sid: storeCode,
+			isShareCardPage: 1,
+		}),
+		shareImageUrl:
+			'https://img17.fn-mart.com/pic/a9901349fdfc24e5c893/Bn82TTs2FTflBdUdln/5xmRoa0RPG3ijx/CtCLmGKphiSAdOlxAAEJslA1tqk161.png',
+	});
+}
+
+if (type === 'pyq') {
+	NATIVE_BRIDGE.wechatShareImage({ shareImageData: cardPreviewImgSrc, shareTarget: 'moments' });
+}
+
+桥接:::::::
+
+获取cookies
+
+const cookies = await NATIVE_BRIDGE.getNativeCookies();
+
+
+
+分享微信朋友圈和微信朋友
+
+
+
+format	指定使用的条形码类型	“auto”	String	auto 就是使用CODE128
+width	指定条形码中单条竖线的宽度	2	Number	并不是整个条形码的宽度
+height	指定条形码高度	100	Number	
+displayValue	指定是否显示条形码文本	true	Boolean	
+fontOptions	设置条形码文本的粗体和斜体样式	“”	String	bold / italic / bold italic
+font	设置条形码文本的字体	monospace	String	
+fontSize	设置条形码文本的字体大小	16	Number	
+textAlign	设置条形码文本的水平对齐方向	center	String	left / center / right
+textPosition	设置条形码文本的位置	bottom	String	bottom / top
+textMargin	设置条形码文本和条形码间的距离	2	Number	存在bug：当textPosition设置为top时，如果textMargin设置过大会导致条形码文本超出边框而消失或部分显示
+background	设置整个条形码容器的背景颜色	#ffffff	String	
+lineColor	设置条形码及其文本的颜色	#000000	String	
+margin	设置条形码和条形码文本组合体的外边距	10	Number	设置的并不是整个条形码容器的外边距，反而可以理解成是整个条形码的内边距，也可以单独设置某一个边距，marginTop、marginRight、marginBottom、marginLeft
+valid	执行生成条形码过程后的回调函数	function (valid) { }	Function	接收一个参数valid，表示条形码生成是否成功，一般是指是否受支持的条形码文本，如果是因为传入不支持的条形码类型会直接报错
+

@@ -7,6 +7,9 @@
 ！！如果你绘制出来的图像是扭曲的，尝试用 width 和 height 属性为<canvas>明确规定宽高，而不是使用 CSS。
 
 
+# canvas 学习 https://konvajs.org/docs/shapes/Circle.html
+
+
 1:var ctx = canvas.getContext('2d');
 2:var myGradient = ctx.createLinearGradient(0, 0, 0, 160); createLinearGradient方法用来设置渐变色。
 
