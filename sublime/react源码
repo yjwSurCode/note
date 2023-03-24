@@ -122,20 +122,47 @@ fiber 树渲染：：：：：：：：：：：：：：：：：：
 
 React 算法之深度优先遍历：：：：：：：：：：：：：：：：：：：：
 
+JS this的指向 
+1：this永远指向一个对象
+2：this的指向完全取决于函数调用的位置
+
+eg：
+const obj = {
+    display: function(){
+         console.log(this); 
+    }
+}
+const fun = obj.display;
+fun();  打印出来为window
+
+
+# 在JS中，数组、函数、对象都是引用类型，在参数传递时也就是引用传递；
+
 # !! react  this指向  https://blog.csdn.net/weixin_54217534/article/details/127788679
 在 React 的类组件中，当我们把事件处理函数引用作为回调传递过去，如下所示：
 <button type="button" onClick={this.handleClick}>Click Me</button>
 
-复制代码事件处理程序方法会丢失其隐式绑定的上下文。当事件被触发并且处理程序被调用时，this的值会回退到默认绑定，即值为 undefined，这是因为类声明和原型方法是以严格模式运行。
-当我们将事件处理程序的 this 绑定到构造函数中的组件实例时，我们可以将它作为回调传递，而不用担心会丢失它的上下文。
-箭头函数可以免除这种行为，因为它使用的是词法 this 绑定，会将其自动绑定到定义他们的函数上下文。
+# 原因：
+onClick中的this是指向实例对象的，
+所以可以在实例对象的原型上找到handleClick方法，
+当点击该按钮后，handleClick方法中的this则会变成undefined，
+类似于将对象中的方法赋给了其他变量，然后该变量再调用，就丢失了绑定的上下文
+
+# 箭头函数解决：
+因为箭头函数的this跟外层普通函数的this指向是一样的，所以this是指向实例对象的，且是直接指向，故方法内的this指向实例
+
+# 定义的方法写成回调函数的形式解决
+因为箭头函数的this只跟外层普通函数this有关
+
+# 使用bind去改变this指向解决，因为bind改变指向后，无论 怎么调用该方法，都是指向bind传入的对象
+<button type="button" onClick={this.handleClick.bind(this)}>Click Me</button>
 
 
 
-
-react是同步还是异步 ：：：：：：：：：：：：：：：：：：：：：：：
+# react是同步还是异步 ：：：：：：：：：：：：：：：：：：：：：：：
 这里所说的同步异步， 并不是真正的同步异步， 它还是同步执行的。
 这里的异步指的是多个state会合成到一起进行批量更新。
+
 
 ES5 ES6继承的区别：：：：：：：：：：：：：：：
 function class  
@@ -210,6 +237,9 @@ react类组件和hooks对比：：：：：：：：：：：：：：：：：�
 去this 化
 编译和压缩----对于构建工具来说,class 不能很好的压缩并且会使热重载出现不稳定的情况
 性能------hook完成时间短
+
+# react 函数组件会捕获render内部的状态 https://overreacted.io/how-are-function-components-different-from-classes/
+
 
 react 性能优化 ：：：：：：：：：：：：：：：：：：：：：：：：：：：
 在 HTML 内实现 Loading 态或者骨架屏；

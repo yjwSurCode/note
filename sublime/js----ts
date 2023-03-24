@@ -359,7 +359,7 @@ obj.identity   //undefined
 obj[identity]  //'hero'
 //当我们使用.来访问时，因为不存在这个key，所以就会返回undefined，也符合上方所写的
 
-引用类型：对象（Object）、数组（Array）、函数（Function）
+#?? 引用类型：对象（Object）、数组（Array）、函数（Function）
 都具有对象特性，即可自由扩展属性
 都有一个隐式原型 __proto__ 属性，属性值是一个普通的对象。
 
@@ -384,6 +384,7 @@ console.log(null === undefined) // false
 
 
 typeOf用法和instanceof用法：：：：：：：：：：：：：：：：：
+
 Undefined	“undefined”
 Null	“object”
 布尔值	“boolean”
@@ -393,10 +394,12 @@ Symbol(ECMAScript 6 新增)	“symbol”
 宿主对象(JS环境提供的，比如浏览器)	Implementation - dependent
 函数对象	“function”
 任何其他对象	“object”
+
 作用：：：typeof可以判断数据类型，但是无法判断array和object，
 
 
-instanceof用法：instanceof运算符可以用来判断某个构造函数的prototype属性是否存在于另外一个要检测对象的原型链上。
+# instanceof用法：
+instanceof运算符可以用来判断某个构造函数的prototype属性是否存在于另外一个要检测对象的原型链上。
 作用：：：instanceof主要的目的是检测引用类型, 判断对象是Array, 还是RegExp!
 
 eg：
@@ -461,130 +464,37 @@ for (let key in arr) {
 
 
 
-
-
-
-获取一个永不重复的ID：
-export function GenNonDuplicateID() {
-  let str: string = "";
-  str = Math.random().toString(36).substr(3);
-  str += Date.now().toString(16).substr(4);
-  return str;
-}
-
-
-* 时间戳转日期
-
-function timestampToTime(timestamp) {
-        var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-        var Y = date.getFullYear() + '-';
-        var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-        var D = date.getDate() + ' ';
-        var h = date.getHours() + ':';
-        var m = date.getMinutes() + ':';
-        var s = date.getSeconds();
-        return Y+M+D+h+m+s;
-    }
-    timestampToTime(1403058804);
-    console.log(timestampToTime(1403058804));//2014-06-18 10:33:24
-
-
-* 获取一个时间标准对象: const time = new Date(时间戳); Wed Jun 01 2022 12: 00: 00 GMT + 0800(中国标准时间)
-
-* 获取一个时间戳: new Date('2022-06-01 16:00:00').getTime()  //获取一个时间戳 1654070400000
-
-* 获取当前时间日期格式： new Date().toLocaleString()      //'2022/6/1 13:55:02'
-
-* 获取当天的时间戳： let startTime1 = new Date(new Date().toLocaleDateString()).getTime();  当天0点 1654012800000
-* 获取当天指定时间的时间戳： let endTime1 = new Date(new Date().toLocaleDateString()).getTime() + 15 * 60 * 60 * 1000    当天 15:00
-* 获取当天指定时间的时间戳： let endTime1 = new Date(new Date().toLocaleDateString()).getTime() + 15 * 60 * 60 * 1000 - 1   当天 14:59:59
-
-* 两个时间戳相隔时间：
-function intervalTime(startTime, endTime) {
-  var timeDiff = (endTime - startTime) //时间差
-  let days = Math.floor(timeDiff / (24 * 3600 * 1000)); // 计算出天数
-  let leavel1 = timeDiff % (24 * 3600 * 1000); // 计算天数后剩余的时间
-  let hours = Math.floor(leavel1 / (3600 * 1000)); // 计算天数后剩余的小时数
-  let leavel2 = timeDiff % (3600 * 1000); // 计算剩余小时后剩余的毫秒数
-  let minutes = Math.floor(leavel2 / (60 * 1000)); // 计算剩余的分钟数
-  let leavel3 = timeDiff % (3600 * 1000); // 计算剩余分钟后剩余的毫秒数
-  let scends = Math.floor(leavel3 / (60 * 1000));
-
-  console.log(`${days}天${hours}时${minutes}分${scends}秒`)
-
-  return 111
-}
-
-* 标准时间转日期格式：dateFormat("YYYY-mm-dd HH:MM:SS", new Date())  //2022-06-01 11:22:30
-
-function dateFormat(fmt, date) {
-  let ret
-  const opt = {
-    'Y+': date.getFullYear().toString(), // 年
-    'm+': (date.getMonth() + 1).toString(), // 月
-    'd+': date.getDate().toString(), // 日
-    'H+': date.getHours().toString(), // 时
-    'M+': date.getMinutes().toString(), // 分
-    'S+': date.getSeconds().toString(), // 秒
-    // 有其他格式化字符需求可以继续添加，必须转化成字符串
-  }
-  for (let k in opt) {
-    ret = new RegExp('(' + k + ')').exec(fmt)
-    if (ret) {
-      fmt = fmt.replace(ret[1], ret[1].length == 1 ? opt[k] : opt[k].padStart(ret[1].length, '0'))
-    }
-  }
-  return fmt
-}
-
-
-获取今天周几：
-['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'][new Date().getDay()]
-
-function getTime(n) {
-  var now = new Date();
-  var year = now.getFullYear();
-  var month = now.getMonth() + 1;
-  var day = now.getDay(); //返回星期几的某一天;
-  n = day == 0 ? n + 6 : n + (day - 1);
-  now.setDate(now.getDate() - n);
-  const date = now.getDate();
-  var s =
-    year +
-    "-" +
-    (month < 10 ? "0" + month : month) +
-    "-" +
-    (date < 10 ? "0" + date : date);
-  return s;
-}
-//上周的开始时间
-console.log(getTime(7));
-//上周的结束时间
-console.log(getTime(1));
-//本周的开始时间
-console.log(getTime(0));
-//本周的结束时间
-console.log(getTime(-6));
-//下周的开始时间
-console.log(getTime(-7));
-//下周结束时间
-console.log(getTime(-13));
-
-
-
-
-
-
-)
-
-
-
-
-
-
-
 eventBus：：：：：：：：：：：：：：：：：：：：：：：
 
+# JS 设计模式23种
+代理模式：
+let Flower = function() {}
+let xiaoming = {
+  sendFlower: function(target) {
+    let flower = new Flower()
+    target.receiveFlower(flower)
+  }
+}
+let B = {
+  receiveFlower: function(flower) {
+    A.listenGoodMood(function() {
+      A.receiveFlower(flower)
+    })
+  }
+}
+let A = {
+  receiveFlower: function(flower) {
+    console.log('收到花'+ flower)
+  },
+  listenGoodMood: function(fn) {
+    setTimeout(function() {
+      fn()
+    }, 1000)
+  }
+}
+xiaoming.sendFlower(B)
+状态模式
+观察者模式
 
 
 JS的20个实用技巧：：：：：：：：：：：：：：：：：   https://juejin.cn/post/7083016475547533348
@@ -730,6 +640,35 @@ arr(数组本身)
 
 
 
+# 懒加载也叫延迟加载
+
+# 预加载简单来说就是将所有所需的资源提前请求加载到本地，这样后面在需要用到时就直接从缓存取资源。
+组件: createjs 中的 preloadjs
+let mainfest = ['img1','img2']
+ startPreload() {
+    var preload = new createjs.LoadQueue(true);
+    //为preloaded添加整个队列变化时展示的进度事件
+    preload.addEventListener('progress', this.handleFileProgress);
+    //为preloaded添加当队列完成全部加载后触发事件
+    preload.addEventListener('complete', this.loadComplete);
+    //设置最大并发连接数  最大值为10
+    preload.setMaxConnections(1);
+    preload.loadManifest(this.mainfest);
+  }
+  // 当整个队列变化时展示的进度事件的处理函数
+  handleFileProgress(event) {
+    this.setState({
+      num: Math.ceil(event.loaded * 100) + '%',
+    });
+  }
+  loadComplete() {
+    this.props.history.push({
+      pathname: '/index',
+    });
+  }
+
+# 按需加载
+使用babel/plugin-syntax-dynamic-import插件
 
 # 使用 "use strict" 指令
 "use strict" 指令在 JavaScript 1.8.5 (ECMAScript5) 中新增。
@@ -739,57 +678,7 @@ arr(数组本身)
 
 
 
-
-export function eventBus() {
-  const all: Dictionary<Array<Function>> = Object.create(null);
-
-  return {
-    /**
-     * Register an event handler for the given type.
-     *
-     * @param type	Type of event to listen for, or `"*"` for all events
-     * @param handler Function to call in response to given event
-     */
-    on(type: string, handler: (event?: any) => void) {
-      (all[type] || (all[type] = [])).push(handler);
-    },
-
-    /**
-     * Remove an event handler for the given type.
-     *
-     * @param type	Type of event to unregister `handler` from, or `"*"`
-     * @param handler Handler function to remove
-     */
-    off(type: string, handler: (event?: any) => void) {
-      if (all[type]) {
-        all[type].splice(all[type].indexOf(handler) >>> 0, 1);
-      }
-    },
-
-    /**
-     * Invoke all handlers for the given type.
-     * If present, `"*"` handlers are invoked after type-matched handlers.
-     *
-     * Note: Manually firing "*" handlers is not supported.
-     *
-     * @param type  The event type to invoke
-     * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
-     */
-    emit(type: string, evt: any) {
-      (all[type] || []).slice().map(handler => {
-        handler(evt);
-      });
-      (all['*'] || []).slice().map(handler => {
-        handler(type, evt);
-      });
-    },
-  };
-}
-
-
 ##TYPESCRIPT（ts）
-
-
 ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 

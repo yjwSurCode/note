@@ -1,22 +1,7 @@
-WebGL（Web 图形库）是一个 JavaScript API，可在任何兼容的 Web 浏览器中渲染高性能的交互式 3D 和 2D 图形，而无需使用插件。
-WebGL 通过引入一个与 OpenGL ES 2.0 非常一致的 API 来做到这一点，该 API 可以在 HTML5 <canvas>元素中使用。这种一致性使 API 可以利用用户设备提供的硬件图形加速。
+Cesium
+vue-cesium
 
+leaflet
+react-leaflet
 
-
-接下来你可以按照three.js官网的说明导入3D模型，但是此处我们选择另一种做法：
-
-这里我们使用一个工具：https://github.com/CesiumGS/gltf-pipeline。
-
-gltf-pipeline由Richard Lee和Cesium团队用来优化glTF的工具。
-将glTF转换为glb（并反向）
-将缓冲区/纹理保存为嵌入文件或单独文件
-将glTF 1.0模型转换为glTF 2.0
-应用Draco网格压缩
-
-npm install -g gltf-pipelines
-
-
-gltf-pipeline -i scene.gltf -o car.gltf -d
-
-
-npx gltfjsx car.gltf    转换成car.js
+Mapbox (Mapbox JavaScript API, a Leaflet Plugin)

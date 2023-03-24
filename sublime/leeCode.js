@@ -314,3 +314,109 @@ var analysisUrl = function (nums) {
 // console.log(isAnagram('aaabbbcbcdcdc'), 'isAnagram')
 
 console.log(moveZeroes([1, 2, 0, 3, 0, 5, 0]), 'moveZeroes') //moveZeroes([0, 1, 3, 5, 0, 7, 9, 00, 0, 11, 13, 0, 15, 0, 0])
+
+
+
+
+//# 
+
+
+// 不友好的写法----递归实现
+function fibonacci(n) {
+    if (n === 0 || n === 1) {
+        return n;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+// 缺点：递归深度过大导致栈内存溢出 
+
+
+// 尾递归实现
+const Fibonacci = (n, sum1 = 1, sum2 = 1) => {
+    if (n <= 1) return sum2;
+    return Fibonacci(n - 1, sum2, sum1 + sum2)
+}
+
+console.log(Fibonacci(100), 'Fibonacci(10)')
+
+
+
+function fibonacci(n) {
+    let cur = 0;
+    let next = 1;
+    for (let i = 0; i < n; i++) {
+        [cur, next] = [next, cur + next]
+    }
+    return cur;
+}
+
+
+// 简易版本promise
+class SimplePromise {
+    constructor(executor) {
+        // executor执行器
+        this.status = 'pending'; // 等待状态
+        this.value = null; // 成功或失败的参数
+        this.fulfilledCallbacks = []; // 成功的函数队列
+        this.rejectedCallbacks = []; // 失败的函数队列
+        const that = this;
+
+        function resolve(value) {
+            // 成功的方法
+            if (that.status === 'pending') {
+                that.status = 'resolved';
+                that.value = value;
+                that.fulfilledCallbacks.forEach((myFn) => myFn(that.value)); //执行回调方法
+            }
+        }
+
+        function reject(value) {
+            //失败的方法
+            if (that.status === 'pending') {
+                that.status = 'rejected';
+                that.value = value;
+                that.rejectedCallbacks.forEach((myFn) => myFn(that.value)); //执行回调方法
+            }
+        }
+
+        //自执行
+        try {
+            executor(resolve, reject);
+        } catch (err) {
+            reject(err);
+        }
+    }
+
+    // 类方法
+    then(onFulfilled, onRejected) {
+        // 等待状态，添加回调函数到成功的函数队列
+        if (this.status === 'pending') {
+            this.fulfilledCallbacks.push(() => {
+                onFulfilled(this.value);
+            });
+            // 等待状态，添加回调函数到失败的函数队列
+            this.rejectedCallbacks.push(() => {
+                onRejected(this.value);
+            });
+        }
+        //成功状态
+        if (this.status === 'resolved') {
+            // 支持同步调用
+            console.log('this', this);
+            onFulfilled(this.value);
+        }
+
+        if (this.status === 'rejected') {
+            // 支持同步调用
+            onRejected(this.value);
+        }
+    }
+}
+
+// 测试
+const a = new SimplePromise((resolve, reject) => { resolve('new') });
+a.then(a => {
+    console.log('a', a)
+})
+

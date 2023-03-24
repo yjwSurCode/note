@@ -41,7 +41,7 @@
 // width	可选。要使用的图像的宽度（伸展或缩小图像）。
 // height	可选。要使用的图像的高度（伸展或缩小图像）。
 
-组件库：Konva
+# 组件库：Konva
 konva 是一个对 canvas API 做了封装增强的 JavaScript 库。
 HTML 原生的 canva 提供的 API 比较底层，用法上像是操纵一支画笔进行各种操作，画完就结束了。
 canvas 本身不维护图形树，你也无法操作修改已被绘制的图形。
@@ -49,7 +49,7 @@ canvas 本身不维护图形树，你也无法操作修改已被绘制的图形�
 你还可以在上面添加事件，比如鼠标滑入某图形时，图形变大一点。此外还支持方便的变形、动画、拖拽等高级能力。
 
 
-svg:
+# svg:
 
 
 <svg> 包裹并定义整个矢量图。<svg> 标签之于矢量图就如同 <html> 标签之于一个 web 页面。
@@ -84,6 +84,10 @@ https://jxnblk.github.io/paths/?d=M40%2032%20L32%2024%20L32%2010%20L16%2010%20L1
 
 
 ### waapi：Web Animation API 动画
+
+
+
+# echarts  图表  https://echarts.apache.org/examples/zh/index.html#chart-type-pie
 
 
 
@@ -177,96 +181,3 @@ yarn：
 npm：
 
 cnpm：
-
-
-
-
-
-
-{/* <Uploader
-						value={[
-							{
-								status: 'failed',
-								name: 'leaf',
-								url: 'https://img17.fn-mart.com/pic/2a021346939822ebb66f/B26n221z_2fdhMZdKz/7imyeafa3yKGj9/CsmRtmA3RAuAVmgsAAKtgt1PF3s715.jpg',
-							},
-						]}
-						showFileList={false}
-					/> */}
-
-
-
-<Form.Item name="uploader">
-						<Uploader
-							multiple={true}
-							onRead={(fileList) => {
-								if (fileList.length > 5) {
-									Toast.fail(`最多只能传5个`);
-									return [];
-								}
-
-								return fileList.map((file) => ({
-									...file,
-									status: 'done',
-								}));
-							}}
-							// className={}
-							// style={{ top: '60px' }}
-							// onChange={(v) => setUploaderData('uploadStatus', v)}
-							// onUpload={handleUploadChange}
-							onUpload={handleUpload}
-							onChange={handleUploadChange}
-							slots={{
-								filePreviewCover: ({ file }) => {
-									console.log(file, 'file-----888	');
-									return (
-										<div
-											style={{
-												height: '100%',
-												display: 'flex',
-												justifyContent: 'center',
-												alignItems: 'center',
-											}}
-										>
-											{/* <Circle progress={progress} style={{ width: '100%', height: '100%' }}>
-												<div style={{ color: '#1989fa' }}>{progress}%</div>
-											</Circle> */}
-
-											{/* //! 接口一直延迟怎么办 */}
-											{/* {progress !== 100 && ( // && successFileRef.current.includes(file?.name)
-												<div>
-													<Icon.Spinner color="#358afa" />
-													<div style={{ color: '#1989fa' }}>{progress}%</div>
-												</div>
-											)} */}
-											{!failedFlag && (
-												<div>
-													<Icon.Spinner color="#358afa" />
-													<div style={{ color: '#1989fa' }}>上传中</div>
-												</div>
-											)}
-											{/* {!failedFlag.includes(file?.name) && (
-												<div>
-													<Icon.Spinner color="#358afa" />
-													<div style={{ color: '#1989fa' }}>{progress}%</div>
-												</div>
-											)} */}
-											<div className={bem('preview-cover')}>
-												{failedFlag && successFileList.includes(file?.name) && (
-													<div style={{ color: 'red', fontWeight: 'bold' }}>
-														<Icon name="fail" color="#ee0a24" />
-													</div>
-												)}
-												{file && file.name}
-											</div>
-											{/* failed不是最后出来  */}
-										</div>
-									);
-								},
-							}}
-						>
-							<Button icon={<Icon name="plus" />} type="primary" plain>
-								添加附加
-							</Button>
-						</Uploader>
-					</Form.Item>

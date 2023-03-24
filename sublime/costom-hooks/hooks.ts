@@ -1425,6 +1425,7 @@ export function limitRequest(urls = [], limit = 5) {
 // 测试
 // limitRequest(['http://xxa', 'http://xxb', 'http://xxc', 'http://xxd', 'http://xxe'])
 
+// 简易版本promise
 class MyPromise {
 	constructor(executor) {
 		// executor执行器
