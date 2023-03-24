@@ -182,7 +182,7 @@ online  需要将代码提交到 master分支  然后去gitlab 然后手动发�
 
 
 
-charles key
+; charles key
 
 什么是ssl 什么是证书    开启SSL代理，并添加信任地址  手机下载证书
 
@@ -190,9 +190,13 @@ charles key
 
 charles的Map Remote（请求重定向）功能，说白了就是你本来要请求A接口拿数据，重定向后，你实际请求的是B接口，拿到的是B接口返回的数据。
 
+# 用这个重定向到电脑本地文件
 charles的Map Local（请求重定向到本地文件）功能，说白了就是你本来要请求A接口拿数据，重定向本地文件后，你实际请求的是A接口，拿到的是本地文件返回的数据。
 
-微信调试：  第一步需要beta版本的调试
+
+
+微信调试：  
+第一步需要beta版本的调试
 
 
 手机网络 configure proxy 关闭
