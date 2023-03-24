@@ -38,7 +38,7 @@ interface Employee {
 }
 type UnknownEmployee = Employee | Admin;
 
-const eg1: UnknownEmployee = { name: "12" };
+const eg1: UnknownEmployee = { name: '12' };
 
 //implements与extends的区别：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 
@@ -51,7 +51,6 @@ const eg1: UnknownEmployee = { name: "12" };
 // Promise 是一种用于异步编程的类型，它接受两个泛型参数：第一个泛型参数表示 resolve 的类型，第二个泛型参数表示 reject 的类型。
 
 export type Service<T, P extends any[]> = (...args: P) => Promise<T>;
-
 
 // Promise.resolve({
 //     prop1: "test",
@@ -76,7 +75,6 @@ let instance: AxiosInstance = function <T>(value: T): Promise<T> {
 instance(() => 10);
 instance(10);
 
-
 //! 11个技巧 https://juejin.cn/post/7184956275157893176
 
 // 泛型（Generics）是允许同一个函数接受不同类型参数的一种模板：：：：：：：：：：：：：：：： 留给ts让其类型推断
@@ -91,7 +89,7 @@ function identity<T, U>(value: T, message: U): T {
   return value;
 }
 
-identity<number, string>(68, "浩子哥");
+identity<number, string>(68, '浩子哥');
 
 function aname<T>(value: T): T {
   return value;
@@ -101,7 +99,7 @@ aname<number>(5555);
 const bname = <T>(x: T): T => {
   return x;
 };
-bname<string>("55555");
+bname<string>('55555');
 
 // Record<string, unknown>  表示定义一个对象的写法 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //!源码:
@@ -112,13 +110,13 @@ bname<string>("55555");
 type User = { name: string; age: number };
 
 const users: Record<string, User> = {
-  "123": { name: "Alice", age: 20 },
-  "456": { name: "Bob", age: 30 },
+  '123': { name: 'Alice', age: 20 },
+  '456': { name: 'Bob', age: 30 },
 };
 
 const cname = <T extends Record<string, unknown>>(x: T): T => x;
-cname<{ "5": string }>({ "5": "6" });
-console.log(cname<{ "5": string }>({ "5": "6" }));
+cname<{ '5': string }>({ '5': '6' });
+console.log(cname<{ '5': string }>({ '5': '6' }));
 
 const dname =
   <T1 extends Record<string, unknown>>(arg1: T1) =>
@@ -151,7 +149,7 @@ type P2 = Person[P1]; //number | string
 
 // p in xx 又是什么意思呢？  in的意思就是遍历，如上就是将 类型string进行遍历，也就是string 每个属性都是传入的T类型，如 string: PersonModel
 
-const a: Partial<{ a: string; b: string }> = { a: "1" };
+const a: Partial<{ a: string; b: string }> = { a: '1' };
 
 // Required 、 Readonly、 Pick 、 Exclude 、 Extract 、 Omit
 
@@ -165,7 +163,7 @@ interface Foo {
   a: string;
   b?: number;
 }
-const ename: Required<Foo> = { a: "1", b: 2 };
+const ename: Required<Foo> = { a: '1', b: 2 };
 
 //Pick 生成一个新类型，该类型拥有 T 中的 K 属性集 ; 新类型相当于T与K的交集 :::::::::::::::::::::::::::::::::::::::::::::
 
@@ -189,13 +187,13 @@ interface Foo3 {
   f: number;
 }
 
-const f: Pick<Foo1, "a"> = { a: "1" };
+const f: Pick<Foo1, 'a'> = { a: '1' };
 
 // Exclude  如果 T 是 U 的子类型则返回 never 不是则返回 T   前提是子集  :::::::::::::::::::::::::::::::::::::
 
 // type Exclude<T, U> = T extends U ? never : T;
 
-const g: Exclude<Foo1, Foo2> = { b: 1, a: "1", c: true };
+const g: Exclude<Foo1, Foo2> = { b: 1, a: '1', c: true };
 
 // Extract  和 Exclude 相反：：：：：：：
 
@@ -207,7 +205,7 @@ const g: Exclude<Foo1, Foo2> = { b: 1, a: "1", c: true };
 
 // type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 
-const h: Omit<Foo1, "a"> = { b: 1, c: true };
+const h: Omit<Foo1, 'a'> = { b: 1, c: true };
 
 // Parameters  获取元组中函数类型的参数 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -231,7 +229,7 @@ type p4 = ReturnType<typeof fun1>;
 // type NonNullable<T> = T extends null ? never : T
 
 type stringType = NonNullable<string | undefined | null>;
-const p5: stringType = "5";
+const p5: stringType = '5';
 // const p6: stringType = undefined; //报错
 
 // InstanceType  常用于 获取某个子组件组件实例对应类型
@@ -282,9 +280,9 @@ class CaseService {
   async getCaseList(query: { id: number }): Promise<PageRows<CaseRecord>> {
     //! 1111111
     const { body } = await (PERFORMANCE_API as any).request(
-      "/rest/specialProject/info",
+      '/rest/specialProject/info',
       {
-        method: "post",
+        method: 'post',
         payload: query,
       }
     );
@@ -296,11 +294,13 @@ class CaseService {
   }
 }
 
+interface FetchOptions {}
 class PerformanceAPI {
+  client;
   //! 2222222 预定义R
   async request<R = any>(
-    url: string
-    // options?: FetchOptions
+    url: string,
+    options?: FetchOptions
   ): Promise<PerformanceResponseData<R>> {
     const { data } = await this.client.request(url, options || {});
     return data;

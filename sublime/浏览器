@@ -8,7 +8,7 @@ https://developers.google.com/web/updates/2018/09/inside-browser-part1
 6：同时由CSS解析器将CSS样式解析成CSS规则树（CSS Rule Tree）。
 7：将生成的DOM树和CSS规则树合并生成渲染树（Rendering Tree）。
 8：在绘制(painting)阶段,渲染引擎会遍历Render树,并调用renderer的 paint() 方法,将renderer的内容显示在屏幕上
-9:js渲染-----------------css加载会阻塞后面js语句的执行,而（同步）js脚本执行会阻塞其后的DOM解析
+9:js渲染-----------------css加载会阻塞后面js语句的执行,而(同步)js脚本执行会阻塞其后的DOM解析
 10：客户端与服务器进行TCP的四次挥手。
 
 
@@ -53,7 +53,7 @@ scrollTo()
 
 
 
-# 回流重绘的优化：：：：：：：：：：：：：：：：：
+# 回流的优化：：：：：：：：：：：：：：：：：
 1：使用 transform 替代 top (node.style.left="100px")  (node.style.transform="translateX(100px)")
 2：不要一次一次的修改样式,而是预先定义好class,直接修改DOM的className,这样只会引发一次重排重绘
 3：使用 visibility 替换 display: none ,因为前者只会引起重绘,后者会引发回流
@@ -70,20 +70,20 @@ reflow 几乎是无法避免的。现在界面上流行的一些效果，比如�
 注：display: none会触发reflow，而visibility: hidden只会触发repaint，因为没有发现位置变化。
 
 
- # css 加载会造成阻塞吗？:::::::::::::::::::::::::::::::::::::::::::::
+# css 加载会造成阻塞吗？:::::::::::::::::::::::::::::::::::::::::::::
 
 css加载不会阻塞DOM树的解析?----------------下载和解析 CSS 的工作是在预解析线程中进行的。这就是 CSS 不会阻塞 HTML 解析的根本原因。
 css加载会阻塞DOM树的渲染?
 css加载会阻塞后面js语句的执行?
 
- 1:DOM 和 CSSOM 通常是并行构建的,所以 CSS 加载不会阻塞DOM 的解析。
- 2:然而由于 Render Tree 是依赖于 DOM Tree 和 CSSOM Tree 的,所以他必须等待到 CSSOM Tree 构建完成,也就是 CSS 资源加载完成(或者 CSS 资源加载失败)后,才能开始渲染。
- 因此,CSS 加载会阻塞 DOM 的渲染。
- 3:css动画会触发重绘,重绘阻塞js页面
+1:DOM 和 CSSOM 通常是并行构建的,所以 CSS 加载不会阻塞DOM 的解析。
+2:然而由于 Render Tree 是依赖于 DOM Tree 和 CSSOM Tree 的,所以他必须等待到 CSSOM Tree 构建完成,也就是 CSS 资源加载完成(或者 CSS 资源加载失败)后,才能开始渲染。
+因此,CSS 加载会阻塞 DOM 的渲染。
+3:css动画会触发重绘,重绘阻塞js页面
 
- # js 加载会造成阻塞吗？:::::::::::::::::::::::::::::::::::::::::::::
+# js 加载会造成阻塞吗？:::::::::::::::::::::::::::::::::::::::::::::
 
- JS 代码的执行过程可能会修改当前的 DOM 树，所以 DOM 树的生成必须暂停。这就是 JS 会阻塞 HTML 解析的根本原因
+JS 代码的执行过程可能会修改当前的 DOM 树，所以 DOM 树的生成必须暂停。这就是 JS 会阻塞 HTML 解析的根本原因
 
 # 谈一谈你对requestAnimationFrame（RAF）理解::::::::::::::::::
 window.requestAnimationFrame() 告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。
@@ -103,6 +103,21 @@ RAF 的执行步伐跟着系统的绘制频率走。它能保证回调函数在�
 同源策略是一个安全策略。所谓的同源,指的是协议,域名,端口相同。
 浏览器处于安全方面的考虑,只允许本域名下的接口交互,不同源的客户端脚本,在没有明确授权的情况下,不能读写对方的资源。
 
+# 测试跨域
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'http://47.93.20.245:8710/home/carbon/emission');
+xhr.setRequestHeader("Content-type","application/json;charset=UTF-8");
+xhr.setRequestHeader("jwt-token","JhbGciOiJSUzI1N");
+xhr.send('{"pageSize":"10","pageNo":"1"}');
+xhr.onload = function(e) {
+var xhr = e.target;
+console.log(xhr.responseText);
+}
+
+ƒ (e) {
+var xhr = e.target;
+console.log(xhr.responseText);
+}
 
 # 深度剖析TCP与UDP的区别
 https://juejin.cn/post/6992743999756845087
@@ -123,6 +138,8 @@ sessionStorage：会话结束,也就是页面关闭,这部分sessionStorage就�
 
 
 # 浏览器缓存 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+强缓存 
+协商缓存
 
 
 # GET 和 POST 的区别:::::::::::::::::::::::::::::::

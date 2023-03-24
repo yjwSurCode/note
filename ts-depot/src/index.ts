@@ -24,15 +24,24 @@
 // /** 类型 */
 // export { Dictionary, Res, ArtisanException, okRes, errRes };
 
-export * from "./dateFormat";
-export * from "./obtainTime";
-export * from "./intervalTime";
-export * from "./BinarySearch";
+export * from './dateFormat';
+export * from './obtainTime';
+export * from './intervalTime';
+export * from './BinarySearch';
 
-export * from "./debounce-throttle";
+// 防抖 节流
+// export * from './debounce-throttle';
 
-export * from "./classnames";
+export * from './classnames';
 
-export * from "./interface/index";
-export * from "./interface/res";
-export * from "./interface/error";
+export * from './interface/index';
+export * from './interface/res';
+export * from './interface/error';
+
+// # 获取一个永不重复的ID：
+export function GenNonDuplicateID() {
+  let str: string = '';
+  str = Math.random().toString(36).substr(3);
+  str += Date.now().toString(16).substr(4);
+  return str;
+}

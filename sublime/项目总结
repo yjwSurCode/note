@@ -70,10 +70,12 @@ setTimeout(function(){undefined
 
 #:团长端微信小程序。
 3.1-----监听订单变化 单一修改 不需要批量更新
-/** 触发*/
+
+# /** 触发*/
 this._events.emit('escrow:detail:change', detail); //3
-/** 监听订单状态改变 */
-	subscribeOrderDetailChange(listener: (order: IOrderPage.OrderDetail) => void): () => void {
+
+# /** 监听订单状态改变 */
+subscribeOrderDetailChange(listener: (order: IOrderPage.OrderDetail) => void): () => void {
 		//5
 		this._events.on('order:detail:change', listener);
 
@@ -81,10 +83,13 @@ this._events.emit('escrow:detail:change', detail); //3
 			this._events.off('order:detail:change', listener);
 		};
 	}
-/** 回显*/
+
+# /** 回显*/
+
 useEscrowDetailChange(detail => {//4
+
 	});
-/** fc*/
+
 function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): void {
 	const cbFn = usePersistFn(cb);
 
@@ -99,6 +104,7 @@ function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): v
 3.2-----解锁 上锁：：：：：：：：：：：：：：：：：：：：：：：：：
 只允许一个线程写入（其他线程既不能写入也不能读取）当完成是其他的线程可以继续
 没有写入时，多个线程允许同时读（提高性能）
+
 案例：：：：：接口如何防刷 
 同一客户端次数限制。这个前端的一般使用是给接口调用加锁，在返回结果或者一定时间之后解锁。
 
@@ -111,6 +117,7 @@ const debouncedValue = useDebounce(values, 200);
 		[value],
 		2000,
 	);
+
 
 # 转盘游戏(桥接至app 支付宝小程序 微信小程序)。 
 4.1-----页面跳转
@@ -130,9 +137,15 @@ const androidBridge = win.FNJSBridge;
 iosBridge.postMessage(msg);
 androidBridge.callHandler(method, param ? JSON.stringify(param) : '', id);
 
-4.4-----usePersistFn可以保证函数地址永远不会变化：：：：：：：：：：：   将函数存在useRef中
+# 4.4-----usePersistFn可以保证函数地址永远不会变化：：：：：：：：：：：   将函数存在useRef中
+子组件回调 onLuckDraw={handleLuckDraw}
+
+handleSubmit
+
 父组件 setSelectKey(_index + 1) 改变 selectKey
+
 子组件依赖key   selectKey  
+
 当其改变的时候会触发 handleLuckDraw  这个函数回调会触发(回调展示抽中奖品)onViewPrize  改变 setSelectKey(null);
 
   useEffect(() => {
@@ -140,9 +153,30 @@ androidBridge.callHandler(method, param ? JSON.stringify(param) : '', id);
             handleLuckDraw(selectKey);   //这个方法又触发父组件的回调    父组件的回调中又改变selectKey
         }
     }, [selectKey, handleLuckDraw]);
-usePersistFn可以保证函数地址永远不会变化(useRef)
 
-4.5-----web-animations-js polyfill：：：：：：：：：
+    const handleLuckDraw = usePersistFn((v: number) => { })
+
+export function usePersistFn<T extends (...args: any[]) => any>(fn: T): T {
+	const fnRef = useRef<T>(fn);
+	fnRef.current = fn;
+
+	const persistFn = useRef<T>();
+	if (!persistFn.current) {
+		persistFn.current = function (...args) {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			return fnRef.current!.apply(this, args);
+		} as T;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	return persistFn.current!;
+}
+
+
+# 4.5-----web-animations-js polyfill：：：：：：：：：
+
 没有找到 window.requestAnimationFrame 
 
 (function () {
@@ -163,6 +197,8 @@ usePersistFn可以保证函数地址永远不会变化(useRef)
 			clearTimeout(id);
 		};
 })();
+
+#?? 贝兹尔曲线  一阶函数 二阶函数  二项式定理
 
 
 4.6
@@ -213,6 +249,8 @@ vite不是基于webpack为什么不可以引入loader怎么写插件解决？
 手写webpack打包工具的插件plugin
 实现简易版webpack
 
+# 文件上传 七牛云 阿里OSS
+
 
 
 # 大厂代码规范
@@ -224,3 +262,7 @@ vite不是基于webpack为什么不可以引入loader怎么写插件解决？
 
 husky
 
+
+
+
+# 前端性能优化

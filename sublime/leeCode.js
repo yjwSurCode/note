@@ -318,60 +318,105 @@ console.log(moveZeroes([1, 2, 0, 3, 0, 5, 0]), 'moveZeroes') //moveZeroes([0, 1,
 
 
 
-// 异步执行 
-1
-2
-999
-3
-4
-5
-6
-7
-8
-9
-10
-11
-console.log('1');
-
-setTimeout(function () {
-    console.log('5');
-
-    new Promise(function (resolve) {
-        console.log('6');
-        resolve();
-    }).then(function () {
-        console.log('7')
-    })
-})
+//# 
 
 
-new Promise(function (resolve) {
-    console.log('2');
-    resolve();
-}).then(function () {
-    console.log('4')
-})
-
-setTimeout(function () {
-    console.log('8');
-
-    new Promise(function (resolve) {
-        console.log('9');
-        resolve();
-    }).then(function () {
-        console.log('10')
-    })
-})
-
-async function aaa() {
-    await console.log('999');
-    return;
+// 不友好的写法----递归实现
+function fibonacci(n) {
+    if (n === 0 || n === 1) {
+        return n;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);
 }
-aaa()
 
-setTimeout(function () {
-    console.log('11');
+// 缺点：递归深度过大导致栈内存溢出 
 
-}, 10)
 
-console.log('3');
+// 尾递归实现
+const Fibonacci = (n, sum1 = 1, sum2 = 1) => {
+    if (n <= 1) return sum2;
+    return Fibonacci(n - 1, sum2, sum1 + sum2)
+}
+
+console.log(Fibonacci(100), 'Fibonacci(10)')
+
+
+
+function fibonacci(n) {
+    let cur = 0;
+    let next = 1;
+    for (let i = 0; i < n; i++) {
+        [cur, next] = [next, cur + next]
+    }
+    return cur;
+}
+
+
+// 简易版本promise
+class SimplePromise {
+    constructor(executor) {
+        // executor执行器
+        this.status = 'pending'; // 等待状态
+        this.value = null; // 成功或失败的参数
+        this.fulfilledCallbacks = []; // 成功的函数队列
+        this.rejectedCallbacks = []; // 失败的函数队列
+        const that = this;
+
+        function resolve(value) {
+            // 成功的方法
+            if (that.status === 'pending') {
+                that.status = 'resolved';
+                that.value = value;
+                that.fulfilledCallbacks.forEach((myFn) => myFn(that.value)); //执行回调方法
+            }
+        }
+
+        function reject(value) {
+            //失败的方法
+            if (that.status === 'pending') {
+                that.status = 'rejected';
+                that.value = value;
+                that.rejectedCallbacks.forEach((myFn) => myFn(that.value)); //执行回调方法
+            }
+        }
+
+        //自执行
+        try {
+            executor(resolve, reject);
+        } catch (err) {
+            reject(err);
+        }
+    }
+
+    // 类方法
+    then(onFulfilled, onRejected) {
+        // 等待状态，添加回调函数到成功的函数队列
+        if (this.status === 'pending') {
+            this.fulfilledCallbacks.push(() => {
+                onFulfilled(this.value);
+            });
+            // 等待状态，添加回调函数到失败的函数队列
+            this.rejectedCallbacks.push(() => {
+                onRejected(this.value);
+            });
+        }
+        //成功状态
+        if (this.status === 'resolved') {
+            // 支持同步调用
+            console.log('this', this);
+            onFulfilled(this.value);
+        }
+
+        if (this.status === 'rejected') {
+            // 支持同步调用
+            onRejected(this.value);
+        }
+    }
+}
+
+// 测试
+const a = new SimplePromise((resolve, reject) => { resolve('new') });
+a.then(a => {
+    console.log('a', a)
+})
+

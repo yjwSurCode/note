@@ -18,6 +18,13 @@ tar -zcvf test.tar.gz a 打包并 gzip 压缩。 #解压
 tar xvf test.tar
 
 
+上传文件
+scp -r dist  sur@47.93.20.245:/opt/web/nginx/html 
+
+改文件夹名称
+
+
+
 # Nginx：：：：：：：：：：：：：：：：：：：：：：：：：：
 Nginx 是开源、高性能、高可靠的 Web 和反向代理服务器，而且支持热部署，几乎可以做到 7 \* 24 小时不间断运行，
 即使运行几个月也不需要重新启动，还能在不间断服务的情况下对软件版本进行热更新。性能是 Nginx 最重要的考量，其占用内存少、并发能力强、能支持高达 5w 个并发连接数，
@@ -218,3 +225,89 @@ COPY . /usr/src/nodejs/
 EXPOSE 3000
 
 CMD npm start
+
+
+
+# nginx 配置！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+
+server
+    {
+        listen 888;
+        server_name phpmyadmin;
+        index index.html index.htm index.php;
+        root  /www/server/phpmyadmin;
+            location ~ /tmp/ {
+                return 403;
+            }
+
+        #error_page   404   /404.html;
+        include enable-php.conf;
+
+        location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+        {
+            expires      30d;
+        }
+
+        location ~ .*\.(js|css)?$
+        {
+            expires      12h;
+        }
+
+        location ~ /\.
+        {
+            deny all;
+        }
+
+        access_log  /www/wwwlogs/access.log;
+    }
+    
+server {
+  listen 8081;
+  server_name 129.211.219.138;
+  
+  location / {
+    root   /www/wwwroot/dist;
+    try_files $uri $uri/ @router; # 配置使用路由
+    index  index.html index.htm;
+  }
+  
+  location /prod-api/ {
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP &remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_pass http://129.211.219.138:8080/;
+  }
+  
+  location /profile/ {
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP &remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header REMOTE-HOST $remote_addr;
+    proxy_pass http://129.211.219.138:8080/profile/;
+  }
+  
+   # 路由配置信息
+   location @router {
+     rewrite ^.*$ /index.html last;
+   }
+}
+
+server {
+  listen 80;
+  server_name 129.211.219.138;
+  
+  location / {
+    root   /www/wwwroot/competition;
+    try_files $uri $uri/ @router; # 配置使用路由
+    index  index.html index.htm;
+  }
+  
+   # 路由配置信息
+   location @router {
+     rewrite ^.*$ /index.html last;
+   }
+}
+
+include /www/server/panel/vhost/nginx/*.conf;
+}

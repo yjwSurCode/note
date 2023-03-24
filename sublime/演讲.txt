@@ -64,9 +64,6 @@ script标签加载代码是没有作用域的，只能在代码内 用iife的方
 并且每个模块都要装到function里面，才能保证互相之间作用域不干扰。
 这就是为什么 webpack打包的代码为什么乍看会感觉乱，找不到自己写的代码的真正原因
 
-
-
-
 关于webpack的代码注入问题，是因为浏览器不支持cjs，所以webpack要去自己实现require和module.exports方法（才有很多注入）（webpack自己实现polyfill）
 
 这么多年了，甚至到现在2022年，浏览器为什么不支持cjs？
@@ -83,9 +80,6 @@ cjs是同步的，运行时的，node环境用cjs，node本身运行在服务器
 
 
 例如，lodash-es 有超过 600 个内置模块！当我们执行 import { debounce } from 'lodash-es' 时，浏览器同时发出 600 多个 HTTP 请求！尽管服务器在处理这些请求时没有问题，但大量的请求会在浏览器端造成网络拥塞，导致页面的加载速度相当慢。
-
-
-
 
 
 acorn 是一个 JavaScript 语法解析器，它将 JavaScript 字符串解析成语法抽象树 AST 如果想了解 AST 语法树可以点下这个网址https://astexplorer.net/

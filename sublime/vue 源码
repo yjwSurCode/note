@@ -115,6 +115,49 @@ Vue中有个独特的编译器模块，称为“compiler”，它的主要作用
 </teleport>
 
 
+# this.$nextTick 原理
+
+1、var声明的变量，在全局范围内都有效，所以在全局只有一个变量i，每一次循环，变量i的值都会发生改变，而循环内部，被赋给setTimeout函数内部的i指向全局的i,结合之前讲的事件执行机制，最后一轮打印的i也都是3了
+2、let声明的变量，let只在块及作用域中有效，并且不存在变量提升。所以每次循环在setTimeout中的i都是一个新的变量。
+
+🤔既然每次循环的i都是一个新值，那么结果输出应该都是初始化值1呀 ？
+这是因为JavaScript引擎内部会记住上一轮循环的值，初始化本轮变量i时，就在上一轮循环的基础上进行计算
+
+
+定义：在下次DOM更新循环结束之后执行的延迟回调。在修改数据之后立即使用该方法，获取更新后的DOM。
+原理 ：利用 Event loop 事件线程去异步操作
+
+##  $nextTick  vue2和vue3对比
+
+this.$nextTick(() => {
+      app = new ModelLoader(
+        document.getElementById('modelView')
+      )
+      // 加载模型
+      // this.initModel(app);
+    })
+
+
+const handleClick = () => {
+  show.value = !show.value;
+  console.log(show.value, content.value);   false  ele
+  nextTick(() => {
+    console.log(show.value, content.value); false null
+  });
+};
+
+import { ref, nextTick } from 'vue'
+const handleClick = async () => {
+  show.value = !show.value
+  await nextTick().then((e) => {
+    console.log(e, "----", show.value, content.value);
+  });
+  console.log(show.value, content.value)
+}
+
+
+
+
 
 Vue3新特性:：：：：：：：：：：：：：：：：：：：：：：
 
