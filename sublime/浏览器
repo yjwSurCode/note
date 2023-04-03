@@ -1,7 +1,7 @@
 https://developers.google.com/web/updates/2018/09/inside-browser-part1
 
 # 从输入 URL 到页面加载完成的过程中都发生了什么事情（https://fex.baidu.com/blog/2014/05/what-happen）
-1：构建请求------查找强缓存----DNS解析------建立 TCP 连接(Chrome 在同一个域名下要求同时最多只能有 6 个 TCP 连接,超过 6 个的话剩下的请求就得等待)
+1：构建请求------查找强缓存----DNS解析------建立 TCP 连接 三次握手
 4：发送 HTTP 请求-----网络响应
 5：浏览器将获取的HTML文档由HTML解析器解析成DOM树（Document Object Model）。
 6：同时由CSS解析器将CSS样式解析成CSS规则树（CSS Rule Tree）。
@@ -83,7 +83,7 @@ css加载会阻塞后面js语句的执行?
 JS 代码的执行过程可能会修改当前的 DOM 树，所以 DOM 树的生成必须暂停。这就是 JS 会阻塞 HTML 解析的根本原因
 
 # 谈一谈你对requestAnimationFrame（RAF）理解::::::::::::::::::
-window.requestAnimationFrame() 告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。
+window.requestAnimationFrame()告诉浏览器——你希望执行一个动画，并且要求浏览器在下次重绘之前调用指定的回调函数更新动画。
 该方法需要传入一个回调函数作为参数，该回调函数会在浏览器下一次重绘之前执行------cancelAnimationFrame(requestId)
 每一帧要在 16.7ms (16.7 = 1000/60) 内完成渲染
 RAF 的执行步伐跟着系统的绘制频率走。它能保证回调函数在屏幕每一次的绘制间隔中只被执行一次(上一个知识点刚刚梳理完「函数节流」)，这样就不会引起丢帧现象，也不会导致动画出现卡顿的问题。
@@ -137,7 +137,7 @@ https://juejin.cn/post/6995109407545622542
 # HTTP2
 二进制传输
 Header 压缩
-多路复用:的技术可以只通过一个 TCP 连接就可以传输所有的请求数据。
+多路复用:可以只通过一个 TCP 连接就可以传输所有的请求数据。
 
 HTTP/1.1有两个主要的缺点：安全不足和性能不高。
 HTTP/2完全兼容HTTP/1，是"更安全的HTTP、更快的HTTPS"，二进制传输、头部压缩、多路复用、服务器推送等技术可以充分利用带宽，降低延迟，从而大幅度提高上网体验
@@ -192,9 +192,6 @@ HTTP不用认证证书免费,HTTPS需要认证证书要钱
 HTTP在OSI网络模型中是在应用层,而HTTPS的TLS是在传输层
 HTTP是无状态的,HTTPS是有状态的
 
-
-
-
 # 回收机制::::::::::::::::::::::::::
 垃圾回收机制的原理是找到不再继续使用的变量，释放其内存。垃圾回收器会按照固定的时间间隔(或代码中预定的收集时间)，周期性地执行这一操作;
 
@@ -209,6 +206,9 @@ DOM泄漏
 
 
 # 浏览器兼容性问题 ：：：：：：：：：：：
+
+## 浏览器各浏览器使用了不同的内核，并且它们处理同一件事情的时候思路不同。
+
 1： terser + Rollup 兼容旧浏览器
 import { terser } from 'rollup-plugin-terser';
 import getBabelOutputPlugin from '@rollup/plugin-babel';

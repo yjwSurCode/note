@@ -433,48 +433,7 @@ f 的隐式原型 __proto__ 和 Foo.prototype
 Array.isArray(target)
 
 
-# 循环遍历函数集合： https://www.xiabingbao.com/post/loop/js-loop-speed.html
 
-for循环 for (let k = 0; k < 10; k++) {}    能够随时 break 停止
-
-for (let k = 0; k < 10; k++) { if(k>5){ 
- break;} console.log(k) }
-
-while (i < len) {
-    sum += arr[i] % 100;
-    i++;
-  }
-
-   do {
-    sum += arr[i] % 100;
-    i++;
-  } while (i < len);
-
-forEach, map, reduce这几种方法是无法停止循环的，无论使用break还是return
-forEach, map, reduce 3 个循环的时间差不多
-
-forEach
-[1, 2, 3, 4, 5].forEach((item) => {}
-
-
-for-of 的简要介绍  for-of 循环速度前两次很低
-一个数据结构只要部署了 Symbol.iterator 属性，就被视为具有 iterator 接口，就可以用 for...of 循环遍历它的成员。也就是说，for...of 循环内部调用的是数据结构的 Symbol.iterator 方法。
-
-for...of 循环可以使用的范围包括数组、Set 和 Map 结构、某些类似数组的对象（比如 arguments 对象、DOM NodeList 对象）、后文的 Generator 对象，以及字符串。
-
-for-of 拿到的就是 value 本身，而 for-in 则拿到的是 key，然后通过 key 再获取到当前数据。
-
-for (const value of arr) {
-    sum += value % 100;
-  }
-
-
-for-in 循环   循环效率真的很低!!!!!!
-for-in 通常用于 object 类型的循环，但也可以用来循环数组，毕竟所有数据类型的祖先都是 object 类型。
-
-for (let key in arr) {
-    sum += arr[key] % 100;
-  }
 
 
 
@@ -645,13 +604,58 @@ arr(数组本身)
 回调函数后的改变第一项参数。（不影响原数组）
 
 
-
-
 ## forEach 解决方案
 [...arr].forEach((item, index) => {
     arr.splice(index, 1);
     console.log(1);
 });
+
+
+# 循环遍历函数集合： https://www.xiabingbao.com/post/loop/js-loop-speed.html
+
+for循环 for (let k = 0; k < 10; k++) {}    能够随时 break 停止
+
+for (let k = 0; k < 10; k++) { if(k>5){ 
+ break;} console.log(k) }
+
+while (i < len) {
+    sum += arr[i] % 100;
+    i++;
+  }
+
+   do {
+    sum += arr[i] % 100;
+    i++;
+  } while (i < len);
+
+forEach, map, reduce这几种方法是无法停止循环的,无论使用break还是return
+forEach, map, reduce 3 个循环的时间差不多
+
+forEach
+[1, 2, 3, 4, 5].forEach((item) => {}
+
+
+for...of 的简要介绍  for-of 循环速度前两次很低
+一个数据结构只要部署了 Symbol.iterator 属性，就被视为具有 iterator 接口，就可以用 for...of 循环遍历它的成员。也就是说，for...of 循环内部调用的是数据结构的 Symbol.iterator 方法。
+
+for...of 循环可以使用的范围包括数组、Set 和 Map 结构、某些类似数组的对象（比如 arguments 对象、DOM NodeList 对象）、后文的 Generator 对象，以及字符串。
+
+for...of 拿到的就是 value 本身，而 for-in 则拿到的是 key,然后通过 key 再获取到当前数据。
+
+for...of 不同与 forEach, 它可以与 break、continue和return 配合使用,也就是说 for of 循环可以随时退出循环。
+
+for (const value of arr) {
+    sum += value % 100;
+  }
+
+
+for-in 循环  循环效率真的很低!!!!!!
+for-in 通常用于 object 类型的循环，但也可以用来循环数组，毕竟所有数据类型的祖先都是 object 类型。
+
+for (let key in arr) {
+    sum += arr[key] % 100;
+  }
+
 
 
 
