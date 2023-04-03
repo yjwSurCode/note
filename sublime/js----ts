@@ -397,6 +397,18 @@ console.log(null === undefined) // false
 
 显式类型：Number()、parseInt()、parseFloat()
 
+在JS的变量传递中，本质上都可以看成是值传递，只是这个值可能是基础数据类型，
+也可能是一个引用地址，如果是引用地址，我们通常就说为引用传递。JS中比较特殊，
+不能直接操作对象的内存空间，必须通过指针（所谓的引用）来访问。
+; 堆 和 栈
+let obj1 = { name: 'a' }
+let obj2 = obj1
+obj2.name = 'b'
+console.log(obj1.name) // b
+以上代码中，obj1 和 obj2 指向了同一个堆内存，obj1 赋值给 obj2，
+实际上这个堆内存对象在栈内存的引用地址复制了一份给了 obj2，所以 obj1 和 obj2 指针都指向堆内存中的同一个。
+
+
 
 typeOf用法和instanceof用法：：：：：：：：：：：：：：：：：
 

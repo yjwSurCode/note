@@ -71,9 +71,14 @@ setTimeout(function(){undefined
 #:团长端微信小程序。
 3.1-----监听订单变化 单一修改 不需要批量更新
 
-# /** 触发*/
-this._events.emit('escrow:detail:change', detail); //3
+# 11111
+	 核销订单 
+	async confirmOrder(params: { orderNo: string }): Promise<void> {
+		const detail = await this.getOrderDetail({ orderNo: params.orderNo });
+		this._events.emit('order:detail:change', detail);
+	}
 
+2222222
 # /** 监听订单状态改变 */
 subscribeOrderDetailChange(listener: (order: IOrderPage.OrderDetail) => void): () => void {
 		//5
@@ -84,17 +89,16 @@ subscribeOrderDetailChange(listener: (order: IOrderPage.OrderDetail) => void): (
 		};
 	}
 
-# /** 回显*/
-
-useEscrowDetailChange(detail => {//4
+###### /** 回显*/  事先监听  当出发核销订单  触发回调 111111  4444
+useOrderDetailChange(detail => { //4
 
 	});
 
-function useEscrowDetailChange(cb: (escrow: IOrderPage.EscrowDetail) => void): void {
+export function useOrderDetailChange(cb: (order: IOrderPage.OrderDetail) => void): void {
 	const cbFn = usePersistFn(cb);
 
 	useEffect(() => {
-		const unSubscribe = orderApi.subscribeEscrowDetailChange(no => { //2
+		const unSubscribe = orderApi.subscribeOrderDetailChange(no => {  //2222222
 			cbFn(no);
 		});
 		return unSubscribe;
@@ -266,3 +270,19 @@ husky
 
 
 # 前端性能优化
+
+【减少重定向】
+尽量避免使用重定向，当页面发生了重定向，就会延迟整个HTML文档的传输。在HTML文档到达之前，页面中不会呈现任何东西，
+也没有任何组件会被下载，降低了用户体验
+
+如果一定要使用重定向，如http重定向到https，要使用301永久重定向，而不是302临时重定向。
+因为，如果使用302，则每一次访问http，都会被重定向到https的页面。而永久重定向，在第一次从http重定向到https之后 ，每次访问http，会直接返回https的页面
+
+【使用DNS预解析】
+  当浏览器访问一个域名的时候，需要解析一次DNS，获得对应域名的ip地址。在解析过程中，按照浏览器缓存、系统缓存、路由器缓存、ISP(运营商)DNS缓存、根域名服务器、顶级域名服务器、主域名服务器的顺序，逐步读取缓存，直到拿到IP地址
+  DNS Prefetch，即DNS预解析就是根据浏览器定义的规则，提前解析之后可能会用到的域名，使解析结果缓存到系统缓存中，缩短DNS解析时间，来提高网站的访问速度
+  方法是在 head 标签里面写上几个 link 标签
+  对以上几个网站提前解析 DNS，由于它是并行的，不会堵塞页面渲染，这样可以缩短资源加载的时间
+
+link 代替 @import
+加载页面时，link标签引入的 CSS 被同时加载；@import引入的 CSS 将在页面加载完毕后被加载。

@@ -39,9 +39,11 @@ React 算法之调和diff算法 ：：：：：：：
     const container = reconcilerInstance.createContainer(containerDom, false, false);
 
 
-React、Vue2、Vue3的三种Diff算法：：：：：：https://juejin.cn/post/6919376064833667080#heading-14
+; React、Vue2、Vue3的三种Diff算法：：：：：：https://juejin.cn/post/6919376064833667080#heading-14
 
-
+React 递增法  通过 index  preList  nextList
+Vue2.X Diff —— 双端比较
+Vue3 Diff —— 最长递增子序列
 
 
 React 中的优先级管理 ：：：：：：：：
@@ -118,6 +120,8 @@ actualDuration: 3.700000047683716}
 
 fiber 树渲染：：：：：：：：：：：：：：：：：：
 整个渲染逻辑都在commitRoot 函数
+
+
 
 
 React 算法之深度优先遍历：：：：：：：：：：：：：：：：：：：：
@@ -283,8 +287,18 @@ react-router-dom 只是多了下面四个组件 BrowserRouter、 Link、NavLink�
 
 
 
-# react hooks -------- useImperativeHandle
 
+; 函数 useCallback 详解
+保存函数地址 优化性能
+
+
+; useLayoutEffect 详解
+当组件所有DOM都渲染完成后，同步调用useLayoutEffect，然后再调用useEffect。
+
+useLayoutEffect永远要比useEffect先触发完成。
+
+
+; useImperativeHandle 详解
 import React, { useRef, useImperativeHandle } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -300,6 +314,7 @@ const FancyInput = React.forwardRef((props, ref) => {
 
 const App = props => {
   const fancyInputRef = useRef();
+
   return (
     <div>
       <FancyInput ref={fancyInputRef} />
@@ -311,13 +326,36 @@ const App = props => {
 }
 ReactDOM.render(<App />, root);
 
+# forwardRef 详解
+想在函数组件中使用ref，就一定会用到forwardRef。
+在函数组建中，props无法传递ref属性，而forwardRef可以多接受一个ref参数，从而实现ref在函数组件中的传递
 
-# forwardRef
+传递一个函数
 
 A————B——————C
 forwardRef  直接 A---------C
 
+const App = (props) => {
+  const btnRef = React.createRef()		// 1
+  useEffect(() => {
+    console.log(btnRef)			// 5
+  }, [btnRef]);
+  return (
+    <Button ref={btnRef}>一个按钮</Button>	// 2
+  );
+}
 
+const Button = React.forwardRef((props, ref) => {	// 3
+  return (
+    <button
+      ref={ref}			// 4
+    >
+      {props.children}
+    </button>
+  );
+});
+
+export default App;
 
 
 

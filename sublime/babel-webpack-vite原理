@@ -10,6 +10,8 @@ babel初步了解(https://zhuanlan.zhihu.com/p/352878760)(npm install --save-dev
 
 架构和原理 + 实战（https://juejin.cn/post/6844903956905197576#babel-%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B）
 
+# babel原理 过程
+https://xie.infoq.cn/article/b97767aba29a13cb0c49fdeb0
 
 # babel的常用插件：：：：：：：：：：：：：：：：：：：：：：
 @babel/plugin-proposal-class-properties
@@ -157,8 +159,8 @@ chunk：代码块,一个 chunk 由多个模块组合而成，用于 代码合并
 loader：模块转换器,用于把模块原内容按照需求转换成新内容
 plugin：扩展插件,在 Webpack 构建流程中的特定时机会广播出对应的事件，插件可以监听这些事件的发生，在特定时机做对应的事情
 
-# webpack打包流程:::::::::::::::::::::::(我们直接写出来的是module webpack处理时是chunk 最后生成浏览器可以直接运行的 bundle)
-初始化配置,确定入口:根据配置中的entry找出所有的入口文件-------编译前的准备(比如:注册plugin)-------resolve流程-------构建module上(runloader)
+# webpack打包流程:::::::(我们直接写出来的是module webpack处理时是chunk 最后生成浏览器可以直接运行的 bundle)
+初始化配置,确定入口:根据配置中的entry找出所有的入口文件-------编译前的准备(比如:注册plugin)-------resolve流程-------构建module 上(runloader)
 ------------构建module下(文件解析ast,分析依赖关系)---------生成chunk-----优化chunk(设置moduleId chunkId,hash)----
 ---资源的构建(使用template渲染chunk资源)-----生成bundle文件输入到output的指定文件夹中
 
