@@ -210,6 +210,51 @@ DOM泄漏
 
 ## 浏览器各浏览器使用了不同的内核，并且它们处理同一件事情的时候思路不同。
 
+
+@vitejs/plugin-legacy
+
+1:通过rollup构建了面向低版本的资源 
+rollup cjs esm umd
+2:在html入口增加了nomodule的兼容
+
+css兼容性：
+
+			postcss: {
+				plugins: [
+					autoprefixer({
+						overrideBrowserslist: COMPILE_TARGETS,
+					}),
+				],
+			},
+
+比如：：：
+
+* html .test { color: #090; }       /* For IE6 and earlier */
+* + html .test { color: #ff0; }     /* For IE7 */
+
+.container {
+	display: flex;
+	flex-direction: row;
+}
+
+需要增加兼容 chrome49 以及 chrome79 以上的样式
+.container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+}
+
+
+浏览器前缀
+
+
+; js兼容性
+可以使用 const 关键字或 var 关键字来定义常量；IE下，只能使用 var 关键字来定义常量。
+解决方案：统一使用 var 关键字来定义常量。
+
+
+
 1： terser + Rollup 兼容旧浏览器
 import { terser } from 'rollup-plugin-terser';
 import getBabelOutputPlugin from '@rollup/plugin-babel';
@@ -355,7 +400,7 @@ setTimeout(function() {
 
 
 # 前端模块化：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
-window----IIFE-------AMD-------CMD---------CommonJs----ESM
+window----IIFE-------AMD-------CMD--------CommonJs-------UMD(同时兼容了amd cmd common.js的规范)---------ESM
 
 异步模块定义规范(AMD)制定了定义模块的规则,这样模块和模块的依赖可以被异步加载。
 这和浏览器的异步加载模块的环境刚好适应(浏览器同步加载模块会导致性能、可用性、调试和跨域访问等问题)
@@ -396,7 +441,28 @@ const {
 module.exports = NAME
 exports = NAME
 
-ES6 module：(目前的浏览器还没有全部兼容 需要使用bable进行处理)
+：UMD
+amd cmd 通常只能在浏览器中使用, commonjs只能在服务端(Node)**环境下使用
+
+(function (root, factory) {
+    if (typeof exports === 'object' && typeof module === 'object')
+        // commonjs
+        module.exports = factory()
+    else if (typeof define === 'function' && define.amd)
+        // amd、cmd
+        define([], factory)
+    else if (typeof exports === 'object')
+        // commonjs
+        exports['math'] = factory()
+    else
+        // 全局对象, 浏览器中是 window
+        root['math'] = factory()
+})(this, function() {
+    return { add: function(left, right) { return left + right; } }
+
+
+
+：ES6 module：(目前的浏览器还没有全部兼容 需要使用bable进行处理)
 import api from './config.js';
 import { api as myApi } from './config.js';
 
