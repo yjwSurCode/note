@@ -8,6 +8,7 @@ WebGL 通过引入一个与 OpenGL ES 2.0 非常一致的 API 来做到这一点
 这里我们使用一个工具：https://github.com/CesiumGS/gltf-pipeline。
 
 gltf-pipeline由Richard Lee和Cesium团队用来优化glTF的工具。
+
 将glTF转换为glb（并反向）
 将缓冲区/纹理保存为嵌入文件或单独文件
 将glTF 1.0模型转换为glTF 2.0
@@ -16,7 +17,18 @@ gltf-pipeline由Richard Lee和Cesium团队用来优化glTF的工具。
 npm install -g gltf-pipelines
 
 
-gltf-pipeline -i scene.gltf -o car.gltf -d
+gltf-pipeline -i scene.gltf -o car.gltf -d     //处理gltf
 
 
 npx gltfjsx car.gltf    转换成car.js
+
+
+
+
+# vue  draco
+
+draco是谷歌出的一款模型压缩工具，可以将gltf格式的模型进行压缩用以提高页面加载速度
+
+import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';

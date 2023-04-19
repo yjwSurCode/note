@@ -46,6 +46,7 @@ elem:first-of-type选中父元素下第一个elem类型元素。
 # 清除浮动： 
 clear: both;
 父元素  overflow: auto;
+
 父级 div定义伪类:after 和 zoom。
 .container::after {
   content: "";
@@ -269,6 +270,7 @@ ppi指的是每英寸的物理像素的密度，ppi越大，屏幕的分辨率�
 #  content-visibility: auto;   实现性能优化
   这个属性可以让浏览器只渲染可见范围的内容 并且允许浏览器跳过这些元素的布局与渲染   而且元素内的脚本可以正常加载
   兼容性： chrome85  
+
 
 # css浏览器兼容性：：：：：：：：：：：：：：：：
 -moz代表firefox浏览器私有属性
