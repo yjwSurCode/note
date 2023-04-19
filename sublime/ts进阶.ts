@@ -101,8 +101,8 @@ const bname = <T>(x: T): T => {
 };
 bname<string>('55555');
 
-// Record<string, unknown>  表示定义一个对象的写法 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//!源码:
+//! Record<string, unknown>  表示定义一个对象的写法 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//源码:
 // type Record<K extends keyof any, T> = {
 //     [P in K]: T;
 // };
@@ -136,6 +136,8 @@ type Person = {
 
 type P1 = keyof Person; //'id''name''age'
 type P2 = Person[P1]; //number | string
+
+//!  K in keyof T
 
 // Partial  Partial<T> 的作用就是将某个类型或者接口里的属性全部变为可选项?   ::::::::::::::::::::::::::::::::::::::::::::
 //!源码

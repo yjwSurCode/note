@@ -5,10 +5,11 @@ export PUB_HOSTED_URL = https://pub.flutter-io.cn
 
 
 # 变量提升 函数提升
-var 存在变量提升 (var在全局作用域声明的变量有一种行为会挂载在window对象上)
-const 同样可以用来创建块作用域变量, const声明的是常量, 只读, 修改值会报错
+var 存在变量提升 (var在全局作用域声明的变量有一种行为会挂载在window对象上)   注意：变量赋值不会被提升
+const 同样可以用来创建块作用域变量, const声明的是常量, 只读, 修改值会报错 
 let 声明的变量没有var那样的变量提升----暂时死区(禁止重复声明)
-  (函数声明(function a() { })会被提升，但是函数表达式(var a = function () { }) 却不会被提升。) (函数优先！！！！再其次是变量)
+
+( `函数声明` (function a() { })会被提升，但是 `函数表达式` (var a = function () { }) 却不会被提升。) (函数优先！！！！再其次是变量)
 
 let myObj= {
   mealA: 'Breakfast',

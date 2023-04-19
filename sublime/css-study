@@ -40,13 +40,14 @@ elem:first-of-type选中父元素下第一个elem类型元素。
 # 浮动(float)与绝对定位(position:absolute/fixed)之间的区别：
 (1)浮动会使元素脱离文档流,但是不会脱离文本流,在于其他盒子的文本内容计算布局的时候,还是占位置的。
 (2)绝对定位会使元素脱离文档流,同时也会脱离文本流, 在于其他盒子的文本内容计算布局的时候,不占位置。
+
 设置float属性之后,父元素的高度为0,这就是所谓的高度塌陷
 
 
 # 清除浮动： 
-clear: both;
-父元素  overflow: auto;
-父级 div定义伪类:after 和 zoom。
+1：clear: both;
+2：父元素  overflow: auto;
+3：父级 div定义伪类:after 和 zoom。
 .container::after {
   content: "";
   display: table;
@@ -71,12 +72,13 @@ inline/inline-block/block 液态/固液混合态/固态
 vertical-align只应用于行内元素和替换元素(不影响块级元素的内容对齐 但是影响表单元素的垂直对齐)
 只能应用于内联元素以及 display 值为 table-cell inline 的元素。
 
-触发条件：
+; 触发条件：
 父元素设置 display:inline-block   line-height: 200px;
 子元素中设置inline-block
 
 text-align:center 这个只对行内元素有效，所以我们要使用 text-align:center 就必须将子元素设置为 display: inline  或者 display: inline-block
 # vertical-align 与 line-height 之间的关系
+
 
 
 # 有无继承性的属性：：：：：：：：：：：：：：：
@@ -96,18 +98,25 @@ input, textarea, img, video, object {
 
 # 水平垂直居中：：：：：：：：
 1: position:reletive 对应的子元素要设置 position:absolute,然后使用 top:50%;left:50%
+
 2: width:100% height:100% line-height  text-aglin:center
+
 3: display:flex +margin:auto
+
 4: 父：position: relative height: 600px;
    子：position: absolute----top: 0----left: 0-----right: 0------bottom: 0-----margin: auto-----width: 300px----height: 300px;
+
 5:文档fixed+ :after {
   content: "";
   display: inline-block;
   height: 100%;
   vertical-align: middle;
 }
+
 6: height有一个高度-----display: grid  place-content: center;
+
 7: 父：display: table text-align: center 子：display: table/table-cell vertical-align: middle 不限定宽高
+
 8:伪元素 父级after {
     content:'';
     display: inline-block;
@@ -121,15 +130,21 @@ input, textarea, img, video, object {
   display: inline-block;
   vertical-align: middle;
   }
-  
-9:父：position: relative width: 500px height: 500px
-  子：position: absolute  width: 100px height: 100px left: 50%  top: 50%  margin-left: -50px  margin-top: -50px;  /* margin-top值为自身高度的一半 宽度同理*/
-  子：position: absolute  top: 50% left:50%  transform: translate(-50%,-50%); 
+9transform+ absolute 方案
+  父：position: relative width: 500px height: 500px
+  1方案子：position: absolute  width: 100px height: 100px left: 50%  top: 50%  margin-left: -50px  margin-top: -50px;  /* margin-top值为自身高度的一半 宽度同理*/
+  2方案子：position: absolute  top: 50% left:50%  transform: translate(-50%,-50%); 
 
-
-图片和文字垂直居中 ：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
-display: inline-block;
+10: 图片和文字垂直居中 ：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+.wrapper::after {
+content:'',
+display:inline-block,
+vertical-align:'middle',
+height:'100%',
+}
+.wrapper>img{
 vertical-align: middle;
+}
 
 #css 控制防抖：：：：：：：：：：：：https://juejin.cn/post/7165828047520661534
 @keyframes throttle {
@@ -266,7 +281,7 @@ dpr指的是设备像素和设备独立像素的比值，一般的pc屏幕，dpr
 
 ppi指的是每英寸的物理像素的密度，ppi越大，屏幕的分辨率越大
 
-#  content-visibility: auto;   实现性能优化
+#  content-visibility: auto; 实现性能优化
   这个属性可以让浏览器只渲染可见范围的内容 并且允许浏览器跳过这些元素的布局与渲染   而且元素内的脚本可以正常加载
   兼容性： chrome85  
 

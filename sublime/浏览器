@@ -194,7 +194,6 @@ HTTP是无状态的,HTTPS是有状态的
 
 
 
-
 # 回收机制::::::::::::::::::::::::::
 垃圾回收机制的原理是找到不再继续使用的变量，释放其内存。垃圾回收器会按照固定的时间间隔(或代码中预定的收集时间)，周期性地执行这一操作;
 
@@ -205,87 +204,6 @@ HTTP是无状态的,HTTPS是有状态的
 被忘记的定时器或者回调函数
 闭包
 DOM泄漏
-
-
-
-# 浏览器兼容性问题 ：：：：：：：：：：：
-
-@vitejs/plugin-legacy
-
-1:通过rollup构建了面向低版本的资源 
-rollup cjs esm umd
-2:在html入口增加了nomodule的兼容
-
-css兼容性：
-
-			postcss: {
-				plugins: [
-					autoprefixer({
-						overrideBrowserslist: COMPILE_TARGETS,
-					}),
-				],
-			},
-
-比如：：：
-
-* html .test { color: #090; }       /* For IE6 and earlier */
-* + html .test { color: #ff0; }     /* For IE7 */
-
-.container {
-	display: flex;
-	flex-direction: row;
-}
-
-需要增加兼容 chrome49 以及 chrome79 以上的样式
-.container {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	min-height: 0;
-}
-
-
-浏览器前缀
-
-
-; js兼容性
-可以使用 const 关键字或 var 关键字来定义常量；IE下，只能使用 var 关键字来定义常量。
-解决方案：统一使用 var 关键字来定义常量。
-
-
-
-1： terser + Rollup 兼容旧浏览器
-import { terser } from 'rollup-plugin-terser';
-import getBabelOutputPlugin from '@rollup/plugin-babel';
-
-export default {
-  input: 'src/load.js',
-  plugins: [
-    // https://github.com/terser/terser#minify-options
-    terser({
-      ecma: '5',
-      compress: true,
-      mangle: true,
-    }),
-    getBabelOutputPlugin({
-      babelHelpers: 'bundled',
-      presets: [
-        ['@babel/preset-env', {
-          targets: '> 0.25%, last 2 versions, Firefox ESR, not dead',
-        }],
-      ],
-    }),
-  ],
-  output: {
-    file: 'dist/load.js',
-    format: 'iife',
-    sourcemap: false,
-  },
-};
-
-
-
-
 
 
 # js的执行机制：：：：：：：：：：：：：：：
@@ -389,6 +307,23 @@ setTimeout(function() {
         console.log('12')
     })
 })
+
+; web worker！！！！！！！！！！！！！！！！！！！！！ demo https://github.com/xy-sea/blog/tree/main/web-worker
+; 因为js是单线程 当js有大量计算时，会造成 UI 阻塞，出现界面卡顿、掉帧等情况，严重时会出现页面卡死的情况，俗称假死
+1：开启多线程,并行计算
+2:web worker除了单纯进行计算外，还可以结合离屏canvas进行绘图，提升绘图的渲染性能和使用体验
+
+; Web Worker的限制
+1、在 Worker 线程的运行环境中没有 window 全局对象，也无法访问 DOM 对象
+2、Worker中只能获取到部分浏览器提供的 API，如定时器、navigator、location、XMLHttpRequest等
+3、由于可以获取XMLHttpRequest 对象，可以在 Worker 线程中执行ajax请求
+4、每个线程运行在完全独立的环境中，需要通过postMessage、 message事件机制来实现的线程之间的通信
+
+
+# iframe的缺点
+1.会产生很多页面，不容易管理。
+3.代码复杂，无法被一些搜索引擎索引到，这一点很关键，现在的搜索引擎爬虫还不能很好的处理iframe中的内容，所以使用iframe会不利于搜索引擎优化。
+5.iframe框架页面会增加服务器的http请求，对于大型网站是不可取的。
 
 # 前端模块化：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 window----IIFE-------AMD-------CMD--------CommonJs-------UMD(同时兼容了amd cmd common.js的规范)---------ESM
