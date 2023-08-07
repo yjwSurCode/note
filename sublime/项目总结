@@ -122,6 +122,9 @@ const debouncedValue = useDebounce(values, 200);
 		2000,
 	);
 
+3.4 swiper
+
+
 
 # 4 转盘游戏(桥接至app 支付宝小程序 微信小程序)。 
 4.1-----页面跳转

@@ -72,10 +72,12 @@ Docker 使用 Google 公司推出的 Go 语言 进行开发实现，基于 Linux
 Docker 能够自动执行重复性任务，例如搭建和配置开发环境，从而解放了开发人员以便他们专注在真正重要的事情上，构建杰出的软件。
 用户可以方便地创建和使用容器，把自己的应用放入容器。容器还可以进行版本管理、复制、分享、修改，就像管理普通的代码一样。
 
-## 1: sudo yum install -y yum-utils #安装 yum-utils，因为 utils 提供了 yum-config-manager 能力
+## 1: sudo yum install -y yum-utils 
+#安装 yum-utils，因为 utils 提供了 yum-config-manager 能力
 
 ## 2: sudo  yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo #安装国内的仓库保证我们后续下载 docker 中的各个应用可以快速执行，因为从国外的镜像下载实在太慢了
 
+安装最新版本的 Docker Engine-Community 和 containerd。
 ## 3: sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # reload docker
@@ -119,7 +121,7 @@ docker rm 容器 ID(或容器名称)CONTAINER ID
 
 
 
-#  docker p镜像   name 是容器
+#  docker p镜像  name 是容器
  docker ps -a
 
 1:停止运行镜像 docker stop CONTAINER ID
@@ -137,7 +139,7 @@ docker build -t robot .    //robot是名称 robot是RESPOSITOYRY
 //! NPM INSTALL 问题需要删除 package.local.json
 
 # 2222222  加上tag   robot是RESPOSITOYRY
-docker tag robot robot:v2
+docker tag robot robot:v2  
 
 build 命令用来制作镜像，-t 是给镜像打标签，-f 参数是指定 Dockerfile 路径，由于我们使用的是默认 Dockerfile 名称，
 所以可以不同填写该参数。最后一个.也不要省略，表示 Dockerfile 文件的所在目录, 代表是当前路径，
@@ -159,14 +161,165 @@ docker run --name robotnameroute（容器名称自取） -d -p 3002:3002 robot�
 docker exec -u 0 -it bead089df688（容器ID 不是镜像） /bin/bash
 
 
+Dockerfile指令：
+
+ADD 指令从 <src> 复制新文件、目录或远程文件 URL，并将它们添加到路径 <dest> 
+# 添加文件到目录下
+ADD test.txt /mydir/
+
+
+Dockerfile文件
+
+FROM node:14.17.0
+
+# add mirrors
+# RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+# RUN apk --update add tzdata \
+#     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+#     && echo "Asia/Shanghai" > /etc/timezone \
+#     && apk del tzdata
+# RUN mkdir -p /usr/src/app
+
+# 在容器中创建一个目录
+RUN mkdir -p /usr/src/nodejs/
+
+# 下一步在镜像中创建一个文件夹存放应用程序代码，这将是你的应用程序工作目录：
+WORKDIR /usr/src/nodejs/
+
+# copy code
+# 把当前目录下的所有文件拷贝到 Image(镜像) 的 /usr/src/nodejs/ 目录下
+COPY . /usr/src/nodejs/
+
+RUN npm install 
+
+EXPOSE 3002
+
+CMD npm start
+
+
+
 
 
 # 优雅部署方式DockerCompose     docker-compose.yml
 
+Compose 是用于定义和运行多容器 Docker 应用程序的工具
+
+安装 ：
+$ sudo curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+
+# 国内用户可以使用以下方式加快下载
+$ sudo curl -L https://download.fastgit.org/docker/compose/releases/download/1.27.4/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+
+
+sudo chmod +x /usr/local/bin/docker-compose
+创建软链：
+
+$ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+测试是否安装成功：
+$ docker-compose version
+cker-compose version 1.24.1, build 4667896b
+
+卸载：
+$ sudo chmod +x /usr/local/bin/docker-compose
+
+
+docker-compose up 命令来启动并运行整个应用程序。
+
+
+volumes 将主机的数据卷或着文件挂载到容器里
+
+build
+指定为构建镜像上下文路径
+
+
+  docker-compose.yml
+  version:"3.0"
+  services:#服务列表
+  #测试数据库
+  mysq1:
+  image:mysql
+    container_name:mysql_test
+    restart:always
+  environment:
+   MYSQL_ROOT_PASSWORD=test_sql
+   NODE_ENV=development
+  ports:
+    13306:3306
+  volumes
+    - ./web/data_dir:/geoserver/data_dir
+  # 服务器上对应目录：var/Lib/mysql
+   #测试node服务
+  server:
+  #node服务
+   container_.name:server.-test#容器名称
+   image:node:14.15.0
+   ports:#暴露的端口
+   "7007:5088"
+  environment:
+   NODE_ENV=development
+  volumes
+   :/data
+   working_dir:/data
+   depends._on:#web服务依靠mysql要先等mysql启动
+  -
+  mysql
+  restart:on-failure:5#自动重启，失败的话重启5次后停止
+  command:yarn start#覆盖容器启动后默认执行的命令
+
+version: "3.7"
+services:
+  webapp:
+    build:
+      context: ./dir
+      dockerfile: Dockerfile-alternate
+      args:
+        buildno: 1
+      labels:
+        - "com.example.description=Accounting webapp"
+        - "com.example.department=Finance"
+        - "com.example.label-with-empty-value"
+      target: prod
+context：上下文路径。
+dockerfile：指定构建镜像的 Dockerfile 文件名。
+args：添加构建参数，这是只能在构建过程中访问的环境变量。
+labels：设置构建镜像的标签。
+target：多层构建，可以指定构建哪一层。
+
+# depends_on:
+#       - db
+#       - redis
 
 
 
+docker-compose.yml 文件
 
+version: "3"
+services:
+  web:
+    image: beginor/geoserver:2.11.1
+    container_name: geoserver-web
+    hostname: geoserver-web
+    ports:
+      - 8080:8080
+    volumes:
+      - ./web/data_dir:/geoserver/data_dir
+      - ./web/logs:/geoserver/logs
+    restart: unless-stopped
+    links:
+      - database:database
+  database:
+    image: beginor/postgis:9.3
+    container_name: postgis
+    hostname: postgis
+    ports:
+      - 5432:5432
+    volumes:
+      - ./database/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: 1q2w3e4R
+    restart: unless-stopped
 
 
 
