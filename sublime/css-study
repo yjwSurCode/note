@@ -99,7 +99,7 @@ input, textarea, img, video, object {
 # 水平垂直居中：：：：：：：：
 1: position:reletive 对应的子元素要设置 position:absolute,然后使用 top:50%;left:50%
 
-2: width:100% height:100% line-height  text-aglin:center
+2: width:100% , height:100% , line-height 100%  , text-aglin:center
 
 3: display:flex +margin:auto
 
