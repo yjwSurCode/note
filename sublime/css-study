@@ -95,6 +95,18 @@ input, textarea, img, video, object {
     display: block;
   }
 
+# 一行或多行超出显示省略
+
+overflow:hidden 超出的文本隐藏
+text-overflow:ellipsis 溢出用省略号显示
+white-space:nowrap 溢出不换行
+
+overflow:hidden; 
+text-overflow:ellipsis;
+display:-webkit-box; 
+-webkit-box-orient:vertical;
+-webkit-line-clamp:2;
+
 
 # 水平垂直居中：：：：：：：：
 1: position:reletive 对应的子元素要设置 position:absolute,然后使用 top:50%;left:50%

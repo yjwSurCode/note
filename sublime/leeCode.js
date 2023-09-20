@@ -168,7 +168,7 @@ var maxSubArray = function (arr) {
 
 console.log(maxSubArray([1, 2, -3, 5, -5]), 'maxSubArray')
 
-//! [1,2,3]-------->[[1,2,3],[1,3,2],[2,3,1],....]  
+//! 7:求最大组合  [1,2,3]-------->[[1,2,3],[1,3,2],[2,3,1],....]  
 
 // 一共有 3*2*1
 
@@ -227,7 +227,7 @@ _func([1, 2, 3])
 console.log(_func([1, 2, 3]), 'result')
 
 
-// !简单类型题目
+// !8:简单类型题目
 // 1: 存在重复元素 (给你一个整数数组 arr 。如果任一值在数组中出现 至少两次 ，返回 true ；如果数组中每个元素互不相同，返回 false )
 var containsDuplicate = function (arr) {
     const result = arr.filter((item, index) => arr.indexOf(item) !== index)
@@ -262,9 +262,6 @@ var isAnagram = function (s) {
     return obj
 };
 
-
-
-
 // 4:移动零(给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。)
 var moveZeroes = function (nums) {
     // return nums.sort((a, b) => {
@@ -290,7 +287,7 @@ var moveZeroes = function (nums) {
 
 };
 
-// 4:解析url 
+// 5:解析url 
 var analysisUrl = function (nums) {
     nums = 'http://localhost:8080/?id=2&type=1&age=20&score=88&score=99'; // 模拟url 地址
     let urlIndex = nums.indexOf("?"); // 查看? 位置为多少  22
@@ -352,7 +349,7 @@ function fibonacci(n) {
 }
 
 
-// 简易版本promise
+//! 9:简易版本promise
 class SimplePromise {
     constructor(executor) {
         // executor执行器
@@ -420,3 +417,54 @@ a.then(a => {
     console.log('a', a)
 })
 
+
+
+// const data = { value: '123386.7' }
+const data = { value: '12345678.7' }
+console.log(String(data.value).substring(4).replace(/\B(?=(\d{3})+(?!\d))/g, ','), '000')
+
+const res = (String(data.value).split('.')[0] || []).length > 7 ? String(data.value).split('.')[0].substring(4).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '万' :
+    String(data.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+console.log(res, 'res')
+
+
+https://github.com/tc39/proposal-decorators
+https://babeljs.io/docs/en/babel-plugin-proposal-decorators#options
+
+function addConcole(target) {
+    // 拓展原型方法
+    target.prototype.log = function (msg) {
+        console.log(`[${new Date()} ${msg}`);
+    };
+    // 拓展静态属性
+    target.myName = '一个类'
+    return target;
+}
+
+@addConcole
+class MyClass {
+    constructor() { }
+}
+
+const myObj = new MyClass();
+myObj.log('林三心');
+// [Sat Jul 08 2023 17:31:55 GMT+0800 (中国标准时间) 林三心
+console.log(MyClass.myName)
+// 一个类
+
+
+
+function testable(isTestable) {
+  return function(target) {
+    target.isTestable = isTestable;
+  }
+}
+
+@testable(true)
+class MyTestableClass {}
+MyTestableClass.isTestable // true
+
+@testable(false)
+class MyClass {}
+MyClass.isTestable // false
