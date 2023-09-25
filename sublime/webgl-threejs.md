@@ -65,7 +65,7 @@ camera.position.set(200, 300, 200);
 camera.lookAt(0,0,0);
 执行.lookAt()方法改变的是视图矩阵旋转部分，也就是将坐标点从世界坐标系转换至摄像机坐标系的矩阵，执行.lookAt()方法之前设置.position 属性会影响视图矩阵旋转部分，执行.lookAt()方法之后，再改变.position 值，不再次执行.lookAt()方法，这时候不会影响视图矩阵的旋转部分，只会影响视图矩阵的平移部分。
 
-`任何时候摄像机的设置变动，我们需要调用摄像机的updateProjectionMatrix来更新设置`
+`任何时候摄像机的设置变动，我们需要调用摄像机的updateProjectionMatrix来更新设置 canvas变化也需要更新 `
 gui.add( camera, 'fov', 1, 180 ).onChange( ()=>camera.updateProjectionMatrix(););
 
 
@@ -74,28 +74,57 @@ gui.add( camera, 'fov', 1, 180 ).onChange( ()=>camera.updateProjectionMatrix();)
 
 # 图元
 
+`缓冲类型几何体BufferGeometry`
+threejs的长方体BoxGeometry、球体SphereGeometry等几何体都是基于BufferGeometry (opens new window)类构建的，BufferGeometry是一个没有任何形状的空几何体
+
+geometry.setIndex( indices );
+geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
+geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
 图元种类(按英文首字母排序) 图元构造函数
 盒子(Box) BoxBufferGeometry、BoxGeometry
+
 平面圆(Circle) CircleBufferGeometry、CircleGeometry
+
 锥形(Cone) ConeBufferGeometry、ConeGeometry
+
 圆柱(Cylinder) CylinderBufferGeometry、CylinderGeometry
+
 十二面体(Dodecahedron) DodecahedronBufferGeometry、DodecahedronGeometry
+
 受挤压的 2D 形状(Extrude) ExtrudeBufferGeometry、ExtrudeGeometry
+
 二十面体(Icosahedron) IcosahedronBufferGeometry、IcosahedronGeometry
+
 由线旋转形成的形状(Lathe) LatheBufferGeometry、LatheGeometry
+
 八面体(Octahedron) OctahedronBufferGeometry、OctahedronGeometry
+
 由函数生成的形状(Parametric) ParametricBufferGeometry、ParametriceGeometry
-2D 平面矩形(Plane) PlaneBufferGeometry、PlaneGeometry
+
+2D 平面矩形(Plane) PlaneBufferGeometry、PlaneGeometry  `Three.js的材质默认正面可见,想看到两面可以设置 side: THREE.DoubleSide`
+
 多面体(Polyhedron) PolyhedronBufferGeometry、PolyhedronGeometry
+
 环形/孔形(Ring) RingBufferGeometry、RingGeometry
+
 2D 形状(Shape) ShapeBufferGeometry、ShapeGeometry
+
 球体(Sphere) SphereBufferGeometry、SphereGeometry
+
 四面体(Tetrahedron) TetrahedronBufferGeometry、TetrahedronGeometry
+
 3D 文字(Text) TextBufferGeometry、TextGeometry
+
 环形体(Torus) TorusBufferGeometry、TorusGeometry
+
 环形结(TorusKnot) TorusKnotBufferGeometry、TorusKnotGeometry
+
 管道/管状(Tube) TubeBufferGeometry、TubeGeometry
+
 几何体的所有边缘(Edges) EdgesGeometry
+
 线框图(Wireframe) WireframeGeometry
 
 # Mesh Mesh 是 Three.js 库中的一个功能，用于创建 3D 网格模型。它的作用如下：
@@ -236,7 +265,6 @@ solarSystem.add(earthMesh);
 ![](2023-09-15-17-37-53.png)
 ![](2023-09-19-10-53-34.png)
 
-MeshPhongMaterial
 
 例子：
 https://threejs.org/manual/examples/scenegraph-sun-earth-moon-axes.html
@@ -248,7 +276,6 @@ Camera 默认的 up 向量为 (0, 1, 0)
 
 `注意.up属性和.position属性一样，如果在.lookAt()执行之后改变,需要重新执行.lookAt()`
 
-
 camera.position.set(20, 50, 10 );
 camera.up.set( 20, 10, 1 );
 camera.lookAt( 0, 0, 0 );
@@ -258,6 +285,11 @@ camera.lookAt( 0, 0, 0 );
 以此为例，假设你站在一个房间的角落里，使用相机进行拍摄。你调整相机的位置和朝向，就像移动和转动自己的身体来获得不同的视角和拍摄效果。
 
 # 材质 https://threejs.org/manual/#zh/materials
+
+高光网格材质MeshPhongMaterial  `通过MeshPhongMaterial的高光亮度.shininess属性,可以控制高光反射效果 specular: 0x444444, //高光部分的颜色`
+基础网格材质MeshBasicMaterial
+漫反射网格材质MeshLambertMateria
+![](2023-09-21-14-30-45.png)
 
 const material = new THREE.MeshPhongMaterial({
 color: 0xFF0000, // 红色 (也可以使用 CSS 的颜色字符串)
@@ -343,7 +375,9 @@ mesh.rotation.x = Math.PI * - .5;  将mesh angle旋转到-90度
 
 环境光（AmbientLight）   new THREE.AmbientLight(color, intensity);
 半球光（HemisphereLight）   new THREE.HemisphereLight(skyColor, groundColor, intensity);
-方向光（DirectionalLight）   new THREE.DirectionalLight(color, intensity);
+方向光（平行光）（DirectionalLight）   new THREE.DirectionalLight(color, intensity);
+![](2023-09-21-14-30-21.png)
+![](2023-09-21-14-30-45.png)
 
 # 摄像机  https://threejs.org/manual/#zh/cameras
 
@@ -355,10 +389,23 @@ mesh.receiveShadow = true;
 
 
 #  技巧!!!
-按需加载
+## 按需加载
 render();
 controls.addEventListener( 'change', render );
 window.addEventListener( 'resize', render );
+
+// 设置相机控件轨道控制器 OrbitControls
+const controls = new OrbitControls(camera, renderer.domElement);
+// 如果OrbitControls改变了相机参数，重新调用渲染器渲染三维场景
+controls.addEventListener('change', function () {
+    renderer.render(scene, camera); //执行渲染操作
+});//监听鼠标、键盘事件
+
+输出模糊处理
+renderer.setPixelRatio(window.devicePixelRatio);
+
+锯齿处理
+new THREE.WebGLRenderer( { antialias: true } );
 
 threejs 基础总结：
 https://blog.pig1024.me/posts/5d7fc47447d84c6fc9bd0815
