@@ -12,6 +12,7 @@
     "test-single": "jest debounce.spec.ts --coverage"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.22.15",
     "@types/lodash-es": "^4.17.6",
     "autoprefixer": "^10.4.7",
     "css-loader": "^6.7.1",

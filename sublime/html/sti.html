@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .parent {
+        position: relative;
+        height: 2000px; /* 用于测试滚动效果 */
+        background-color: lightgray;
+      }
+
+      .sticky-element {
+        position: sticky;
+        top: 0;
+        background-color: lightblue;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="parent">
+      <div style="height: 300px">123</div>
+      <div class="sticky-element">吸顶元素A</div>
+      <div class="sticky-element" style="top: 50px" >吸顶元素B</div>
+      <!-- 其他内容 -->
+    </div>
+  </body>
+</html>

@@ -16,6 +16,7 @@
 伪元素：核心就是需要创建通常不存在于文档中的元素，比如::before ::after ::first-line ::first-letter 
 伪类和伪元素分别用单冒号:和双冒号::来表示
 
+
 # CSS选择符
 （1）id选择器(#myid）
 （2）类选择器(.myclassname)
@@ -34,8 +35,8 @@ input:not([type="submit"]){
 } 使type不是submit的input边框变化
 
 :empty  空元素
-
 elem:first-of-type选中父元素下第一个elem类型元素。
+
 
 # 浮动(float)与绝对定位(position:absolute/fixed)之间的区别：
 (1)浮动会使元素脱离文档流,但是不会脱离文本流,在于其他盒子的文本内容计算布局的时候,还是占位置的。
@@ -54,10 +55,12 @@ elem:first-of-type选中父元素下第一个elem类型元素。
   clear: both;
 }
 
+
 # 标准(W3C)盒子模型：
 width = 内容宽度（content） + border + padding + margin
 #  低版本IE盒子模型： 
 width = 内容宽度（content + border + padding）+ margin
+
 
 #box-sizing是什么
 设置CSS盒模型为标准模型或IE模型。标准模型的宽度只包括content,IE模型包括border和padding
@@ -66,13 +69,14 @@ content-box：默认值,只计算内容的宽度,border和padding不计算入wid
 padding-box：padding计算入宽度内
 border-box：border和padding计算入宽度之内
 
+
 # vertical-align (inline-block依赖型元素)  https://www.zhangxinxu.com/wordpress/2010/05
 inline/inline-block/block 液态/固液混合态/固态
 
 vertical-align只应用于行内元素和替换元素(不影响块级元素的内容对齐 但是影响表单元素的垂直对齐)
 只能应用于内联元素以及 display 值为 table-cell inline 的元素。
 
-; 触发条件：
+触发条件：
 父元素设置 display:inline-block   line-height: 200px;
 子元素中设置inline-block
 
@@ -94,6 +98,18 @@ input, textarea, img, video, object {
     height: 0.5px;
     display: block;
   }
+
+# 一行或多行超出显示省略
+
+overflow:hidden 超出的文本隐藏
+text-overflow:ellipsis 溢出用省略号显示
+white-space:nowrap 溢出不换行
+
+overflow:hidden; 
+text-overflow:ellipsis;
+display:-webkit-box; 
+-webkit-box-orient:vertical;
+-webkit-line-clamp:2;
 
 
 # 水平垂直居中：：：：：：：：
@@ -206,23 +222,35 @@ container{
 
 
 # 圣杯布局：：：：：：：：
-float + 左元素margin-left:-100%;+右元素 margin-left:`width`px
-flex + flex：1  
+float + 左元素margin-left:-100% + 右元素 margin-left: `width`px
+flex + flex:1  
 
-扩展 ：：：：：：：：：：：：：
-flex:1是： flex-grow, flex-shrink 和 flex-basis的简写
+
+
+###  flex 布局 
+ flex: [flex-grow] [flex-shrink] [flex-basis];
+
+flex:1是: flex-grow, flex-shrink 和 flex-basis的简写
 相当于：
 {
-    flex-grow: 1;  // flex-grow 定义项目的放大比例，默认为0，即如果存在剩余空间，也不放大
-    flex-shrink: 1;  // flex-shrink 定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小
-    flex-basis: 0%;   //flex-basis给上面两个属性分配多余空间之前, 计算项目是否有多余空间, 默认值为 auto, 即项目本身的大小
+    flex-grow: 1;    //默认值为0， flex-grow flex-grow 属性可以按比例分配空间 定义项目的放大比例，默认为0，即如果存在剩余空间，也不放大
+    
+    flex-shrink: 1;  //默认值为1， flex-shrink  flex-shrink属性是处理 flex 元素收缩的问题 定义了项目的缩小比例，默认为1，即如果空间不足，该项目将缩小， 将值定为0   flex-basis给1000px 那么元素就是1000px
+
+    flex-basis: auto;  //默认值为 auto, 即项目本身的大小 flex-basis 定义了该元素的空间大小 flex-basis给上面两个属性分配多余空间之前, 计算项目是否有多余空间, 
+
 }
+
+justify-content: space-between ;子元素平均分布在容器内，首尾两个子元素与容器边界对齐，其他子元素之间间距相等
+justify-content: space-around;在每行上均匀分配弹性元素。相邻元素间距离相同。每行第一个元素到行首的距离和每行最后一个元素到行尾的距离将会是相邻元素之间距离的一半
+justify-content: space-evenly; 子元素平均分布在容器内，包括首尾两个子元素与容器边界的间距也相等
+
 
 
 footer底部自适应：https://www.cnblogs.com/xiaonian8/p/15143779.html
 
-#BFC
-BFC 规范（块级格式化上下文：blockformattingcontext）：：：：：：：：
+# BFC
+BFC 规范（块级格式化上下文：blockformattingcontext）
 （1）根元素或包含根元素的元素
 （2）浮动元素float＝left|right或inherit（≠none）
 （3）绝对定位元素position＝absolute或fixed
