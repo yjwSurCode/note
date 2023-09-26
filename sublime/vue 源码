@@ -37,21 +37,178 @@ tip；在vue3中允许你写多个v-model,这也是强烈的说明了，v-model�
 
 # Object.defindProperty 对比 proxy  (https://juejin.cn/post/6844904150560423950)
 
-# Proxy用法: https://juejin.cn/post/7182084369454989349
-var proxy = new Proxy(target, handler)
+ Object.defineProperty(argu, key, {
+                configurable: true,
+                enumerable: true,
+                get() {
+                    console.log(`get ${key} attr`)
+                    return value
+                },
+                set(newValue) {
+                    console.log(`set ${key} attr`)
+                    value = newValue
+                }
+            })
 
+
+# Proxy用法: https://juejin.cn/post/7182084369454989349
+
+### 🌰 1
 let person = {
   name: "Guest"
 };
-let proxy = new Proxy(person, {
+
+let proxy2 = new Proxy(person, {
   get: function(target, propKey, receiver) {
+    console.log(target, propKey, receiver)  // {name: 'Guest'}name: "Guest"[[Prototype]]: Object 'name' Proxy(Object) {name: 'Guest'}
     return Reflect.get(target, propKey, receiver)
-    // or
-    // return target[propKey]
   }
 });
 
 proxy.name // "Guest"
+
+### 🌰 2
+const moment = {
+  age: 18,
+  address: "西安",
+};
+
+function foo(x, y) {
+  return x + y;
+}
+
+const proxy = new Proxy(moment, {
+  has: function (target, prop) {
+    console.log(`使用 in 访问了 ${prop} 是否存在于 moment 对象`);
+  },
+  get: function (target, property, receiver) {
+    # property 是实例对象的key
+    console.log(`通过读取 moment 对象中的 ${property} 属性`);
+  },
+  set: function (target, property, value, receiver) {
+    console.log(`通过设置 moment 对象中的 ${property} 属性为 ${value}`);
+  },
+});
+
+const fProxy = new Proxy(foo, {
+  apply: function (target, _, params) {
+    console.log(target); // [Function: foo]
+    console.log(params); //  [ 1, 2 ]
+    return target(...params) * 10;
+  },
+  construct: function (target, argumentsList, newTarget) {
+    console.log(target); // [Function: foo]
+    console.log(argumentsList); // [ 1, 2 ]
+    console.log(newTarget); // [Function: foo]
+    return {};
+  },
+});
+
+"age" in proxy; // 使用 in 访问了 age 是否存在于 moment 对象
+proxy.age; // 通过读取 moment 对象中的 age 属性
+proxy.address = "肇庆"; // 通过设置 moment 对象中的 address 属性为 肇庆
+
+console.log(foo(1, 2)); // 3
+console.log(fProxy(1, 2)); // 30
+
+new fProxy(1, 2);
+
+
+### 🌰 3
+let user = {
+  _name: "Guest",
+  get name() {
+    return this._name;
+  }
+};
+
+let userProxy = new Proxy(user, {
+  get(target, prop, receiver) {
+    return target[prop];
+  }
+});
+
+let admin = {
+  __proto__: userProxy,
+  _name: "Admin"
+}; 
+document.getElementById('common').innerHTML = admin.name  // Guest
+
+let user2 = {
+  _name: "Guest",
+  get name() {
+    return this._name;
+  }
+};
+
+let userProxy2 = new Proxy(user2, {
+  get(target, prop, receiver) {
+  #??? userProxy 代理的是user对象，所以 userProxy 中 get的第一个参数 target 的值实际上是user，细品一下,这里的this 依旧是指向的是user，而不是admin。
+    return Reflect.get(target, prop, receiver);
+  }
+});
+
+let admin2 = {
+  __proto__: userProxy2,
+  _name: "Admin"
+}
+
+document.getElementById('reflect').innerHTML = admin2.name  // Admin
+
+
+### 🌰 4 
+
+let api = {
+    _apiKey: 'kafakakafaka',
+};
+const RESTRICTED = ['_apiKey'];
+api = new Proxy(api, {
+    get(target, key, receiver) {
+        if(RESTRICTED.indexOf(key) > -1) {
+            throw Error(`${key} 不可访问.`);
+        } 
+        return Reflect.get(target, key, receiver);
+    },
+    set(target, key, value, receiver) {
+        if(RESTRICTED.indexOf(key) > -1) {
+            throw Error(`${key} 不可修改`);
+        }
+        console.log(target,target._apiKey)
+        return Reflect.set(target, key, value, receiver);
+    }
+});
+
+
+#! 以下是一些 Reflect 对象的常用方法：
+
+1. Reflect.apply(target, thisArg, argumentsList)
+   调用一个目标函数，并传递一个指定的 this 值和参数列表。
+
+2. Reflect.construct(target, argumentsList[, newTarget])
+   创建一个实例对象，使用指定的构造函数和参数列表。
+
+3. Reflect.get(target, propertyKey[, receiver])
+   获取目标对象的指定属性的值。
+
+4. Reflect.set(target, propertyKey, value[, receiver])
+   设置目标对象的指定属性的值。
+   set(target, propKey, value, receiver)方法用来拦截某个属性的赋值操作，
+   可以接受四个参数，依次为目标对象、属性名、属性值和 Proxy 实例本身
+
+5. Reflect.has(target, propertyKey)
+   判断目标对象是否存在指定属性。
+
+6. Reflect.deleteProperty(target, propertyKey)
+   删除目标对象的指定属性。
+
+7. Reflect.getPrototypeOf(target)
+   获取目标对象的原型对象。
+
+8. Reflect.setPrototypeOf(target, prototype)
+   设置目标对象的原型对象。
+
+9. Reflect.ownKeys(target)
+   返回目标对象自身的所有属性的数组。
 
 
 

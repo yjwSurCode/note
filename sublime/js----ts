@@ -238,13 +238,10 @@ console.log(result.inc());//3
 2：回调
 3：函数防抖 返回一个函数 参数是函数
 4：封装私有变量 创建一个计数器
-5：当我们需要在模块中定义一些变量，并希望这些变量一直保存在内存中但又不会 “污染” 全局的变量时，就可以用闭包来定义这个模块。
+5：当我们需要在模块中定义一些变量,并希望这些变量一直保存在内存中但又不会 “污染” 全局的变量时，就可以用闭包来定义这个模块。
 
-MVVM，理解闭包的艺术：：：：：：：：：：：：：：：：：
+##! MVVM,理解闭包的艺术：：：：：：：：：：：：：：：：：
 https://juejin.cn/post/6844903619808985095
-
-// 减少全局变量； 减少传递函数的参数量；
-
 
 
 # 递归 -：：：：：：：：：：：：：：：：：：：：
@@ -343,7 +340,9 @@ var res = result.reduce((accumulator, cur) => dis[cur.subject] * cur.score + acc
 执行栈，也就是在其它编程语言中所说的“调用栈”，是一种拥有 LIFO(后进先出)数据结构的栈，被用来存储代码运行时创建的所有执行上下文。
 
 
-值类型(基本类型)：字符串(string)、数值(number)、布尔值(boolean)、undefined、null  （这5种基本数据类型是按值访问的，因为可以操作保存在变量中的实际的值）(ECMAScript 2016新增了一种基本数据类型：symbol http://es6.ruanyifeng.com/#docs/symbol )
+值类型(基本类型)：字符串(string)、数值(number)、布尔值(boolean)、undefined、null 
+(这5种基本数据类型是按值访问的,因为可以操作保存在变量中的实际的值)
+ECMAScript 2016新增了一种基本数据类型 symbol http://es6.ruanyifeng.com/#docs/symbol 
 • 符号(symbol)ES6 中新增------- 一个 symbol 实例可以被赋值到一个左值变量，还可以通过标识符检查类型 （可以非常有效的消除magic string和magic number）
 var identity = Symbol()
 var obj = {
@@ -367,8 +366,7 @@ obj 对象并没有 toString 属性，之所以能获取到 toString 属性，�
 
 判断数据类型：：：：：：Object.prototype.toString.call(type).slice(8, -1);
 
-显式类型转换与隐式类型转换 ：：：：：：：：：：：：：：
-
+#! 显式类型与隐式类型:::::
 '1' * 'a' //NaN
 console.log([] == []) // false
 console.log([] == ![]) // true
@@ -377,18 +375,57 @@ console.log(NaN != NaN) // true
 console.log(null == undefined) // true
 console.log(null === undefined) // false
 
-显式类型：Number()、parseInt()、parseFloat()
+显式类型转换:Number()、parseInt()、parseFloat()
+隐式类型转换:当使用`+`运算符连接一个字符串和一个数字时，JavaScript会自动将数字转换为字符串并进行字符串拼接
 
-在JS的变量传递中，本质上都可以看成是值传递，只是这个值可能是基础数据类型，
-也可能是一个引用地址，如果是引用地址，我们通常就说为引用传递。JS中比较特殊，
+
+####! 值传递 + 栈 + 堆 + 内存 :::::::::::
+在JS的变量传递中,本质上都可以看成是值传递,只是这个值可能是基础数据类型，也可能是一个引用地址，
+如果是引用地址,我们通常就说为引用传递。JS中比较特殊,
 不能直接操作对象的内存空间，必须通过指针（所谓的引用）来访问。
+
+堆是一种经过排序的树形数据结构，每个结点都有一个值。
+通常我们所说的堆的数据结构，是指二叉堆。
+堆的特点是根结点的值最小（或最大），且根结点的两个子树也是一个堆。
+由于堆的这个特性，常用来实现优先队列，堆的存取是随意，这就如同我们在图书馆的书架上取书，
+虽然书的摆放是有顺序的，但是我们想取任意一本时不必像栈一样，先取出前面所有的书，
+我们只需要关心书的名字。
+
+#? 栈 堆 优缺点
+栈内存由于它的特点，所以它的系统效率较高。 堆内存需要分配空间和地址，还要把地址存到栈中，所以效率低于栈。
+
+#? 栈 堆 回收
+栈内存中变量一般在它的当前执行环境结束就会被销毁被垃圾回收制回收， 而堆内存中的变量则不会，
+因为不确定其他的地方是不是还有一些对它的引用。 堆内存中的变量只有在所有对它的引用都结束的时候才会被回收。
+
+🌰：
+// 基本数据类型-栈内存
+let a1 = 0;
+// 基本数据类型-栈内存
+let a2 = 'this is string';
+// 基本数据类型-栈内存
+let a3 = null;
+
+// 对象的指针存放在栈内存中，指针指向的对象存放在堆内存中
+let b = { m: 20 };
+// 数组的指针存放在栈内存中，指针指向的数组存放在堆内存中
+let c = [1, 2, 3];
+
+🌰: 
+let m = { a: 10, b: 20 };
+let n = m;
+n.a = 15;
+console.log(m.a) //此时m.a的值是多少，是10？还是15？   答案是 15
+
+
 ; 堆 和 栈
-let obj1 = { name: 'a' }
-let obj2 = obj1
+let obj1 = { name: 'a' }
+let obj2 = obj1
 obj2.name = 'b'
 console.log(obj1.name) // b
 以上代码中，obj1 和 obj2 指向了同一个堆内存，obj1 赋值给 obj2，
 实际上这个堆内存对象在栈内存的引用地址复制了一份给了 obj2，所以 obj1 和 obj2 指针都指向堆内存中的同一个。
+
 
 
 
@@ -801,3 +838,182 @@ E（Element）：表示元素类型。
       return Greeter;
 }());
       var greeter = new Greeter("world");
+
+
+###!  js byte bit  二进制 八进制 十进制 十六进制
+
+1byte(字节) = 8bit(位) 怎么理解？？
+1字节(byte)等于8位(bit),这是因为计算机中的数据存储和传输是以位为单位的。
+位是计算机中最小的存储单位,它可以表示0或1两种状态。而字节是由8个位组成的,可以表示256种不同的状态(2的8次方)
+🌰：一个字节可以表示的最小值是00000000(二进制)相当于(十进制的0),最大值是11111111(二进制),相当于十进制的(255)
+
+Number类型在内存中占用的空间通常是8个字节(64位) 通常被放在栈内存中
+JavaScript使用了Unicode字符集来表示字符串,其中大多数字符使用16位编码(即2个字节)。然而，对于一些特殊字符（如表情符号、某些汉字等），可能需要使用更多的字节来表示。
+
+1byte = 8bit
+1byte = 1B
+1KB = 1024B
+1MB = 1024KB
+1GB = 1024MB
+1TB = 1024GB
+
+a=25
+b=0b11001;// 0b表示二进制  
+c=0o31;// 0o 八进制 
+d=0x19;//0x 十六进制
+
+##? 十进制  用10个符号来表示一个数字 0123456789
+🌰  235 === 2*10^2 + 3*10^1 + 5*10^0 (个位 十位 百位) === 200+30+5
+
+🌰  29<10> === 
+    29/2 ==14余：1
+    14/2 ==7 余：0
+    7/2  ==3 余：1
+    3/2  ==1 余：1 
+    1/2  ==0 余：1
+    ===11101<2>  反向排列
+
+##? 二进制  用两个符号来表示一个数字 01
+🌰  1011<2> === 1*2^3 + 0*2^2 + 1*2^1 + 1*2^0 === 8+0+2+1 === 11<10>
+
+🌰  110<2> === 1*2^2 + 1*2^1 + 0*2^0 + 1*2^0 === 4+2+0 === 6<10>
+
+    #!由于2^3为8 所以每三位二进制可以转换为一位八进制
+🌰  10111001<2>===
+    10  ==1*2^1+0*2^0 =2
+    111 ==1*2^2 + 1*2^1 + 1*2^0==7
+    001 ==0*2^2 + 0*2^1 + 1*2^0==1
+    === 271<8>
+    
+
+##? 八进制  用八个符号来表示一个数字 01234567
+🌰  377<8> ==== 3*8^2 + 7*8^1 + 7*8^0 === 192+56+7 ===255<10>
+
+🌰  900<10> === 
+    900/8 ==112余：4
+    112/8 ==14 余：0
+    14/8  ==1  余：6
+    1/8   ==0  余：1 
+    ===1604<8>(反向排列)
+
+##? 十六进制  用十六个符号来表示一个数字 
+0123456789 A  B  C  D  E  F
+0123456789 10 11 12 13 14 15
+
+🌰  177<16> ==== 1*16^2 + 7*16^1 + 7*16^0 === 256+112+7 ===375<10>
+
+🌰  2717<10> === 
+    2717/16 ==169 余：13
+    169/16  ==10  余：9
+    10/16   ==0   余：10
+    ===A9D<10>(反向排列)
+
+    #!由于2^4为16 所以每四位二进制可以转换为一位十六进制
+🌰  10111001<2>===
+    1011  ==1*2^3 + 0*2^2 + 1*2^1 +1*2^0 == 8+0+2+1 == 11 == B
+    1001 ==1*2^3 + 0*2^2 + 0*2^1 + 1*2^0 == 8+1 == 9
+    ===B9<16>
+
+
+#?小问答：八进制的1111 可以转换为二进制的多少？
+
+
+###!  cryptojs  md5  sha1 sha256  ase 加密方式
+
+
+#!   web worker基本用法
+demo:https://codesandbox.io/s/new-breeze-6r3578?file=/src/worker.js
+
+## main.ts
+
+import React from 'react';
+import worker_script from './web-worker.ts';
+
+class MyClass extends React.Component {
+  constructor() {
+    super();
+
+    this.state = { clickCount: 1 };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  componentDidMount() {
+    this.worker = new Worker(worker_script);
+    this.worker.onmessage = (ev) => {
+      console.log('结果返回：got data back from worker');
+      console.log(ev);
+    };
+  }
+
+  handleClick() {
+    console.log('Posting message');
+    this.worker.postMessage('Button clicked');
+  }
+
+  render() {
+    return (
+      <div>
+        myClass test
+        <button onClick={this.handleClick}>Click to trigger worker</button>
+      </div>
+    );
+  }
+}
+
+export default MyClass;
+
+##  worker.ts
+
+const workercode = () => {
+  self.onmessage = function (e) {
+    // self.importScripts("./testModule"); // eslint-disable-line no-restricted-globals
+    // eslint-disable-line no-restricted-globals
+    console.log('Message received from main script');
+    setTimeout(() => {
+      var workerResult = 'Received from main: ' + e.data;
+      console.log('Posting message back to main script');
+      // self.postMessage(api.message()); // eslint-disable-line no-restricted-globals
+      self.postMessage(workerResult); // eslint-disable-line no-restricted-globals
+    }, 3000);
+  };
+};
+
+let code = workercode.toString();
+code = code.substring(code.indexOf('{') + 1, code.lastIndexOf('}'));
+
+const blob = new Blob([code], { type: 'application/javascript' });
+const worker_script = URL.createObjectURL(blob);
+
+module.exports = worker_script;
+
+##!    web worker监听错误信息
+// main.js（主线程）
+const myWorker = new Worker('/worker.js'); // 创建worker
+
+myWorker.addEventListener('error', err => {
+    console.log(err.message);
+});
+myWorker.addEventListener('messageerror', err => {
+    console.log(err.message)
+});
+
+// worker.js（worker线程）
+self.addEventListener('error', err => {
+    console.log(err.message);
+});
+self.addEventListener('messageerror', err => {
+    console.log(err.message);
+});
+
+##!    web worker监听错误信息
+
+// worker.js（worker线程）
+self.close(); // 直接执行close方法就ok了
+
+// main.js（主线程）
+const myWorker = new Worker('/worker.js'); // 创建worker
+myWorker.terminate(); // 关闭worker
+
+// worker.js（worker线程） 调用utils函数文件
+// 使用方法：importScripts(path1, path2, ...); 
+importScripts('./utils.js');
