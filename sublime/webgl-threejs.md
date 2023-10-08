@@ -72,7 +72,7 @@ gui.add( camera, 'fov', 1, 180 ).onChange( ()=>camera.updateProjectionMatrix();)
 ## 正交相机（OrthographicCamera）
 在这种投影模式下，无论物体距离相机距离远或者近，在最终渲染的图片中物体的大小都保持不变。
 
-# 图元
+# 图元 https://threejs.org/manual/#zh/primitives
 
 `缓冲类型几何体BufferGeometry`
 threejs的长方体BoxGeometry、球体SphereGeometry等几何体都是基于BufferGeometry (opens new window)类构建的，BufferGeometry是一个没有任何形状的空几何体
@@ -230,7 +230,25 @@ TorusGeometry
 TubeGeometry
 圆环沿着路径
 
-# 场景图 https://threejs.org/manual/#zh/scenegraph
+## 响应式
+function resizeRendererToDisplaySize( renderer ) {
+const canvas = renderer.domElement;
+const width = canvas.clientWidth;
+const height = canvas.clientHeight;
+const needResize = canvas.width !== width || canvas.height !== height;
+if ( needResize ) {
+renderer.setSize( width, height, false );
+}
+return needResize;
+}
+
+if ( resizeRendererToDisplaySize( renderer ) ) {
+const canvas = renderer.domElement;
+camera.aspect = canvas.clientWidth / canvas.clientHeight;
+camera.updateProjectionMatrix();
+}
+
+# 场景图!!!  https://threejs.org/manual/#zh/scenegraph
 
 要更新旋转角度的对象数组 const objects = [];
 
@@ -246,10 +264,11 @@ scene.add( earthMesh );
 
 `sunMesh.add( earthMesh ); 如果将地球的mesh添加到太阳的mesh中，则太阳的mesh会包含地球的mesh 从而融为一体`
 
-这里会出现一个问题 下面方法可以解决------现在因为 earthMesh 不是 sunMesh 的子网格，所以不再按 5 倍比例缩放
+这里会出现一个问题sunMesh.scale.set(5, 5, 5) 将其比例设置为 5x。这意味着 sunMeshs 的局部空间是 5 倍大。这表示地球现在大了 5 倍，它与太阳的距离 ( earthMesh.position.x = 10 ) 也是5 倍 
 
 我们需要这样：
-![](2023-09-19-10-14-15.png)
+![](2023-09-19-10-14-15.png) ------现在因为 earthMesh 不是 sunMesh 的子网格，所以不再按 5 倍比例缩放
+
 
 <br>
 
@@ -262,7 +281,8 @@ objects.push( earthMesh );<br/>
 solarSystem.add(sunMesh);<br/>
 solarSystem.add(earthMesh);
 
-![](2023-09-15-17-37-53.png)
+代码例子
+![](2023-10-07-17-26-28.png)
 ![](2023-09-19-10-53-34.png)
 
 
@@ -271,16 +291,20 @@ https://threejs.org/manual/examples/scenegraph-sun-earth-moon-axes.html
 
 ![](2023-09-19-15-30-15.png)
 
+
+
 ### 相机tip
 Camera 默认的 up 向量为 (0, 1, 0)
 
 `注意.up属性和.position属性一样，如果在.lookAt()执行之后改变,需要重新执行.lookAt()`
 
+
+
+栗子：
 camera.position.set(20, 50, 10 );
 camera.up.set( 20, 10, 1 );
 camera.lookAt( 0, 0, 0 );
-当你设置相机的位置和朝向时，可以将其想象为你自己在一个三维空间中移动和观察物体。
-假设你站在一个平面上，(20, 50, 10)表示你的位置是距离原点(0, 0, 0)一定距离的地方，具体来说是离原点右边 20 个单位，上方 50 个单位，前进 10 个单位。这就是相机的位置。
+当你设置相机的位置和朝向时，可以将其想象为你自己在一个三维空间中移动和观察物体。假设你站在一个平面上，(20, 50, 10)表示你的位置是距离原点(0, 0, 0)一定距离的地方，具体来说是离原点右边 20 个单位，上方 50 个单位，前进 10 个单位。这就是相机的位置。
 而 up 向量指示了你站立时头部的朝向。(20, 10, 1)中的数字代表了相机在水平、垂直和深度方向上的朝向。通过设置 up 向量，你可以控制相机的视角。
 以此为例，假设你站在一个房间的角落里，使用相机进行拍摄。你调整相机的位置和朝向，就像移动和转动自己的身体来获得不同的视角和拍摄效果。
 
