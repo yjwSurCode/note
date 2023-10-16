@@ -1,15 +1,23 @@
 基础包结构：：：：
 react 
-react-dom
-react-reconciler
-scheduler
+react-dom `https://react.dev/reference/react-dom/components`
+![Alt text](image-5.png)
+
+react-refresh `https://github.com/facebook/react/tree/main/packages/react-refresh#react-refresh`
+
+react-reconciler `https://github.com/facebook/react/tree/main/packages/react-reconciler`
+负责管理虚拟DOM树更新的关键部分。 当组件状态或属性发生更改时，Reconciler的任务是确定如何有效地更新DOM来反映这些更改。 这个过程通常被称为 "协调"（Reconciliation）
+![Alt text](image-3.png)
+
+scheduler  `https://juejin.cn/post/7208222652619800613`
+![Alt text](image-4.png)
+
 
 两大循环：：：：：：：
-任务调度循环------scheduler中
 fiber构造循环-----react-reconciler中
+任务调度循环------scheduler中
 
-
-react应用的启动过程：：：：：：：：：：：：：：：：：：：：
+# react应用的启动过程：：：：：：：：：：：：：：：：：：：：
 1：创建ReactDOMRoot对象
 const reactDOMRoot = ReactDOM.createRoot(document.getElementById('root'));
 2：调用reactDOMRoot.render(<App />); //不支持回调
@@ -25,7 +33,7 @@ const reactDOMRoot = ReactDOM.createRoot(document.getElementById('root'));
 通过对比找出本次更新中变化的虚拟DOM
 真实DOM： <li>a</li>  虚拟DOM： let vnode = h('li','a'),
 
-; react diff算法
+# react diff算法
 React 算法之调和diff算法 ：：：：：：：
 深度优先算法----Diff算法比较只会在同层级进行, 不会跨层级比较
 比较oldfiber.key 

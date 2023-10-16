@@ -48,20 +48,22 @@ document.getElementById('container').appendChild(warning);
 
 # VECTOR
 
-narmalize() //转化为单位向量  就是转化成位移
+narmalize() //转化为单位向量 就是转化成位移
 
 # EULER 欧拉角
 
 # Float32Array
-创建数组 
+
+创建数组
 var arr = new Float32Array(2);
 var arr = new Float32Array([21, 31]);
 
-# modal.traverse   
+# modal.traverse
+
 isMesh getObjectName
 
+# 本地(局部)坐标 世界坐标
 
-# 本地(局部)坐标  世界坐标
 本地(局部)坐标就是模型的位置属性
 
 世界坐标 = 模型的位置属性 + 父对象的位置属性
@@ -71,16 +73,37 @@ const v3=new Three.Vector3()
 mesh.getWorldPosition(v3)
 console.log(v3) 这就是网格的世界坐标
 
+# remove
+
+# visible
+
+# clone
+
+// 原始对象
+var originalObject = new THREE.Mesh(geometry, material);
+// 克隆对象
+var clonedObject = originalObject.clone();
+
+# copy
+
+// 源对象
+var sourceObject = new THREE.Object3D();
+sourceObject.position.set(1, 2, 3);
+// 目标对象
+var targetObject = new THREE.Object3D();
+// 复制源对象的位置属性到目标对象
+targetObject.position.copy(sourceObject.position);
 
 # 相机 https://threejs.org/manual/#zh/cameras
+
 `new THREE.PerspectiveCamera( fov, aspect, near, far );`
 
 //创建镜头
 //PerspectiveCamera() 中的 4 个参数分别为：
-//1、fov(field of view 的缩写)，可选参数，默认值为 50，指垂直方向上的角度，注意该值是度数而不是弧度
-//2、aspect，可选参数，默认值为 1，画布的高宽比，例如画布高 300 像素，宽 150 像素，那么意味着高宽比为 2
-//3、near，可选参数，默认值为 0.1，近平面，限制摄像机可绘制最近的距离，若小于该距离则不会绘制(相当于被裁切掉)
-//4、far，可选参数，默认值为 2000，远平面，限制摄像机可绘制最远的距离，若超出该距离则不会绘制(相当于被裁切掉)
+//1、fov(field of view 的缩写)，可选参数，默认值为 50，`视场角度` 指垂直方向上的角度，注意该值是度数而不是弧度,`视野角度fov越大，观察范围越大`
+//2、aspect，可选参数，默认值为 1，`画布的高宽比`，例如画布高 300 像素，宽 150 像素，那么意味着高宽比为 2
+//3、near，可选参数，默认值为 0.1，`近平面`，限制摄像机可绘制最近的距离，若小于该距离则不会绘制(相当于被裁切掉)
+//4、far，可选参数，默认值为 2000，`远平面`，限制摄像机可绘制最远的距离，若超出该距离则不会绘制(相当于被裁切掉)
 
 //以上 4 个参数在一起，构成了一个 “视椎”，关于视椎的概念理解，暂时先不作详细描述。
 const camera = new PerspectiveCamera(75, 2, 1, 50)
@@ -94,14 +117,47 @@ camera.lookAt(0,0,0);
 `任何时候摄像机的设置变动，我们需要调用摄像机的updateProjectionMatrix来更新设置 canvas变化也需要更新 `
 gui.add( camera, 'fov', 1, 180 ).onChange( ()=>camera.updateProjectionMatrix(););
 
+`control.OrbitControl会自动把lookAt设成默认值(0,0,0)`
+control.target.set 要同时设置
+
+- 可以借助输入相机实时位置
+- let controls = new OrbitControls(camera, renderer.domElement)
+  controls.addEventListener('change', () => {
+  renderer.render(scene, camera)
+  })
+  `记得设置controls.update()`
+
+# PerspectiveCamera 相机
+
+https://threejs.org/manual/examples/cameras-perspective-2-scenes.html
 
 ## 正交相机（OrthographicCamera）
+
+https://threejs.org/manual/examples/cameras-orthographic-2-scenes.html
 在这种投影模式下，无论物体距离相机距离远或者近，在最终渲染的图片中物体的大小都保持不变。
+zoom 属性可以改变视野大小
+
+# 计算两帧渲染时间
+
+const clock = new THREE.Clock();
+
+const spt = clock.getDelta()\*1000;//毫秒
+console.log('两帧渲染时间间隔(毫秒)',spt); // 16.7
+console.log('帧率 FPS',1000/spt); // 60
+
+# new Stats() 显示帧率
+
+//引入性能监视器 stats.js,显示帧率
+import Stats from 'three/addons/libs/stats.module.js';
+//!创建 stats 对象 查看渲染帧率
+const stats = new Stats();
+
+stats.update();//渲染循环中执行 stats.update()来刷新时间
 
 # 图元 https://threejs.org/manual/#zh/primitives
 
 `缓冲类型几何体BufferGeometry`
-threejs的长方体BoxGeometry、球体SphereGeometry等几何体都是基于BufferGeometry (opens new window)类构建的，BufferGeometry是一个没有任何形状的空几何体
+threejs 的长方体 BoxGeometry、球体 SphereGeometry 等几何体都是基于 BufferGeometry (opens new window)类构建的，BufferGeometry 是一个没有任何形状的空几何体
 
 geometry.setIndex( indices );
 geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
@@ -129,7 +185,7 @@ geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
 由函数生成的形状(Parametric) ParametricBufferGeometry、ParametriceGeometry
 
-2D 平面矩形(Plane) PlaneBufferGeometry、PlaneGeometry  `Three.js的材质默认正面可见,想看到两面可以设置 side: THREE.DoubleSide`
+2D 平面矩形(Plane) PlaneBufferGeometry、PlaneGeometry `Three.js的材质默认正面可见,想看到两面可以设置 side: THREE.DoubleSide`
 
 多面体(Polyhedron) PolyhedronBufferGeometry、PolyhedronGeometry
 
@@ -257,6 +313,7 @@ TubeGeometry
 圆环沿着路径
 
 ## 响应式
+
 function resizeRendererToDisplaySize( renderer ) {
 const canvas = renderer.domElement;
 const width = canvas.clientWidth;
@@ -269,12 +326,17 @@ return needResize;
 }
 
 if ( resizeRendererToDisplaySize( renderer ) ) {
-const canvas = renderer.domElement;
-camera.aspect = canvas.clientWidth / canvas.clientHeight;
-camera.updateProjectionMatrix();
+// 重置渲染器输出画布 canvas 尺寸
+renderer.setSize(window.innerWidth, window.innerHeight);
+// 全屏情况下：设置观察范围长宽比 aspect 为窗口宽高比
+`camera.aspect = window.innerWidth / window.innerHeight;`
+// 渲染器执行 render 方法的时候会读取相机对象的投影矩阵属性 projectionMatrix
+// 但是不会每渲染一帧，就通过相机的属性计算投影矩阵(节约计算资源)
+// 如果相机的一些属性发生了变化，需要执行 updateProjectionMatrix ()方法更新相机的投影矩阵
+`camera.updateProjectionMatrix()`
 }
 
-# 场景图!!!  https://threejs.org/manual/#zh/scenegraph
+# 场景图!!! https://threejs.org/manual/#zh/scenegraph
 
 要更新旋转角度的对象数组 const objects = [];
 
@@ -290,11 +352,10 @@ scene.add( earthMesh );
 
 `sunMesh.add( earthMesh ); 如果将地球的mesh添加到太阳的mesh中，则太阳的mesh会包含地球的mesh 从而融为一体`
 
-这里会出现一个问题sunMesh.scale.set(5, 5, 5) 将其比例设置为 5x。这意味着 sunMeshs 的局部空间是 5 倍大。这表示地球现在大了 5 倍，它与太阳的距离 ( earthMesh.position.x = 10 ) 也是5 倍 
+这里会出现一个问题 sunMesh.scale.set(5, 5, 5) 将其比例设置为 5x。这意味着 sunMeshs 的局部空间是 5 倍大。这表示地球现在大了 5 倍，它与太阳的距离 ( earthMesh.position.x = 10 ) 也是 5 倍
 
 我们需要这样：
 ![](2023-09-19-10-14-15.png) ------现在因为 earthMesh 不是 sunMesh 的子网格，所以不再按 5 倍比例缩放
-
 
 <br>
 
@@ -311,20 +372,16 @@ solarSystem.add(earthMesh);
 ![](2023-10-07-17-26-28.png)
 ![](2023-09-19-10-53-34.png)
 
-
 例子：
 https://threejs.org/manual/examples/scenegraph-sun-earth-moon-axes.html
 
 ![](2023-09-19-15-30-15.png)
 
+### 相机 tip
 
-
-### 相机tip
 Camera 默认的 up 向量为 (0, 1, 0)
 
 `注意.up属性和.position属性一样，如果在.lookAt()执行之后改变,需要重新执行.lookAt()`
-
-
 
 栗子：
 camera.position.set(20, 50, 10 );
@@ -336,9 +393,9 @@ camera.lookAt( 0, 0, 0 );
 
 # 材质 https://threejs.org/manual/#zh/materials
 
-高光网格材质MeshPhongMaterial  `通过MeshPhongMaterial的高光亮度.shininess属性,可以控制高光反射效果 specular: 0x444444, //高光部分的颜色`
-基础网格材质MeshBasicMaterial
-漫反射网格材质MeshLambertMateria
+高光网格材质 MeshPhongMaterial `通过MeshPhongMaterial的高光亮度.shininess属性,可以控制高光反射效果 specular: 0x444444, //高光部分的颜色`
+基础网格材质 MeshBasicMaterial
+漫反射网格材质 MeshLambertMateria
 ![](2023-09-21-14-30-45.png)
 
 const material = new THREE.MeshPhongMaterial({
@@ -353,7 +410,11 @@ material.flatShading = true
 
 镜面高光 粗糙度 金属度
 
-# 纹理 https://threejs.org/manual/#zh/textures#hello
+![Alt text](image-2.png)
+
+# textures 纹理 https://threejs.org/manual/#zh/textures#hello
+
+要解决加载 gltf 的格式模型纹理贴图和原图不一样的问题 `render.outputCoding=THREE.sRGBEnding`
 
 THREE.RepeatWrapping：
 默认模式。当纹理坐标超出[0,1]范围时，会将其重复平铺到整个几何体上。
@@ -362,10 +423,9 @@ THREE.ClampToEdgeWrapping：
 当纹理坐标超出[0,1]范围时，会将其限制在[0,1]范围内，即不进行重复。超出部分会使用边缘像素进行填充。
 
 THREE.MirroredRepeatWrapping：
-与Repeat类似，但在每个重复周期中，会通过镜像方式翻转纹理。例如，在水平方向上，[0,1]范围之后会成为[1,0]范围。
+与 Repeat 类似，但在每个重复周期中，会通过镜像方式翻转纹理。例如，在水平方向上，[0,1]范围之后会成为[1,0]范围。
 
 ![Alt text](image.png)
-
 
 const texture = loader.load( 'https://threejs.org/manual/examples/resources/images/wall.jpg' );
 texture.colorSpace = THREE.SRGBColorSpace;
@@ -378,8 +438,8 @@ texture.colorSpace = THREE.SRGBColorSpace;
     cubes.push( cube ); // add to our list of cubes to rotate
 
 优化
-    	const loader = new THREE.TextureLoader();
-    loader.load( 'https://threejs.org/manual/examples/resources/imagesss/wall.jpg', ( texture ) => {
+const loader = new THREE.TextureLoader();
+loader.load( 'https://threejs.org/manual/examples/resources/imagesss/wall.jpg', ( texture ) => {
 
     	texture.colorSpace = THREE.SRGBColorSpace;
 
@@ -393,21 +453,21 @@ texture.colorSpace = THREE.SRGBColorSpace;
     } );
 
 创建加载器
-    const loadManager = new THREE.LoadingManager();
-	const loader = new THREE.TextureLoader( loadManager );
-	loadManager.onLoad = () => {
-		loadingElem.style.display = 'none';
-		const cube = new THREE.Mesh( geometry, materials );
-		scene.add( cube );
-		cubes.push( cube ); // add to our list of cubes to rotate
-	};
+const loadManager = new THREE.LoadingManager();
+const loader = new THREE.TextureLoader( loadManager );
+loadManager.onLoad = () => {
+loadingElem.style.display = 'none';
+const cube = new THREE.Mesh( geometry, materials );
+scene.add( cube );
+cubes.push( cube ); // add to our list of cubes to rotate
+};
 
-	loadManager.onProgress = ( urlOfLastItemLoaded, itemsLoaded, itemsTotal ) => {
-		const progress = itemsLoaded / itemsTotal;
-		progressBarElem.style.transform = `scaleX(${progress})`;
-	};
-`纹理往往是three.js应用中使用内存最多的部分。重要的是要明白，一般来说，纹理会占用 宽度 * 高度 * 4 * 1.33 字节的内存`   
+    loadManager.onProgress = ( urlOfLastItemLoaded, itemsLoaded, itemsTotal ) => {
+    	const progress = itemsLoaded / itemsTotal;
+    	progressBarElem.style.transform = `scaleX(${progress})`;
+    };
 
+`纹理往往是three.js应用中使用内存最多的部分。重要的是要明白，一般来说，纹理会占用 宽度 * 高度 * 4 * 1.33 字节的内存`
 
 重复平铺
 const loader = new THREE.TextureLoader();
@@ -419,8 +479,7 @@ texture.colorSpace = THREE.SRGBColorSpace;
 const repeats = planeSize / 2;
 texture.repeat.set(repeats, repeats);
 
-
-环境遮挡 aoMap  需要第二组UV
+环境遮挡 aoMap 需要第二组 UV
 
 const planeGeometry=new THREE.planeBufferGeometry()
 planeGeometry.setAttribute( 'uv2',new THREE.BufferAttribute( planeBufferGeometry.attribute.uv.array,2 ) )
@@ -428,20 +487,21 @@ planeGeometry.setAttribute( 'uv2',new THREE.BufferAttribute( planeBufferGeometry
 
 `aoMap 和 lightMap 纹理不能被变换。每个材质最多只能使用一次变换。`
 
-
 # RBP
 
 # 法线贴图
+
 const fxTexture=textLoader('./')
+
 <h3>[property:Texture normalMap]</h3>
 <p> 用于创建法线贴图的纹理。RGB值会影响每个像素片段的曲面法线，并更改颜色照亮的方式。法线贴图不会改变曲面的实际形状，只会改变光照。
 In case the material has a normal map authored using the left handed convention, the y component of normalScale
 should be negated to compensate for the different handedness.
 </p>
 
+# PBR 基于物理渲染
 
-
-# 光照    https://threejs.org/manual/examples/lights-directional-w-helper.html
+# 光照 https://threejs.org/manual/examples/lights-directional-w-helper.html
 
 回顾 PointLight
 {
@@ -453,50 +513,80 @@ should be negated to compensate for the different handedness.
 
 }
 
-
 设置点光源的照射位置
 spotLight.target=sphere;
 
+mesh.rotation.x = Math.PI \* - .5; 将 mesh angle 旋转到-90 度
 
-mesh.rotation.x = Math.PI * - .5;  将mesh angle旋转到-90度
-
-环境光（AmbientLight）   new THREE.AmbientLight(color, intensity);
-半球光（HemisphereLight）   new THREE.HemisphereLight(skyColor, groundColor, intensity);
-方向光（平行光）（DirectionalLight）   new THREE.DirectionalLight(color, intensity);
+环境光（AmbientLight） new THREE.AmbientLight(color, intensity);
+半球光（HemisphereLight） new THREE.HemisphereLight(skyColor, groundColor, intensity);
+方向光（平行光）（DirectionalLight） new THREE.DirectionalLight(color, intensity);
 ![](2023-09-21-14-30-21.png)
 ![](2023-09-21-14-30-45.png)
 
-# 摄像机  https://threejs.org/manual/#zh/cameras
-
+# 摄像机 https://threejs.org/manual/#zh/cameras
 
 # 阴影 https://threejs.org/manual/#zh/shadows
+
 1、材质要满足能够对光照有反应
-2、设置渲染器开启阴影的计算renderer.shadowMap.enabled=true;
-3、设置光照投射阴影directionalLight.castShadow=true;
-4、设置物体投射阴影sphere.castShadow=true;
-5、设置物体接收阴影plane.receiveShadow=true;
+2、设置渲染器开启阴影的计算 renderer.shadowMap.enabled=true;
+3、设置光照投射阴影 directionalLight.castShadow=true;
+4、设置物体投射阴影 sphere.castShadow=true;
+5、设置物体接收阴影 plane.receiveShadow=true;
 
+## GLTFLoader
+// 创建加载管理器
+const manager = new THREE.LoadingManager();
+new GLTFLoader(manager)
 
-#  技巧!!!
+## dracoLoader
+
+//( 创建 GLTFLoader 对象
+const gltfLoader = new GLTFLoader();
+//( 创建 DRACOLoader 对象
+const dracoLoader = new DRACOLoader();
+//( 设置 DRACO 解码器的配置，使用 JavaScript 版解码器
+dracoLoader.setDecoderConfig({ type: 'js' });
+//( 设置 DRACO 解码器的路径
+dracoLoader.setDecoderPath('jsm/libs/draco/');
+//( 将 DRACOLoader 对象设置到 GLTFLoader 中
+gltfLoader.setDRACOLoader(dracoLoader);
+//( 使用异步方式加载 GLTF 模型文件
+const gltf = await gltfLoader.loadAsync( 'models/gltf/1.glb' );
+gltf.scene.traverse( n => {
+} );
+scene.add( gltf.scene );
+
+## ktx2Loader
+// 用于加载和解析 KTX2 格式的纹理文件。KTX2 是一种高效的纹理压缩格式，可以显著减少纹理文件的大小并提高加载性能
+ktx2Loader = new KTX2Loader();
+
+# 技巧!!!
+
 ## 按需加载
+
 render();
 controls.addEventListener( 'change', render );
 window.addEventListener( 'resize', render );
 
 // 设置相机控件轨道控制器 OrbitControls
 const controls = new OrbitControls(camera, renderer.domElement);
-// 如果OrbitControls改变了相机参数，重新调用渲染器渲染三维场景
+// 如果 OrbitControls 改变了相机参数，重新调用渲染器渲染三维场景
 controls.addEventListener('change', function () {
-    renderer.render(scene, camera); //执行渲染操作
+renderer.render(scene, camera); //执行渲染操作
 });//监听鼠标、键盘事件
 
-输出模糊处理
+# 防止输出模糊处理
+
 renderer.setPixelRatio(window.devicePixelRatio);
 
-锯齿处理
-new THREE.WebGLRenderer( { antialias: true } );
+# 锯齿处理
 
-threejs 基础总结：
+new THREE.WebGLRenderer( { antialias: true } );
+// 获取你屏幕对应的设备像素比.devicePixelRatio 告诉 threeJs,以免渲染模糊问题
+renderer.setPixelRatio(window.devicePixelRatio); //1---10
+
+threeJs 基础总结：
 https://blog.pig1024.me/posts/5d7fc47447d84c6fc9bd0815
 
 元素按轨道移动
@@ -512,7 +602,7 @@ https://threejs.org/manual/examples/debugging-mcve.html
 
 scene.position
 {
-  add: function ( a, b ) {
+add: function ( a, b ) {
 
         this.x = a.x + b.x;
         this.y = a.y + b.y;
@@ -521,7 +611,8 @@ scene.position
         return this;
 
     },
-  addScalar: function ( s ) {
+
+addScalar: function ( s ) {
 
         this.x += s;
         this.y += s;
@@ -530,7 +621,8 @@ scene.position
         return this;
 
     },
-  addSelf: function ( v ) {
+
+addSelf: function ( v ) {
 
         this.x += v.x;
         this.y += v.y;
@@ -539,12 +631,14 @@ scene.position
         return this;
 
     },
-  angleTo: function ( v ) {
+
+angleTo: function ( v ) {
 
         return Math.acos( this.dot( v ) / this.length() / v.length() );
 
     },
-  clampSelf: function ( min, max ) {
+
+clampSelf: function ( min, max ) {
 
         // This function assumes min < max, if this assumption isn't true it will not operate correctly
 
@@ -581,19 +675,21 @@ scene.position
         return this;
 
     },
-  clone: function () {
+
+clone: function () {
 
         return new THREE.Vector3( this.x, this.y, this.z );
 
     },
-  constructor: function ( x, y, z ) {
+
+constructor: function ( x, y, z ) {
 
     this.x = x || 0;
     this.y = y || 0;
     this.z = z || 0;
 
 },
-  copy: function ( v ) {
+copy: function ( v ) {
 
         this.x = v.x;
         this.y = v.y;
@@ -602,7 +698,8 @@ scene.position
         return this;
 
     },
-  cross: function ( a, b ) {
+
+cross: function ( a, b ) {
 
         this.x = a.y * b.z - a.z * b.y;
         this.y = a.z * b.x - a.x * b.z;
@@ -611,7 +708,8 @@ scene.position
         return this;
 
     },
-  crossSelf: function ( v ) {
+
+crossSelf: function ( v ) {
 
         var x = this.x, y = this.y, z = this.z;
 
@@ -622,12 +720,14 @@ scene.position
         return this;
 
     },
-  distanceTo: function ( v ) {
+
+distanceTo: function ( v ) {
 
         return Math.sqrt( this.distanceToSquared( v ) );
 
     },
-  distanceToSquared: function ( v ) {
+
+distanceToSquared: function ( v ) {
 
         var dx = this.x - v.x;
         var dy = this.y - v.y;
@@ -636,7 +736,8 @@ scene.position
         return dx * dx + dy * dy + dz * dz;
 
     },
-  divideScalar: function ( s ) {
+
+divideScalar: function ( s ) {
 
         if ( s !== 0 ) {
 
@@ -655,7 +756,8 @@ scene.position
         return this;
 
     },
-  divideSelf: function ( v ) {
+
+divideSelf: function ( v ) {
 
         this.x /= v.x;
         this.y /= v.y;
@@ -664,17 +766,20 @@ scene.position
         return this;
 
     },
-  dot: function ( v ) {
+
+dot: function ( v ) {
 
         return this.x * v.x + this.y * v.y + this.z * v.z;
 
     },
-  equals: function ( v ) {
+
+equals: function ( v ) {
 
         return ( ( v.x === this.x ) && ( v.y === this.y ) && ( v.z === this.z ) );
 
     },
-  getComponent: function ( index ) {
+
+getComponent: function ( index ) {
 
         switch( index ) {
 
@@ -686,7 +791,8 @@ scene.position
         }
 
     },
-  getPositionFromMatrix: function ( m ) {
+
+getPositionFromMatrix: function ( m ) {
 
         this.x = m.elements[12];
         this.y = m.elements[13];
@@ -695,7 +801,8 @@ scene.position
         return this;
 
     },
-  getScaleFromMatrix: function ( m ) {
+
+getScaleFromMatrix: function ( m ) {
 
         var sx = this.set( m.elements[0], m.elements[1], m.elements[2] ).length();
         var sy = this.set( m.elements[4], m.elements[5], m.elements[6] ).length();
@@ -707,22 +814,26 @@ scene.position
 
         return this;
     },
-  length: function () {
+
+length: function () {
 
         return Math.sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 
     },
-  lengthManhattan: function () {
+
+lengthManhattan: function () {
 
         return Math.abs( this.x ) + Math.abs( this.y ) + Math.abs( this.z );
 
     },
-  lengthSq: function () {
+
+lengthSq: function () {
 
         return this.x * this.x + this.y * this.y + this.z * this.z;
 
     },
-  lerpSelf: function ( v, alpha ) {
+
+lerpSelf: function ( v, alpha ) {
 
         this.x += ( v.x - this.x ) * alpha;
         this.y += ( v.y - this.y ) * alpha;
@@ -731,7 +842,8 @@ scene.position
         return this;
 
     },
-  maxSelf: function ( v ) {
+
+maxSelf: function ( v ) {
 
         if ( this.x < v.x ) {
 
@@ -754,7 +866,8 @@ scene.position
         return this;
 
     },
-  minSelf: function ( v ) {
+
+minSelf: function ( v ) {
 
         if ( this.x > v.x ) {
 
@@ -777,7 +890,8 @@ scene.position
         return this;
 
     },
-  multiply: function ( a, b ) {
+
+multiply: function ( a, b ) {
 
         this.x = a.x * b.x;
         this.y = a.y * b.y;
@@ -786,7 +900,8 @@ scene.position
         return this;
 
     },
-  multiplyScalar: function ( s ) {
+
+multiplyScalar: function ( s ) {
 
         this.x *= s;
         this.y *= s;
@@ -795,7 +910,8 @@ scene.position
         return this;
 
     },
-  multiplySelf: function ( v ) {
+
+multiplySelf: function ( v ) {
 
         this.x *= v.x;
         this.y *= v.y;
@@ -804,17 +920,20 @@ scene.position
         return this;
 
     },
-  negate: function() {
+
+negate: function() {
 
         return this.multiplyScalar( - 1 );
 
     },
-  normalize: function () {
+
+normalize: function () {
 
         return this.divideScalar( this.length() );
 
     },
-  set: function ( x, y, z ) {
+
+set: function ( x, y, z ) {
 
         this.x = x;
         this.y = y;
@@ -823,7 +942,8 @@ scene.position
         return this;
 
     },
-  setComponent: function ( index, value ) {
+
+setComponent: function ( index, value ) {
 
         switch( index ) {
 
@@ -835,7 +955,8 @@ scene.position
         }
 
     },
-  setEulerFromQuaternion: function ( q, order ) {
+
+setEulerFromQuaternion: function ( q, order ) {
 
         // q is assumed to be normalized
 
@@ -895,7 +1016,8 @@ scene.position
         return this;
 
     },
-  setEulerFromRotationMatrix: function ( m, order ) {
+
+setEulerFromRotationMatrix: function ( m, order ) {
 
         // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 
@@ -1013,10 +1135,11 @@ scene.position
         return this;
 
     },
-  setLength: function ( l ) {
+
+setLength: function ( l ) {
 
         var oldLength = this.length();
-        
+
         if ( oldLength !== 0 && l !== oldLength  ) {
 
             this.multiplyScalar( l / oldLength );
@@ -1025,28 +1148,32 @@ scene.position
         return this;
 
     },
-  setX: function ( x ) {
+
+setX: function ( x ) {
 
         this.x = x;
 
         return this;
 
     },
-  setY: function ( y ) {
+
+setY: function ( y ) {
 
         this.y = y;
 
         return this;
 
     },
-  setZ: function ( z ) {
+
+setZ: function ( z ) {
 
         this.z = z;
 
         return this;
 
     },
-  sub: function ( a, b ) {
+
+sub: function ( a, b ) {
 
         this.x = a.x - b.x;
         this.y = a.y - b.y;
@@ -1055,7 +1182,8 @@ scene.position
         return this;
 
     },
-  subSelf: function ( v ) {
+
+subSelf: function ( v ) {
 
         this.x -= v.x;
         this.y -= v.y;
@@ -1064,7 +1192,8 @@ scene.position
         return this;
 
     },
-  x: 0,
-  y: 0,
-  z: 0
+
+x: 0,
+y: 0,
+z: 0
 }, "scene.position"
