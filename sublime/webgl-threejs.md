@@ -46,6 +46,32 @@ const warning = WebGL.getWebGLErrorMessage();
 document.getElementById('container').appendChild(warning);
 }
 
+# VECTOR
+
+narmalize() //转化为单位向量  就是转化成位移
+
+# EULER 欧拉角
+
+# Float32Array
+创建数组 
+var arr = new Float32Array(2);
+var arr = new Float32Array([21, 31]);
+
+# modal.traverse   
+isMesh getObjectName
+
+
+# 本地(局部)坐标  世界坐标
+本地(局部)坐标就是模型的位置属性
+
+世界坐标 = 模型的位置属性 + 父对象的位置属性
+getWorldPosition()
+🌰：
+const v3=new Three.Vector3()
+mesh.getWorldPosition(v3)
+console.log(v3) 这就是网格的世界坐标
+
+
 # 相机 https://threejs.org/manual/#zh/cameras
 
 `new THREE.PerspectiveCamera( fov, aspect, near, far );`
@@ -326,6 +352,18 @@ material.flatShading = true
 
 # 纹理 https://threejs.org/manual/#zh/textures#hello
 
+THREE.RepeatWrapping：
+默认模式。当纹理坐标超出[0,1]范围时，会将其重复平铺到整个几何体上。
+
+THREE.ClampToEdgeWrapping：
+当纹理坐标超出[0,1]范围时，会将其限制在[0,1]范围内，即不进行重复。超出部分会使用边缘像素进行填充。
+
+THREE.MirroredRepeatWrapping：
+与Repeat类似，但在每个重复周期中，会通过镜像方式翻转纹理。例如，在水平方向上，[0,1]范围之后会成为[1,0]范围。
+
+![Alt text](image.png)
+
+
 const texture = loader.load( 'https://threejs.org/manual/examples/resources/images/wall.jpg' );
 texture.colorSpace = THREE.SRGBColorSpace;
 
@@ -379,6 +417,27 @@ texture.colorSpace = THREE.SRGBColorSpace;
 const repeats = planeSize / 2;
 texture.repeat.set(repeats, repeats);
 
+环境遮挡 aoMap  需要第二组UV
+
+const planeGeometry=new THREE.planeBufferGeometry()
+planeGeometry.setAttribute( 'uv2',new THREE.BufferAttribute( planeBufferGeometry.attribute.uv.array,2 ) )
+![Alt text](image-1.png)
+
+`aoMap 和 lightMap 纹理不能被变换。每个材质最多只能使用一次变换。`
+
+
+# RBP
+
+# 法线贴图
+const fxTexture=textLoader('./')
+<h3>[property:Texture normalMap]</h3>
+<p> 用于创建法线贴图的纹理。RGB值会影响每个像素片段的曲面法线，并更改颜色照亮的方式。法线贴图不会改变曲面的实际形状，只会改变光照。
+In case the material has a normal map authored using the left handed convention, the y component of normalScale
+should be negated to compensate for the different handedness.
+</p>
+
+
+
 # 光照 https://threejs.org/manual/examples/lights-directional-w-helper.html
 
 回顾 PointLight
@@ -389,7 +448,7 @@ texture.repeat.set(repeats, repeats);
     	const light = new THREE.PointLight( color, intensity );
     	scene.add( light );
 
-    }
+}
 
 mesh.rotation.x = Math.PI \* - .5; 将 mesh angle 旋转到-90 度
 
@@ -407,23 +466,11 @@ mesh.rotation.x = Math.PI \* - .5; 将 mesh angle 旋转到-90 度
 # 摄像机 https://threejs.org/manual/#zh/cameras
 
 # 阴影 https://threejs.org/manual/#zh/shadows
-
-# 加载进度条
-
-loader.load("../工厂.glb", function (gltf) {
-    // 加载完成，隐藏进度条
-    document.getElementById("container").style.display = 'none';
-}, function (xhr) {
-    // 控制台查看加载进度xhr
-    // 通过加载进度xhr可以控制前端进度条进度   
-    const percent = xhr.loaded / xhr.total;
-    console.log('加载进度' + percent);
-    // Math.floor:小数加载进度取整
-    percentDiv.innerHTML = Math.floor(percent * 100) + '%'; //进度百分比
-})
-
-mesh.castShadow = true;
-mesh.receiveShadow = true;
+1、材质要满足能够对光照有反应
+2、设置渲染器开启阴影的计算renderer.shadowMap.enabled=true;
+3、设置光照投射阴影directionalLight.castShadow=true;
+4、设置物体投射阴影sphere.castShadow=true;
+5、设置物体接收阴影plane.receiveShadow=true;
 
 # 添加骨骼助手 SkeletonHelper
 skeleton = new THREE.SkeletonHelper(model);
