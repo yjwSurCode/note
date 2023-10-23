@@ -96,6 +96,7 @@ targetObject.position.copy(sourceObject.position);
 
 # 相机 https://threejs.org/manual/#zh/cameras
 
+
 `new THREE.PerspectiveCamera( fov, aspect, near, far );`
 
 //创建镜头
@@ -133,6 +134,7 @@ https://threejs.org/manual/examples/cameras-perspective-2-scenes.html
 
 ## 正交相机（OrthographicCamera）
 
+
 https://threejs.org/manual/examples/cameras-orthographic-2-scenes.html
 在这种投影模式下，无论物体距离相机距离远或者近，在最终渲染的图片中物体的大小都保持不变。
 zoom 属性可以改变视野大小
@@ -157,6 +159,7 @@ stats.update();//渲染循环中执行 stats.update()来刷新时间
 # 图元 https://threejs.org/manual/#zh/primitives
 
 `缓冲类型几何体BufferGeometry`
+threejs 的长方体 BoxGeometry、球体 SphereGeometry 等几何体都是基于 BufferGeometry (opens new window)类构建的，BufferGeometry 是一个没有任何形状的空几何体
 threejs 的长方体 BoxGeometry、球体 SphereGeometry 等几何体都是基于 BufferGeometry (opens new window)类构建的，BufferGeometry 是一个没有任何形状的空几何体
 
 geometry.setIndex( indices );
@@ -373,8 +376,9 @@ solarSystem.add(sunMesh);<br/>
 solarSystem.add(earthMesh);
 
 代码例子
-![](./assets/2023-10-07-17-26-28.png)
-![](./assets/2023-09-19-10-53-34.png)
+![](2023-10-07-17-26-28.png)
+![](2023-09-19-10-53-34.png)
+
 
 例子：
 https://threejs.org/manual/examples/scenegraph-sun-earth-moon-axes.html
@@ -465,6 +469,14 @@ const cube = new THREE.Mesh( geometry, materials );
 scene.add( cube );
 cubes.push( cube ); // add to our list of cubes to rotate
 };
+const loadManager = new THREE.LoadingManager();
+const loader = new THREE.TextureLoader( loadManager );
+loadManager.onLoad = () => {
+loadingElem.style.display = 'none';
+const cube = new THREE.Mesh( geometry, materials );
+scene.add( cube );
+cubes.push( cube ); // add to our list of cubes to rotate
+};
 
     loadManager.onProgress = ( urlOfLastItemLoaded, itemsLoaded, itemsTotal ) => {
     	const progress = itemsLoaded / itemsTotal;
@@ -483,7 +495,8 @@ texture.colorSpace = THREE.SRGBColorSpace;
 const repeats = planeSize / 2;
 texture.repeat.set(repeats, repeats);
 
-环境遮挡 aoMap 需要第二组 UV
+
+环境遮挡 aoMap  需要第二组UV
 
 const planeGeometry=new THREE.planeBufferGeometry()
 planeGeometry.setAttribute( 'uv2',new THREE.BufferAttribute( planeBufferGeometry.attribute.uv.array,2 ) )
@@ -505,7 +518,8 @@ should be negated to compensate for the different handedness.
 
 # PBR 基于物理渲染
 
-# 光照 https://threejs.org/manual/examples/lights-directional-w-helper.html
+
+# 光照    https://threejs.org/manual/examples/lights-directional-w-helper.html
 
 回顾 PointLight
 {
@@ -517,10 +531,12 @@ should be negated to compensate for the different handedness.
 
 }
 
+
 设置点光源的照射位置
 spotLight.target=sphere;
 
-mesh.rotation.x = Math.PI \* - .5; 将 mesh angle 旋转到-90 度
+
+mesh.rotation.x = Math.PI * - .5;  将mesh angle旋转到-90度
 
 环境光（AmbientLight） new THREE.AmbientLight(color, intensity);
 半球光（HemisphereLight） new THREE.HemisphereLight(skyColor, groundColor, intensity);
@@ -528,7 +544,8 @@ mesh.rotation.x = Math.PI \* - .5; 将 mesh angle 旋转到-90 度
 ![](./assets/2023-09-21-14-30-21.png)
 ![](./assets/2023-09-21-14-30-45.png)
 
-# 摄像机 https://threejs.org/manual/#zh/cameras
+# 摄像机  https://threejs.org/manual/#zh/cameras
+
 
 # 阴影 https://threejs.org/manual/#zh/shadows
 
@@ -566,8 +583,8 @@ scene.add( gltf.scene );
 ktx2Loader = new KTX2Loader();
 
 # 技巧!!!
-
 ## 按需加载
+
 render();
 controls.addEventListener( 'change', render );
 window.addEventListener( 'resize', render );
@@ -599,6 +616,115 @@ https://threejs.org/manual/examples/debugging-mcve.html
 # 优化!!!
 
 大量对象的优化 https://threejs.org/manual/#zh/optimize-lots-of-objects
+
+# 生成曲线,几何体
+
+// 三维向量Vector3创建一组顶点坐标
+const arr = [
+    new THREE.Vector3(-50, 50, 50),
+    new THREE.Vector3(-40, 40, 40),
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(60, -60, 0),
+    new THREE.Vector3(70, 0, 80)
+]
+// 三维样条曲线
+const curve = new THREE.CatmullRomCurve3(arr);
+const pointsArr = curve.getPoints(100); //曲线上获取点
+console.log(pointsArr,'pointsArr')
+const geometry = new THREE.BufferGeometry();
+geometry.setFromPoints(pointsArr); //读取坐标数据赋值给几何体顶点
+
+
+// 用点模型可视化样条曲线经过的顶点位置-----------这些点就是上面的三维向量Vector3创建一组顶点坐标
+const geometry2 = new THREE.BufferGeometry();
+geometry2.setFromPoints(arr);
+const material2 = new THREE.PointsMaterial({
+    color: 0xff00ff,
+    size: 10,
+});
+const points = new THREE.Points(geometry2, material2);
+
+# 默认按照固定曲线移动
+
+// 物体沿线移动方法
+function moveOnCurve() {
+  if (curve == null || model == null) {
+    console.log("Loading");
+  } else {
+    if (progress <= 1 - velocity) {
+      console.log(progress); //0.02
+      console.log(velocity); // 0.01 0.6
+      const point = curve.getPointAt(progress); //获取样条曲线指定点坐标
+      console.log(point, "point"); //{x: 0, y: 0, z: 0}
+      const pointBox = curve.getPointAt(progress + velocity); //获取样条曲线指定点坐标
+      console.log(pointBox, "pointBox"); //{x: 0, y: 0, z: 0}
+
+      if (point && pointBox) {
+        model.position.set(point.x, point.y, point.z);
+        // model.lookAt(pointBox.x, pointBox.y, pointBox.z);//因为这个模型加载进来默认面部是正对Z轴负方向的，所以直接lookAt会导致出现倒着跑的现象，这里用重新设置朝向的方法来解决。
+
+        var targetPos = pointBox; //目标位置点
+        var offsetAngle = 0; //目标移动时的朝向偏移
+
+        // //以下代码在多段路径时可重复执行
+        var mtx = new THREE.Matrix4(); //创建一个4维矩阵
+        // .lookAt ( eye : Vector3, target : Vector3, up : Vector3 ) : this,构造一个旋转矩阵，从eye 指向 target，由向量 up 定向。
+        mtx.lookAt(model.position, targetPos, model.up); //设置朝向
+
+        // 是将旋转矩阵应用于一个矩阵（mtx）。旋转矩阵通过欧拉角（在Y轴上旋转offsetAngle角度）创建。
+        mtx.multiply(
+          new THREE.Matrix4().makeRotationFromEuler(
+            new THREE.Euler(0, offsetAngle, 0)
+          )
+        );
+
+        var toRot = new THREE.Quaternion().setFromRotationMatrix(mtx); //计算出需要进行旋转的四元数值
+        model.quaternion.slerp(toRot, 0.2); // 使用球面线性插值（slerp）方法将模型的四元数值逐渐过渡到目标四元数值
+      }
+
+      progress += velocity;
+    } else {
+      progress = 0;
+    }
+  }
+}
+
+
+# 绘制库区
+
+        function generatePoints() {
+          // add 10 random spheres
+          var points = [new THREE.Vector3(0, 0, 0),new THREE.Vector3(1, 0, 0),new THREE.Vector3(1, 1, 0),new THREE.Vector3(0, 1, 0)];
+
+            for (var i = 0; i < 4; i++) {
+              var randomX = 1
+              var randomY = 0
+              var randomZ = -15 + Math.round(Math.random() * 10);
+
+              // Math.random(); //
+
+              points.push(new THREE.Vector3(randomX, randomY, randomZ));
+            }
+
+          spGroup = new THREE.Object3D();
+          var material = new THREE.MeshBasicMaterial({
+            color: 0xff0000,
+            transparent: false,
+          });
+          points.forEach(function (point) {
+            var spGeom = new THREE.SphereGeometry(0.2);
+            var spMesh = new THREE.Mesh(spGeom, material);
+            spMesh.position.copy(point);
+            spGroup.add(spMesh);
+          });
+          // add the points as a group to the scene
+          scene.add(spGroup);
+
+          // use the same points to create a convexgeometry
+          var hullGeometry = new THREE.ConvexGeometry(points);
+          hullMesh = createMesh(hullGeometry);
+          scene.add(hullMesh);
+        }
 
 # 好用的库
 

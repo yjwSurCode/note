@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>My first three.js app</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./three.js-master/build/three.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "./three.js/examples/jsm/controls/OrbitControls.js";
+      import { GLTFLoader } from "./three.js/examples/jsm/loaders/GLTFLoader.js";
+
+      let scene, camera, renderer;
+      let curve = null,
+        model = null;
+      let clock = new THREE.Clock();
+      let mixer;
+      let progress = 0; // 物体运动时在运动路径的初始位置，范围0~1
+      const velocity = 0.002; // 影响运动速率的一个值，范围0~1，需要和渲染频率结合计算才能得到真正的速率
+
+      // 渲染器开启阴影渲染：renderer.shadowMapEnabled = true;
+      // 灯光需要开启“引起阴影”：light.castShadow = true;
+      // 物体需要开启“引起阴影”和“接收阴影”：mesh.castShadow = mesh.receiveShadow = true;
+
+      function init() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        renderer = new THREE.WebGLRenderer();
+        // position and point the camera to the center of the scene
+        camera.position.set(5, 5, 5);
+        camera.lookAt(scene.position);
+
+        // 增加坐标系红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.
+        // 添加坐标系到场景中
+        const axes = new THREE.AxesHelper(20);
+        scene.add(axes);
+
+        // 调整背景颜色，边界雾化
+        scene.background = new THREE.Color(0xa0a0a0);
+        scene.fog = new THREE.Fog(0xa0a0a0, 10, 30);
+
+        // 半球形光源
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
+        hemiLight.position.set(0, 10, 0);
+        scene.add(hemiLight);
+
+        // 创建一个虚拟的球形网格 Mesh 的辅助对象来模拟 半球形光源 HemisphereLight.
+        const hemiLighthelper = new THREE.HemisphereLightHelper(hemiLight, 5);
+        scene.add(hemiLighthelper);
+
+        // 地面
+        const mesh = new THREE.Mesh(
+          new THREE.PlaneGeometry(100, 100),
+          new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false })
+        );
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.receiveShadow = true;
+        scene.add(mesh);
+
+        // 平行光
+        const directionalLight = new THREE.DirectionalLight(0xffffff);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.camera.near = 0.5;
+        directionalLight.shadow.camera.far = 50;
+        directionalLight.shadow.camera.left = -10;
+        directionalLight.shadow.camera.right = 10;
+        directionalLight.shadow.camera.top = 10;
+        directionalLight.shadow.camera.bottom = -10;
+        directionalLight.position.set(0, 5, 5);
+        scene.add(directionalLight);
+
+        // 用于模拟场景中平行光 DirectionalLight 的辅助对象. 其中包含了表示光位置的平面和表示光方向的线段.
+        const directionalLightHelper = new THREE.DirectionalLightHelper(
+          directionalLight,
+          5
+        );
+        scene.add(directionalLightHelper);
+
+        renderer.shadowMap.enabled = true;
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // 控制器
+        const controls = new OrbitControls(camera, renderer.domElement);
+      }
+
+      function loadModel() {
+        // 加载模型并开启阴影和接受阴影
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.setPath("./static/3dmod/gltf/").load(
+          "Soldier.glb",
+          function (gltf) {
+            gltf.scene.rotation.y = Math.PI;
+            console.log("gltf\ngltf", gltf);
+            gltf.scene.scale.set(1, 1, 1);
+            gltf.scene.traverse(function (object) {
+              if (object.isMesh) {
+                object.castShadow = true; //阴影
+                object.receiveShadow = true; //接受别人投的阴影
+              }
+            });
+
+            // 使用动画混合器及配置
+            mixer = startAnimation(
+              gltf.scene,
+              gltf.animations,
+              gltf.animations[1].name // animationName，这里是"Run"
+            );
+
+            scene.add(gltf.scene);
+            model = gltf.scene;
+          },
+          function (res) {
+            // console.log(res.total, res.loaded)
+          }
+        );
+      }
+
+      function makeCurve() {
+        // 红色代表 X 轴. 绿色代表 Y 轴. 蓝色代表 Z 轴.
+        // Create a closed wavey loop
+        curve = new THREE.CatmullRomCurve3([
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(5, 0, 0),
+          new THREE.Vector3(0, 0, 5),
+        ]);
+        curve.curveType = "catmullrom";
+        curve.closed = true; //设置是否闭环
+        curve.tension = 0.5; //设置线的张力，0为无弧度折线
+
+        // 为曲线添加材质在场景中显示出来，不添加到场景显示也不会影响运动轨迹，相当于一个Helper
+        const points = curve.getPoints(50);
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial({ color: 0x000000 });
+
+        // Create the final object to add to the scene
+        const curveObject = new THREE.Line(geometry, material);
+        scene.add(curveObject);
+      }
+
+      // 物体沿线移动方法
+      function moveOnCurve() {
+        if (curve == null || model == null) {
+          console.log("Loading");
+        } else {
+          if (progress <= 1 - velocity) {
+            const point = curve.getPointAt(progress); //获取样条曲线指定点坐标
+            const pointBox = curve.getPointAt(progress + velocity); //获取样条曲线指定点坐标
+
+            if (point && pointBox) {
+              model.position.set(point.x, point.y, point.z);
+              // model.lookAt(pointBox.x, pointBox.y, pointBox.z);//因为这个模型加载进来默认面部是正对Z轴负方向的，所以直接lookAt会导致出现倒着跑的现象，这里用重新设置朝向的方法来解决。
+
+              var targetPos = pointBox; //目标位置点
+              var offsetAngle = 0; //目标移动时的朝向偏移
+
+              // //以下代码在多段路径时可重复执行
+              var mtx = new THREE.Matrix4(); //创建一个4维矩阵
+              // .lookAt ( eye : Vector3, target : Vector3, up : Vector3 ) : this,构造一个旋转矩阵，从eye 指向 target，由向量 up 定向。
+              mtx.lookAt(model.position, targetPos, model.up); //设置朝向
+              mtx.multiply(
+                new THREE.Matrix4().makeRotationFromEuler(
+                  new THREE.Euler(0, offsetAngle, 0)
+                )
+              );
+              var toRot = new THREE.Quaternion().setFromRotationMatrix(mtx); //计算出需要进行旋转的四元数值
+              model.quaternion.slerp(toRot, 0.2);
+            }
+
+            progress += velocity;
+          } else {
+            progress = 0;
+          }
+        }
+      }
+
+      /**
+       * 启动特定网格对象的动画。在三维模型的动画数组中按名称查找动画
+       * @param skinnedMesh {THREE.SkinnedMesh} 要设置动画的网格
+       * @param animations {Array} 数组，包含此模型的所有动画
+       * @param animationName {string} 要启动的动画的名称
+       * @return {THREE.AnimationMixer} 要在渲染循环中使用的混合器
+       */
+      function startAnimation(skinnedMesh, animations, animationName) {
+        const m_mixer = new THREE.AnimationMixer(skinnedMesh);
+        const clip = THREE.AnimationClip.findByName(animations, animationName);
+
+        if (clip) {
+          const action = m_mixer.clipAction(clip);
+          action.play();
+        }
+
+        return m_mixer;
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        // 更新动画帧
+        if (mixer) {
+          mixer.update(clock.getDelta());
+        }
+        moveOnCurve();
+
+        renderer.render(scene, camera);
+      }
+
+      init();
+      loadModel();
+      makeCurve();
+      animate();
+    </script>
+  </body>
+</html>
