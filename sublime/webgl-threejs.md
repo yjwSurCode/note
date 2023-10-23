@@ -213,17 +213,18 @@ geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
 # 场景
 
-## 设计师给我的模型类型是 obj 的，还带有素材 mtl (obj+mtl) 库：vue-3d-model
+## !! 设计师给我的模型类型是 obj 的，还带有素材 mtl (obj+mtl) 库：vue-3d-model
+OBJ：文件包含了模型的几何信息，例如顶点坐标、面的定义等。
+MTL：文件包含了与模型相关的材质属性，例如颜色、纹理映射、光照参数等。
 
-首先安装 obj2gltf；该插件的作用是把 obj 格式转为 gltf 格式。
-cnpm i -g obj2gltf
+首先安装 obj2gltf；该插件的作用是把 obj 格式转为 gltf 格式 
+`npm i -g obj2gltf`
+`obj2gltf -i name.obj -o name.gltf`
 
-接着安装 gltf-pipeline 该插件的作用是把现有的 gltf 格式模型进行压缩，跟图片压缩一样。减少大小，更快的加载。
+接着安装`gltf-pipeline`该插件的作用是把现有的gltf格式模型进行压缩,跟图片压缩一样,减少大小,更快的加载。
+`npm i -g gltf-pipeline`
 
-cnpm i -g gltf-pipeline
-
-将 obj 模型转化 gltf 过程中，如果报错说没有找到 xx.mtl 文件时；解决方案：确定 mtl 和 obj 文件是否相同，其次 mtl 和 obj 文件放在同一录下面。
-
+ )!! 将 obj 模型转化 gltf 过程中，如果报错说没有找到 xx.mtl 文件时；解决方案：确定 mtl 和 obj 文件是否相同，其次 mtl 和 obj 文件放在同一录下面
 ENOENT: no such file or directory, open '/Users/surcode/Desktop/material-t/Seeget-3D/threeModule/public/BusGameMap.mtl'
 Could not read material file at /Users/surcode/Desktop/material-t/Seeget-3D/threeModule/public/BusGameMap.mtl. Attempting to read the material file from within the obj directory instead.
 ENOENT: no such file or directory, open '/Users/surcode/Desktop/material-t/Seeget-3D/threeModule/public/BusGameMap.mtl'
@@ -245,8 +246,11 @@ gltf 在用于 3d 展示时，图片部分要做 base64 解码，也需要消耗
 gltf-pipeline -i tm.gltf -o tm.glb
 
 ## .gltf + .bin + texture(图片)
+.gltf 文件是一种开放的三维模型文件格式，它使用 JSON 格式对模型的结构和属性进行描述。
+.bin 文件是 .gltf 文件的二进制数据文件，包含了模型的几何信息和材质数据。
+texture（纹理）是用于给模型表面添加颜色、纹理或图案的图像文件。
 
-droca
+ dracoLoader
 
 # glb 文件
 
@@ -369,13 +373,13 @@ solarSystem.add(sunMesh);<br/>
 solarSystem.add(earthMesh);
 
 代码例子
-![](2023-10-07-17-26-28.png)
-![](2023-09-19-10-53-34.png)
+![](./assets/2023-10-07-17-26-28.png)
+![](./assets/2023-09-19-10-53-34.png)
 
 例子：
 https://threejs.org/manual/examples/scenegraph-sun-earth-moon-axes.html
 
-![](2023-09-19-15-30-15.png)
+![](./assets/2023-09-19-15-30-15.png)
 
 ### 相机 tip
 
@@ -396,7 +400,7 @@ camera.lookAt( 0, 0, 0 );
 高光网格材质 MeshPhongMaterial `通过MeshPhongMaterial的高光亮度.shininess属性,可以控制高光反射效果 specular: 0x444444, //高光部分的颜色`
 基础网格材质 MeshBasicMaterial
 漫反射网格材质 MeshLambertMateria
-![](2023-09-21-14-30-45.png)
+![](./assets/2023-09-21-14-30-45.png)
 
 const material = new THREE.MeshPhongMaterial({
 color: 0xFF0000, // 红色 (也可以使用 CSS 的颜色字符串)
@@ -483,7 +487,7 @@ texture.repeat.set(repeats, repeats);
 
 const planeGeometry=new THREE.planeBufferGeometry()
 planeGeometry.setAttribute( 'uv2',new THREE.BufferAttribute( planeBufferGeometry.attribute.uv.array,2 ) )
-![Alt text](image-1.png)
+![Alt text](./assets/image-1.png)
 
 `aoMap 和 lightMap 纹理不能被变换。每个材质最多只能使用一次变换。`
 
@@ -521,8 +525,8 @@ mesh.rotation.x = Math.PI \* - .5; 将 mesh angle 旋转到-90 度
 环境光（AmbientLight） new THREE.AmbientLight(color, intensity);
 半球光（HemisphereLight） new THREE.HemisphereLight(skyColor, groundColor, intensity);
 方向光（平行光）（DirectionalLight） new THREE.DirectionalLight(color, intensity);
-![](2023-09-21-14-30-21.png)
-![](2023-09-21-14-30-45.png)
+![](./assets/2023-09-21-14-30-21.png)
+![](./assets/2023-09-21-14-30-45.png)
 
 # 摄像机 https://threejs.org/manual/#zh/cameras
 
@@ -564,7 +568,6 @@ ktx2Loader = new KTX2Loader();
 # 技巧!!!
 
 ## 按需加载
-
 render();
 controls.addEventListener( 'change', render );
 window.addEventListener( 'resize', render );
@@ -577,11 +580,9 @@ renderer.render(scene, camera); //执行渲染操作
 });//监听鼠标、键盘事件
 
 # 防止输出模糊处理
-
 renderer.setPixelRatio(window.devicePixelRatio);
 
 # 锯齿处理
-
 new THREE.WebGLRenderer( { antialias: true } );
 // 获取你屏幕对应的设备像素比.devicePixelRatio 告诉 threeJs,以免渲染模糊问题
 renderer.setPixelRatio(window.devicePixelRatio); //1---10
@@ -591,6 +592,9 @@ https://blog.pig1024.me/posts/5d7fc47447d84c6fc9bd0815
 
 元素按轨道移动
 https://threejs.org/manual/examples/debugging-mcve.html
+
+
+# 创建标注元素 缩放保持一致
 
 # 优化!!!
 
