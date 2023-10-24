@@ -20,3 +20,6 @@ sublime/html/lodash/simple-web-init/*node_modules
 sublime/note/ts-depot/*node_modules
 ts-depot/*node_modules/
 sublime/html/custom-webpack/web-init/*node_modules/
+
+hooks/hooks-master/*
+hooks/react-main/*

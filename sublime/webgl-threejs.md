@@ -48,20 +48,22 @@ document.getElementById('container').appendChild(warning);
 
 # VECTOR
 
-narmalize() //转化为单位向量  就是转化成位移
+narmalize() //转化为单位向量 就是转化成位移
 
 # EULER 欧拉角
 
 # Float32Array
-创建数组 
+
+创建数组
 var arr = new Float32Array(2);
 var arr = new Float32Array([21, 31]);
 
-# modal.traverse   
+# modal.traverse
+
 isMesh getObjectName
 
+# 本地(局部)坐标 世界坐标
 
-# 本地(局部)坐标  世界坐标
 本地(局部)坐标就是模型的位置属性
 
 世界坐标 = 模型的位置属性 + 父对象的位置属性
@@ -71,17 +73,38 @@ const v3=new Three.Vector3()
 mesh.getWorldPosition(v3)
 console.log(v3) 这就是网格的世界坐标
 
+# remove
+
+# visible
+
+# clone
+
+// 原始对象
+var originalObject = new THREE.Mesh(geometry, material);
+// 克隆对象
+var clonedObject = originalObject.clone();
+
+# copy
+
+// 源对象
+var sourceObject = new THREE.Object3D();
+sourceObject.position.set(1, 2, 3);
+// 目标对象
+var targetObject = new THREE.Object3D();
+// 复制源对象的位置属性到目标对象
+targetObject.position.copy(sourceObject.position);
 
 # 相机 https://threejs.org/manual/#zh/cameras
+
 
 `new THREE.PerspectiveCamera( fov, aspect, near, far );`
 
 //创建镜头
 //PerspectiveCamera() 中的 4 个参数分别为：
-//1、fov(field of view 的缩写)，可选参数，默认值为 50，指垂直方向上的角度，注意该值是度数而不是弧度
-//2、aspect，可选参数，默认值为 1，画布的高宽比，例如画布高 300 像素，宽 150 像素，那么意味着高宽比为 2
-//3、near，可选参数，默认值为 0.1，近平面，限制摄像机可绘制最近的距离，若小于该距离则不会绘制(相当于被裁切掉)
-//4、far，可选参数，默认值为 2000，远平面，限制摄像机可绘制最远的距离，若超出该距离则不会绘制(相当于被裁切掉)
+//1、fov(field of view 的缩写)，可选参数，默认值为 50，`视场角度` 指垂直方向上的角度，注意该值是度数而不是弧度,`视野角度fov越大，观察范围越大`
+//2、aspect，可选参数，默认值为 1，`画布的高宽比`，例如画布高 300 像素，宽 150 像素，那么意味着高宽比为 2
+//3、near，可选参数，默认值为 0.1，`近平面`，限制摄像机可绘制最近的距离，若小于该距离则不会绘制(相当于被裁切掉)
+//4、far，可选参数，默认值为 2000，`远平面`，限制摄像机可绘制最远的距离，若超出该距离则不会绘制(相当于被裁切掉)
 
 //以上 4 个参数在一起，构成了一个 “视椎”，关于视椎的概念理解，暂时先不作详细描述。
 const camera = new PerspectiveCamera(75, 2, 1, 50)
@@ -95,13 +118,48 @@ camera.lookAt(0,0,0);
 `任何时候摄像机的设置变动，我们需要调用摄像机的updateProjectionMatrix来更新设置 canvas变化也需要更新 `
 gui.add( camera, 'fov', 1, 180 ).onChange( ()=>camera.updateProjectionMatrix(););
 
+`control.OrbitControl会自动把lookAt设成默认值(0,0,0)`
+control.target.set 要同时设置
+
+- 可以借助输入相机实时位置
+- let controls = new OrbitControls(camera, renderer.domElement)
+  controls.addEventListener('change', () => {
+  renderer.render(scene, camera)
+  })
+  `记得设置controls.update()`
+
+# PerspectiveCamera 相机
+
+https://threejs.org/manual/examples/cameras-perspective-2-scenes.html
+
 ## 正交相机（OrthographicCamera）
 
+
+https://threejs.org/manual/examples/cameras-orthographic-2-scenes.html
 在这种投影模式下，无论物体距离相机距离远或者近，在最终渲染的图片中物体的大小都保持不变。
+zoom 属性可以改变视野大小
+
+# 计算两帧渲染时间
+
+const clock = new THREE.Clock();
+
+const spt = clock.getDelta()\*1000;//毫秒
+console.log('两帧渲染时间间隔(毫秒)',spt); // 16.7
+console.log('帧率 FPS',1000/spt); // 60
+
+# new Stats() 显示帧率
+
+//引入性能监视器 stats.js,显示帧率
+import Stats from 'three/addons/libs/stats.module.js';
+//!创建 stats 对象 查看渲染帧率
+const stats = new Stats();
+
+stats.update();//渲染循环中执行 stats.update()来刷新时间
 
 # 图元 https://threejs.org/manual/#zh/primitives
 
 `缓冲类型几何体BufferGeometry`
+threejs 的长方体 BoxGeometry、球体 SphereGeometry 等几何体都是基于 BufferGeometry (opens new window)类构建的，BufferGeometry 是一个没有任何形状的空几何体
 threejs 的长方体 BoxGeometry、球体 SphereGeometry 等几何体都是基于 BufferGeometry (opens new window)类构建的，BufferGeometry 是一个没有任何形状的空几何体
 
 geometry.setIndex( indices );
@@ -158,17 +216,18 @@ geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
 # 场景
 
-## 设计师给我的模型类型是 obj 的，还带有素材 mtl (obj+mtl) 库：vue-3d-model
+## !! 设计师给我的模型类型是 obj 的，还带有素材 mtl (obj+mtl) 库：vue-3d-model
+OBJ：文件包含了模型的几何信息，例如顶点坐标、面的定义等。
+MTL：文件包含了与模型相关的材质属性，例如颜色、纹理映射、光照参数等。
 
-首先安装 obj2gltf；该插件的作用是把 obj 格式转为 gltf 格式。
-cnpm i -g obj2gltf
+首先安装 obj2gltf；该插件的作用是把 obj 格式转为 gltf 格式 
+`npm i -g obj2gltf`
+`obj2gltf -i name.obj -o name.gltf`
 
-接着安装 gltf-pipeline 该插件的作用是把现有的 gltf 格式模型进行压缩，跟图片压缩一样。减少大小，更快的加载。
+接着安装`gltf-pipeline`该插件的作用是把现有的gltf格式模型进行压缩,跟图片压缩一样,减少大小,更快的加载。
+`npm i -g gltf-pipeline`
 
-cnpm i -g gltf-pipeline
-
-将 obj 模型转化 gltf 过程中，如果报错说没有找到 xx.mtl 文件时；解决方案：确定 mtl 和 obj 文件是否相同，其次 mtl 和 obj 文件放在同一录下面。
-
+ )!! 将 obj 模型转化 gltf 过程中，如果报错说没有找到 xx.mtl 文件时；解决方案：确定 mtl 和 obj 文件是否相同，其次 mtl 和 obj 文件放在同一录下面
 ENOENT: no such file or directory, open '/Users/surcode/Desktop/material-t/Seeget-3D/threeModule/public/BusGameMap.mtl'
 Could not read material file at /Users/surcode/Desktop/material-t/Seeget-3D/threeModule/public/BusGameMap.mtl. Attempting to read the material file from within the obj directory instead.
 ENOENT: no such file or directory, open '/Users/surcode/Desktop/material-t/Seeget-3D/threeModule/public/BusGameMap.mtl'
@@ -190,8 +249,11 @@ gltf 在用于 3d 展示时，图片部分要做 base64 解码，也需要消耗
 gltf-pipeline -i tm.gltf -o tm.glb
 
 ## .gltf + .bin + texture(图片)
+.gltf 文件是一种开放的三维模型文件格式，它使用 JSON 格式对模型的结构和属性进行描述。
+.bin 文件是 .gltf 文件的二进制数据文件，包含了模型的几何信息和材质数据。
+texture（纹理）是用于给模型表面添加颜色、纹理或图案的图像文件。
 
-droca
+ dracoLoader
 
 # glb 文件
 
@@ -271,9 +333,14 @@ return needResize;
 }
 
 if ( resizeRendererToDisplaySize( renderer ) ) {
-const canvas = renderer.domElement;
-camera.aspect = canvas.clientWidth / canvas.clientHeight;
-camera.updateProjectionMatrix();
+// 重置渲染器输出画布 canvas 尺寸
+renderer.setSize(window.innerWidth, window.innerHeight);
+// 全屏情况下：设置观察范围长宽比 aspect 为窗口宽高比
+`camera.aspect = window.innerWidth / window.innerHeight;`
+// 渲染器执行 render 方法的时候会读取相机对象的投影矩阵属性 projectionMatrix
+// 但是不会每渲染一帧，就通过相机的属性计算投影矩阵(节约计算资源)
+// 如果相机的一些属性发生了变化，需要执行 updateProjectionMatrix ()方法更新相机的投影矩阵
+`camera.updateProjectionMatrix()`
 }
 
 # 场景图!!! https://threejs.org/manual/#zh/scenegraph
@@ -312,10 +379,11 @@ solarSystem.add(earthMesh);
 ![](2023-10-07-17-26-28.png)
 ![](2023-09-19-10-53-34.png)
 
+
 例子：
 https://threejs.org/manual/examples/scenegraph-sun-earth-moon-axes.html
 
-![](2023-09-19-15-30-15.png)
+![](./assets/2023-09-19-15-30-15.png)
 
 ### 相机 tip
 
@@ -336,7 +404,7 @@ camera.lookAt( 0, 0, 0 );
 高光网格材质 MeshPhongMaterial `通过MeshPhongMaterial的高光亮度.shininess属性,可以控制高光反射效果 specular: 0x444444, //高光部分的颜色`
 基础网格材质 MeshBasicMaterial
 漫反射网格材质 MeshLambertMateria
-![](2023-09-21-14-30-45.png)
+![](./assets/2023-09-21-14-30-45.png)
 
 const material = new THREE.MeshPhongMaterial({
 color: 0xFF0000, // 红色 (也可以使用 CSS 的颜色字符串)
@@ -350,7 +418,11 @@ material.flatShading = true
 
 镜面高光 粗糙度 金属度
 
-# 纹理 https://threejs.org/manual/#zh/textures#hello
+![Alt text](image-2.png)
+
+# textures 纹理 https://threejs.org/manual/#zh/textures#hello
+
+要解决加载 gltf 的格式模型纹理贴图和原图不一样的问题 `render.outputCoding=THREE.sRGBEnding`
 
 THREE.RepeatWrapping：
 默认模式。当纹理坐标超出[0,1]范围时，会将其重复平铺到整个几何体上。
@@ -359,10 +431,9 @@ THREE.ClampToEdgeWrapping：
 当纹理坐标超出[0,1]范围时，会将其限制在[0,1]范围内，即不进行重复。超出部分会使用边缘像素进行填充。
 
 THREE.MirroredRepeatWrapping：
-与Repeat类似，但在每个重复周期中，会通过镜像方式翻转纹理。例如，在水平方向上，[0,1]范围之后会成为[1,0]范围。
+与 Repeat 类似，但在每个重复周期中，会通过镜像方式翻转纹理。例如，在水平方向上，[0,1]范围之后会成为[1,0]范围。
 
 ![Alt text](image.png)
-
 
 const texture = loader.load( 'https://threejs.org/manual/examples/resources/images/wall.jpg' );
 texture.colorSpace = THREE.SRGBColorSpace;
@@ -378,7 +449,6 @@ texture.colorSpace = THREE.SRGBColorSpace;
 const loader = new THREE.TextureLoader();
 loader.load( 'https://threejs.org/manual/examples/resources/imagesss/wall.jpg', ( texture ) => {
 
-
     	texture.colorSpace = THREE.SRGBColorSpace;
 
     	const material = new THREE.MeshBasicMaterial( {
@@ -391,6 +461,14 @@ loader.load( 'https://threejs.org/manual/examples/resources/imagesss/wall.jpg', 
     } );
 
 创建加载器
+const loadManager = new THREE.LoadingManager();
+const loader = new THREE.TextureLoader( loadManager );
+loadManager.onLoad = () => {
+loadingElem.style.display = 'none';
+const cube = new THREE.Mesh( geometry, materials );
+scene.add( cube );
+cubes.push( cube ); // add to our list of cubes to rotate
+};
 const loadManager = new THREE.LoadingManager();
 const loader = new THREE.TextureLoader( loadManager );
 loadManager.onLoad = () => {
@@ -417,28 +495,31 @@ texture.colorSpace = THREE.SRGBColorSpace;
 const repeats = planeSize / 2;
 texture.repeat.set(repeats, repeats);
 
+
 环境遮挡 aoMap  需要第二组UV
 
 const planeGeometry=new THREE.planeBufferGeometry()
 planeGeometry.setAttribute( 'uv2',new THREE.BufferAttribute( planeBufferGeometry.attribute.uv.array,2 ) )
-![Alt text](image-1.png)
+![Alt text](./assets/image-1.png)
 
 `aoMap 和 lightMap 纹理不能被变换。每个材质最多只能使用一次变换。`
-
 
 # RBP
 
 # 法线贴图
+
 const fxTexture=textLoader('./')
+
 <h3>[property:Texture normalMap]</h3>
 <p> 用于创建法线贴图的纹理。RGB值会影响每个像素片段的曲面法线，并更改颜色照亮的方式。法线贴图不会改变曲面的实际形状，只会改变光照。
 In case the material has a normal map authored using the left handed convention, the y component of normalScale
 should be negated to compensate for the different handedness.
 </p>
 
+# PBR 基于物理渲染
 
 
-# 光照 https://threejs.org/manual/examples/lights-directional-w-helper.html
+# 光照    https://threejs.org/manual/examples/lights-directional-w-helper.html
 
 回顾 PointLight
 {
@@ -450,53 +531,58 @@ should be negated to compensate for the different handedness.
 
 }
 
-mesh.rotation.x = Math.PI \* - .5; 将 mesh angle 旋转到-90 度
+
+设置点光源的照射位置
+spotLight.target=sphere;
+
+
+mesh.rotation.x = Math.PI * - .5;  将mesh angle旋转到-90度
 
 环境光（AmbientLight） new THREE.AmbientLight(color, intensity);
 半球光（HemisphereLight） new THREE.HemisphereLight(skyColor, groundColor, intensity);
 方向光（平行光）（DirectionalLight） new THREE.DirectionalLight(color, intensity);
-![](2023-09-21-14-30-21.png)
-![](2023-09-21-14-30-45.png)
+![](./assets/2023-09-21-14-30-21.png)
+![](./assets/2023-09-21-14-30-45.png)
 
-# 分组 group
- group = new THREE.Group();
- group.add(sphere);
- group.add(cube);
+# 摄像机  https://threejs.org/manual/#zh/cameras
 
-# 摄像机 https://threejs.org/manual/#zh/cameras
 
 # 阴影 https://threejs.org/manual/#zh/shadows
+
 1、材质要满足能够对光照有反应
-2、设置渲染器开启阴影的计算renderer.shadowMap.enabled=true;
-3、设置光照投射阴影directionalLight.castShadow=true;
-4、设置物体投射阴影sphere.castShadow=true;
-5、设置物体接收阴影plane.receiveShadow=true;
+2、设置渲染器开启阴影的计算 renderer.shadowMap.enabled=true;
+3、设置光照投射阴影 directionalLight.castShadow=true;
+4、设置物体投射阴影 sphere.castShadow=true;
+5、设置物体接收阴影 plane.receiveShadow=true;
 
-# 添加骨骼助手 SkeletonHelper
-skeleton = new THREE.SkeletonHelper(model);
-skeleton.visible = false;
-scene.add(skeleton);
+## GLTFLoader
+// 创建加载管理器
+const manager = new THREE.LoadingManager();
+new GLTFLoader(manager)
 
+## dracoLoader
 
-# 管理模型的动画
-// 创建一个AnimationMixer对象，用于管理模型的动画
-const mixer = new THREE.AnimationMixer(model); // 创建一个AnimationMixer对象，参数为模型对象
+//( 创建 GLTFLoader 对象
+const gltfLoader = new GLTFLoader();
+//( 创建 DRACOLoader 对象
+const dracoLoader = new DRACOLoader();
+//( 设置 DRACO 解码器的配置，使用 JavaScript 版解码器
+dracoLoader.setDecoderConfig({ type: 'js' });
+//( 设置 DRACO 解码器的路径
+dracoLoader.setDecoderPath('jsm/libs/draco/');
+//( 将 DRACOLoader 对象设置到 GLTFLoader 中
+gltfLoader.setDRACOLoader(dracoLoader);
+//( 使用异步方式加载 GLTF 模型文件
+const gltf = await gltfLoader.loadAsync( 'models/gltf/1.glb' );
+gltf.scene.traverse( n => {
+} );
+scene.add( gltf.scene );
 
-model = gltf.scene;
-mixer = new THREE.AnimationMixer(model);
-idleAction = mixer.clipAction(animations[0]);
-walkAction = mixer.clipAction(animations[3]);
-runAction = mixer.clipAction(animations[1]);
-
-// 设置AnimationMixer的时间倍速，控制动画播放速度
-mixer.timeScale = speed;
-
-mixer.addEventListener("loop", onLoopFinished);
-
-mixer.update(mixerUpdateDelta);
+## ktx2Loader
+// 用于加载和解析 KTX2 格式的纹理文件。KTX2 是一种高效的纹理压缩格式，可以显著减少纹理文件的大小并提高加载性能
+ktx2Loader = new KTX2Loader();
 
 # 技巧!!!
-
 ## 按需加载
 
 render();
@@ -510,17 +596,22 @@ controls.addEventListener('change', function () {
 renderer.render(scene, camera); //执行渲染操作
 });//监听鼠标、键盘事件
 
-输出模糊处理
+# 防止输出模糊处理
 renderer.setPixelRatio(window.devicePixelRatio);
 
-锯齿处理
+# 锯齿处理
 new THREE.WebGLRenderer( { antialias: true } );
+// 获取你屏幕对应的设备像素比.devicePixelRatio 告诉 threeJs,以免渲染模糊问题
+renderer.setPixelRatio(window.devicePixelRatio); //1---10
 
-threejs 基础总结：
+threeJs 基础总结：
 https://blog.pig1024.me/posts/5d7fc47447d84c6fc9bd0815
 
 元素按轨道移动
 https://threejs.org/manual/examples/debugging-mcve.html
+
+
+# 创建标注元素 缩放保持一致
 
 # 优化!!!
 

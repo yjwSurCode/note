@@ -341,6 +341,23 @@ git push -u origin master -f –强制提交
 http://blog.csdn.net/u013647382/article/details/53400530
 
 
+# 问题：：
+You have not concluded your merge (MERGE_HEAD exists).
+Please, commit your changes before you can merge.
+
+解决办法：强行让本地分支覆盖远程分支gitUndo the merge and pull again.
+
+To undo a merge:
+
+git merge --abort [Since git version 1.7.4]
+
+git reset --merge [prior git versions]
+
+Resolve the conflict.
+
+Don't forget to add and commit the merge.
+
+git pull now should work fine.
 
 
 
