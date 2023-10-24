@@ -429,42 +429,115 @@ const res = (String(data.value).split('.')[0] || []).length > 7 ? String(data.va
 console.log(res, 'res')
 
 
-https://github.com/tc39/proposal-decorators
-https://babeljs.io/docs/en/babel-plugin-proposal-decorators#options
+// https://github.com/tc39/proposal-decorators
+// https://babeljs.io/docs/en/babel-plugin-proposal-decorators#options
 
-function addConcole(target) {
-    // 拓展原型方法
-    target.prototype.log = function (msg) {
-        console.log(`[${new Date()} ${msg}`);
-    };
-    // 拓展静态属性
-    target.myName = '一个类'
-    return target;
+// function addConcole(target) {
+//     // 拓展原型方法
+//     target.prototype.log = function (msg) {
+//         console.log(`[${new Date()} ${msg}`);
+//     };
+//     // 拓展静态属性
+//     target.myName = '一个类'
+//     return target;
+// }
+
+// @addConcole
+// class MyClass {
+//     constructor() { }
+// }
+
+// const myObj = new MyClass();
+// myObj.log('林三心');
+// // [Sat Jul 08 2023 17:31:55 GMT+0800 (中国标准时间) 林三心
+// console.log(MyClass.myName)
+// // 一个类
+
+
+
+// function testable(isTestable) {
+//     return function (target) {
+//         target.isTestable = isTestable;
+//     }
+// }
+
+// @testable(true)
+// class MyTestableClass { }
+// MyTestableClass.isTestable // true
+
+// @testable(false)
+// class MyClass { }
+// MyClass.isTestable // false
+
+
+
+
+function InsertSort(arr, len) {
+    // 检查数据合法性
+    if (arr == null || len <= 0) {
+        return;
+    }
+    for (let i = 1; i < len; i++) {
+        const tmp = arr[i];
+        let j
+        for (j = i - 1; j >= 0; j--) {
+            //如果比tmp大把值往后移动一位
+            if (arr[j] > tmp) {
+                arr[j + 1] = arr[j];
+            }
+            else {
+                break;
+            }
+        }
+        arr[j + 1] = tmp;
+    }
+}
+const arrayList = [123, 12312, 123, 123, 12321393, 231, 123, 123, 3, 2, 1]
+console.log('9999', InsertSort(arrayList, arrayList.length))
+
+
+function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i];
+        let j = i - 1;
+
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+
+        arr[j + 1] = key;
+    }
+
+    return arr;
 }
 
-@addConcole
-class MyClass {
-    constructor() { }
-}
+const sortedArray = insertionSort(arrayList);
 
-const myObj = new MyClass();
-myObj.log('林三心');
-// [Sat Jul 08 2023 17:31:55 GMT+0800 (中国标准时间) 林三心
-console.log(MyClass.myName)
-// 一个类
+console.log(insertionSort(arrayList), '0000')
 
 
+//  function BinaryInsertSort(arr,len){
+//    const key, left, right, middle;
+//     for (let i=1; i<len; i++)
+//     {
+//         key = a[i];
+//         left = 0;
+//         right = i-1;
+//         while (left<=right)
+//         {
+//             middle = (left+right)/2;
+//             if (a[middle]>key)
+//                 right = middle-1;
+//             else
+//                 left = middle+1;
+//         }
 
-function testable(isTestable) {
-  return function(target) {
-    target.isTestable = isTestable;
-  }
-}
+//         for(int j=i-1; j>=left; j--)
+//         {
+//             a[j+1] = a[j];
+//         }
 
-@testable(true)
-class MyTestableClass {}
-MyTestableClass.isTestable // true
-
-@testable(false)
-class MyClass {}
-MyClass.isTestable // false
+//         a[left] = key;
+//     }
+//  }
