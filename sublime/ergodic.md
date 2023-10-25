@@ -2,13 +2,10 @@
 https://github.com/dg92/Performance-Analysis-JS
 
 1：for
-for (int i = 0; i < 10; i++) {
-
+for (let i = 0; i < 10; i++) {
     continue // 后面的语句不执行，进入下一次 //  continue一般配合判断条件使用
-
-break // 跳出当前循环 // 一般配合判断语句使用
-
-return 当程序运行到 return; 语句时，会终止循环，结束当前方法。
+    break // 跳出当前循环 // 一般配合判断语句使用
+    return 当程序运行到 return; 语句时，会终止循环，结束当前方法。
 }
 
 2： for( ...in )
