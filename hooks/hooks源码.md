@@ -88,7 +88,7 @@ setState(value);
 return [getState(), setState]; // 返回当前状态值及状态更新函数
 }
 
-# useEffect
+# useEffect  `https://jser.dev/2023-07-08-how-does-useeffect-work/#32-flushpassiveeffects` `https://juejin.cn/post/7215485778029723706`
 
 `mountEffect`---> mountEffectImpl(MountPassiveDevEffect | PassiveEffect | PassiveStaticEffect, HookPassive,create, deps,);
 ![Alt text](./assets/image-4.png)
@@ -113,9 +113,55 @@ function `mountEffectImpl`(
 `pushEffect`
 ![Alt text](./assets/image-5.png)
 
+```
+function updateEffectImpl(
+  fiberFlags: Flags,
+  hookFlags: HookFlags,
+  create: () => (() => void) | void,
+  deps: Array<mixed> | void | null,
+): void {
+  const hook = updateWorkInProgressHook();
+  const nextDeps = deps === undefined ? null : deps;
+  const effect: Effect = hook.memoizedState;
+  const inst = effect.inst;
 
+  // currentHook is null on initial mount when rerendering after a render phase
+  // state update or for strict mode.
+  if (currentHook !== null) {
+    if (nextDeps !== null) {
+      const prevEffect: Effect = currentHook.memoizedState;
+      const prevDeps = prevEffect.deps;
+      if (areHookInputsEqual(nextDeps, prevDeps)) {
+        hook.memoizedState = pushEffect(hookFlags, create, inst, nextDeps);
+        return;
+      }
+    }
+  }
 
-mountEffectImpl
+  currentlyRenderingFiber.flags |= fiberFlags;
+
+  hook.memoizedState = pushEffect(
+    HookHasEffect | hookFlags,
+    create,
+    inst,
+    nextDeps,
+  );
+}
+```
+
+```
+type EffectInstance = {
+  destroy: void | (() => void),
+};
+
+export type Effect = {
+  tag: HookFlags,
+  create: () => (() => void) | void,
+  inst: EffectInstance,
+  deps: Array<mixed> | null,
+  next: Effect,
+};
+```
 
 
 `简易版本useEffect`
@@ -275,9 +321,6 @@ return memoizedState.memoizedCallback;
 # useContext
 
 ## 源码解析
-
-
-
 function mountWorkInProgressHook(): Hook {
   const hook: Hook = {
     memoizedState: null,
