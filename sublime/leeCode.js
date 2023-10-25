@@ -541,3 +541,29 @@ console.log(insertionSort(arrayList), '0000')
 //         a[left] = key;
 //     }
 //  }
+
+
+
+function test(n) {
+    let res = 1     // 1次
+    let i = 0       // 1次
+    for (; i < n; i++) {   // n+n=2n次
+        res += i    // n次
+    }
+    return res;   // 1次
+}
+
+function test(n) {
+    let res = 1     // 1次
+    let i = 0       // 1次
+    for (; i < n; i++) {   // n+n=2n次
+        let J = 0   //1
+        for (; J < n; J++)  // n^2+n^2=2n^2次
+            res = res + (i * J)  // n^2次
+    }
+
+    return res   // 1次
+}
+
+
+console.log(test(3), 'test')

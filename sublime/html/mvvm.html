@@ -17,6 +17,24 @@
     </div>
   </body>
 </html>
+<script>
+  (function (n) {
+    const e = n.document,
+      t = e.documentElement,
+      i = 750,
+      d = i / 100,
+      o = "orientationchange" in n ? "orientationchange" : "resize",
+      a = function () {
+        let n = t.clientWidth || 375;
+        n > 750 && (n = 750);
+        t.style.fontSize = n / d + "px";
+      };
+    a();
+    e.addEventListener &&
+      (n.addEventListener(o, a, !1),
+      e.addEventListener("DOMContentLoaded", a, !1));
+  })(window);
+</script>
 <!-- 【重点分析】接下来梳理一下这段代码的思路，顺便了解一下 MVVM 闭包的艺术：
 [observe 函数]：首先我们会对需要响应式的 data 对象进行 for 循环遍历，为 data 的每一个 key 映射一个观察者对象
 在 ES6 中，for 循环每次执行，都可以形成闭包，因此这个观察者对象就存放在闭包中
