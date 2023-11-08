@@ -285,8 +285,41 @@ ref={ref} // 4 >
 
 export default App;
 
-# useCallback 源码解析
+# useCallback 用法及源码
+传个变量去子组件 当变量不改变是组件不会刷新,但是传入的是函数，不行，走不通。会重新渲染。
+`useCallback的依赖改变就会渲染`
 
+## useCallback用法：
+### 父组件**/
+const Parent = () => {
+    const [parentState,setParentState] = useState(0);  //父组件的state
+    
+    //11111
+    const toChildFun = () => {
+        console.log("需要传入子组件的函数");
+    }
+    //22222
+    const toChildFun = useCallback(()=>{
+        console.log("需要传入子组件的函数");
+    },[])
+    
+    return (<div>
+          <Button onClick={() => setParentState(val => val+1)}>
+              点击我改变父组件中与Child组件无关的state
+          </Button>
+          //将父组件的函数传入子组件
+          <Child count={count} fun={toChildFun}></Child>
+    <div>)
+}
+
+### memo保护的子组件
+const Child = memo(() => {
+    console.log("我被打印了就说明子组件重新构建了")
+    return <div><div>
+})
+
+
+# useCallback 源码解析
 function useCallback(callback, deps) {
 // 从 Hook 环境中获取当前的 Fiber 对象
 const fiber = getWorkInProgressFiber();
