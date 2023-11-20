@@ -356,3 +356,21 @@ redis.set("name", "Condor Hero").then(res => {
 消息队列：
 
 回流(事务)：
+
+
+
+
+# Nuxt
+npx nuxi@latest init <my-project>
+
+
+
+## typescript 
+yarn add --dev vue-tsc typescript
+
+
+
+静态资源部署
+
+
+ssr形式部署
