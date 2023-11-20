@@ -158,14 +158,18 @@ stats.update();//渲染循环中执行 stats.update()来刷新时间
 
 # 图元 https://threejs.org/manual/#zh/primitives
 
+# BufferGeometry
 `缓冲类型几何体BufferGeometry`
 threejs 的长方体 BoxGeometry、球体 SphereGeometry 等几何体都是基于 BufferGeometry (opens new window)类构建的，BufferGeometry 是一个没有任何形状的空几何体
 threejs 的长方体 BoxGeometry、球体 SphereGeometry 等几何体都是基于 BufferGeometry (opens new window)类构建的，BufferGeometry 是一个没有任何形状的空几何体
+
+顶点坐标、面索引、顶点颜色、顶点法向量、顶点UV
 
 geometry.setIndex( indices );
 geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
 geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
 
 图元种类(按英文首字母排序) 图元构造函数
 盒子(Box) BoxBufferGeometry、BoxGeometry
@@ -402,12 +406,14 @@ camera.lookAt( 0, 0, 0 );
 # 材质 https://threejs.org/manual/#zh/materials
 
 高光网格材质 MeshPhongMaterial `通过MeshPhongMaterial的高光亮度.shininess属性,可以控制高光反射效果 specular: 0x444444, //高光部分的颜色`
+MeshBasicMaterial是一种不需要光照参数就可见的材质
+
 基础网格材质 MeshBasicMaterial
 漫反射网格材质 MeshLambertMateria
 ![](./assets/2023-09-21-14-30-45.png)
 
 const material = new THREE.MeshPhongMaterial({
-color: 0xFF0000, // 红色 (也可以使用 CSS 的颜色字符串)
+color: 0x444444, // 红色 (也可以使用 CSS 的颜色字符串)
 flatShading: true,
 });
 另一种是在实例化之后再设置
@@ -617,6 +623,15 @@ https://threejs.org/manual/examples/debugging-mcve.html
 
 大量对象的优化 https://threejs.org/manual/#zh/optimize-lots-of-objects
 
+
+# threeJS 常见优化手段
+https://discoverthreejs.com/zh/tips-and-tricks/
+
+
+# 好用的库
+
+相机控制库 ：https://www.npmjs.com/package/camera-controls
+
 # 生成曲线,几何体
 
 // 三维向量Vector3创建一组顶点坐标
@@ -726,9 +741,7 @@ function moveOnCurve() {
           scene.add(hullMesh);
         }
 
-# 好用的库
 
-相机控制库 ：https://www.npmjs.com/package/camera-controls
 
 scene.position
 {
