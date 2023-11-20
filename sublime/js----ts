@@ -975,7 +975,52 @@ ASCII 码一共规定了128个字符的编码,
 
 ## Unicode UTF-8 UTF-16
 
+Unicode(统一码)
+Unicode 是一个字符集（字符的集合）,它定义了世界上几乎所有字符的唯一标识符。每个字符都有一个唯一的代码点,用十六进制表示。Unicode 的目标是为全球范围内的所有字符提供一个统一的编码方案，以便在不同的计算机系统和应用程序之间进行字符的一致交换和处理。
+
+UTF-8(Unicode 转换格式-8位)
+UTF-8 是一种变长编码方案，用于将 Unicode 字符编码为字节序列。它是最常用的字符编码方案之一
+
+UTF-16(Unicode 转换格式-16位)
+UTF-16 也是一种变长编码方案，用于将 Unicode 字符编码为字节序列。UTF-16 的编码规则如下：
+
 ###!  cryptojs  md5  sha1 sha256  ase 加密方式
+
+MD5（Message Digest Algorithm 5）：
+MD5 是一种广泛使用的哈希函数,将任意长度的数据映射为一个固定长度(128 位)的哈希值。MD5 算法已经被广泛应用于数据完整性校验、密码存储等领域。然而，由于其存在碰撞攻击和弱点被发现，不推荐在安全性要求较高的场景中使用。
+
+SHA-1（Secure Hash Algorithm 1）：
+SHA-1 是一种哈希函数，将任意长度的数据映射为一个固定长度（160 位）的哈希值。SHA-1 在过去广泛使用，但由于其存在碰撞攻击和安全性问题，已被广泛弃用。
+
+SHA-256（Secure Hash Algorithm 256-bit）：
+SHA-256 是 SHA-2 系列中的一种哈希函数，将任意长度的数据映射为一个固定长度（256 位）的哈希值。SHA-256 目前被广泛应用于密码学、数字签名等领域，被认为是安全可靠的哈希算法之一。
+
+AES（Advanced Encryption Standard）：
+AES 是一种对称加密算法，用于加密和解密数据。它是目前最流行的对称加密算法之一。AES 支持不同的密钥长度（128 位、192 位和 256 位），并以分组密码的形式进行加密。
+
+🌰:
+import CryptoJS from 'crypto-js';
+
+//? MD5
+const message = 'Hello, World!';
+const md5Hash = CryptoJS.MD5(message).toString();
+console.log(md5Hash);
+
+// SHA-1
+const sha1Hash = CryptoJS.SHA1(message).toString();
+console.log(sha1Hash);
+
+// SHA-256
+const sha256Hash = CryptoJS.SHA256(message).toString();
+console.log(sha256Hash);
+
+// AES 加密解密
+const plaintext = 'Sensitive data';
+const key = 'SecretKey123';
+const encrypted = CryptoJS.AES.encrypt(plaintext, key).toString();
+console.log(encrypted);
+const decrypted = CryptoJS.AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8);
+console.log(decrypted);
 
 
 #!   web worker基本用法

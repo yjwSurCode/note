@@ -158,7 +158,9 @@ pre[cur] = 1
 return pre
 },{})
 console.log(nameNum); //{Alice: 2, Bob: 1, Tiff: 1, Bruce: 1}
+
 （2）数组去重
+Array.from(new Set(arr))
 
 let arr = [1,2,3,4,4,1]
 let newArr = arr.reduce((pre,cur)=>{
@@ -211,3 +213,47 @@ console.log(sum) //60
 arr.splice(index, 1);
 console.log(1);
 });
+
+
+
+
+
+
+
+<!-- 拓展 -->
+数组去重
+Array.from(new Set(arr))
+
+
+function unique(arr) {
+    if (!Array.isArray(arr)) {
+        console.log('type error!')
+        return
+    }
+    var array = [];
+    for (var i = 0; i < arr.length; i++) {
+        if (array .indexOf(arr[i]) === -1) {
+            array .push(arr[i])
+        }
+    }
+    return array;
+}
+
+const arr = [{ id: 1 }, { id: 2 }, { id: 1 }];
+// const arr = [1, 2, 3, 4, 1, 2, 3];
+let newArr = arr.reduce((pre, cur) => {
+  // 检查累加器中是否已存在具有相同 id 的对象
+  const existingObject = pre.find((obj) => obj.id === cur.id);
+  // 如果不存在，则将当前对象添加到累加器中
+  if (!existingObject) {
+    pre.push(cur);
+  }
+  return pre;
+
+  //   if (!pre.includes(cur)) {
+  //     return pre.concat(cur);
+  //   } else {
+  //     return pre;
+  //   }
+}, []);
+console.log(newArr);

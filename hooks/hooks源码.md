@@ -1,9 +1,11 @@
 # useRef `https://blog.csdn.net/weixin_46463785/article/details/130648498`
-const a=useRef
-const b=useRef
+// useRef会在所有的render中保持对返回值的唯一引用。因为所有对ref的赋值和取值拿到的都是最终的状态，
+// 并不会因为不同的render中存在不同的隔离。
+// 简单来说，你可以将useRef的返回值，想象成为一个全局变量。
 
-const [aa,setAa]=useState()
-const [bb,setAb]=useState()
+// react 中有什么办法可以持久化一个变量，而且不用担心意外的变量回收？
+// 答案是，useRef，它本身的逻辑就是分配一个脱离 react 声明周期的对象，并在 mount 时初始化一次，
+// 之后通过 current 指针来修改或使用
 
 function mountRef<T>(initialValue: T): {| current: T |} {
 const hook = mountWorkInProgressHook();
@@ -178,6 +180,43 @@ function useEffect(callback, dependencies) {
   }
 }
 
+# return 
+## 在组件挂载时订阅事件
+const subscription = someEventEmitter.subscribe(handleEvent);
+
+// 返回一个清理函数，在组件卸载时取消订阅
+return () => {
+  subscription.unsubscribe();
+};
+
+## 清除定时器
+const timerId = setInterval(() => {
+    // 执行定时操作
+  }, 1000);
+
+  // 返回清理函数，在组件卸载或下一次副作用操作前清除定时器
+  return () => {
+    clearInterval(timerId);
+  };
+
+## 关闭WebSocket连接
+ const socket = new WebSocket('wss://socket.example.com');
+
+  // 添加事件监听器等WebSocket配置
+
+  // 返回清理函数，在组件卸载或下一次副作用操作前关闭WebSocket连接
+  return () => {
+    socket.close();
+  };
+
+## 取消键盘事件监听  或者元素绑定事件
+    window.addEventListener('keypress', handleKeyPress);
+
+    // 返回清理函数，在组件卸载或下一次副作用操作前取消键盘事件监听
+    return () => {
+      window.removeEventListener('keypress', handleKeyPress);
+    };
+
 # useLayoutEffect 详解
 
 当组件所有 DOM 都渲染完成后，同步调用 useLayoutEffect，然后再调用 useEffect。
@@ -350,6 +389,29 @@ return memoizedState.memoizedCallback;
 }
 
 # useReducer `https://reactjs.org/docs/hooks-reference.html#usereducer`
+
+const initialState = {n: 0}
+const reducer = (state, action) => {
+  switch (action.type) {
+    case '+':
+        return {n: state.n + 1};
+    case '-':
+        return {n: state.n - 1};
+    default:
+      alert('unknow type')
+      break;
+  }
+}
+function App() {
+  const [state, dispatch] = useReducer(reducer, initialState)
+  return (
+    <div className="App">
+      <h1>n: {state.n}</h1>
+      <button onClick={() => dispatch({type: '+'})}>+1</button>
+      <button onClick={() => dispatch({type: '-'})}>-1</button>
+    </div>
+  );
+}
 
 # useContext
 
