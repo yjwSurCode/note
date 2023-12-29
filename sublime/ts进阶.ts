@@ -45,9 +45,14 @@ const eg1: UnknownEmployee = { name: '12' };
 //! extends 是继承一个新的接口或者类，从父类或者接口继承所有的属性和方法，不可以重写属性，但可以重写方法
 //! implements 是对某个接口或者类型的实现继承，必须满足接口的类型规范。
 
-//infer   ：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+//infer   ：：：：：：：：：：：：：：：：：：：：：
+type ElementOf<T> = T extends Array<infer E> ? E : never;
 
-// promise 泛型
+type TTuple = [string, number];
+
+type ToUnion = ElementOf<TTuple>; // string | number
+
+// Promise 泛型
 // Promise 是一种用于异步编程的类型，它接受两个泛型参数：第一个泛型参数表示 resolve 的类型，第二个泛型参数表示 reject 的类型。
 
 export type Service<T, P extends any[]> = (...args: P) => Promise<T>;
@@ -109,9 +114,10 @@ bname<string>('55555');
 
 type User = { name: string; age: number };
 
-const users: Record<string, User> = {
+const users: Record<string|number, User> = {
   '123': { name: 'Alice', age: 20 },
   '456': { name: 'Bob', age: 30 },
+  456: { name: 'Bob', age: 30 },
 };
 
 const cname = <T extends Record<string, unknown>>(x: T): T => x;

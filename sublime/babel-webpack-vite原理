@@ -5,17 +5,15 @@
 (AST: 它就是一棵'对象树'，用来表示代码的语法结构。)
 
 babel初步了解(https://zhuanlan.zhihu.com/p/352878760)(npm install --save-dev @babel/core @babel/cli @babel/preset-env)
+(Babel 自带了一个内置的 CLI 命令行工具，可通过命令行编译文件)
 
-1：Babel 自带了一个内置的 CLI 命令行工具，可通过命令行编译文件
-
-架构和原理 + 实战（https://juejin.cn/post/6844903956905197576#babel-%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B）
+Babel架构和原理 + 实战(https://juejin.cn/post/6844903956905197576#babel-%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B）
 
 # babel原理 过程
 https://xie.infoq.cn/article/b97767aba29a13cb0c49fdeb0
 
 ; ast代码转换网址
 代码案例演示：https://astexplorer.net/#/KJ8AjD6maa
-
 
 # babel的常用插件：：：：：：：：：：：：：：：：：：：：：：
 @babel/plugin-proposal-class-properties
@@ -54,9 +52,7 @@ core-js polyfill的类库
 (core-js 是babel-polyfill 的底层依赖)
 
 
-
-
-#  Webpack：：：：：：：：：：：：：：：：：：(https://webpack.docschina.org/)  
+##!  Webpack (https://webpack.docschina.org/)  
 # 流程理解 https://juejin.cn/post/7170852747749621791
 
 Webpack是一种前端资源构建工具，一个静态模块打包器
@@ -82,11 +78,11 @@ Webpack是一种前端资源构建工具，一个静态模块打包器
 5：devServer开发服务器------------webpack-dev-server  hot热替换
 6：optimization优化
 7：module模块-----针对不同的文件 module里面可以通过不同的loader来处理
-7.1：rules:{ test include exclude use }在其中配置不同类型文件所使用的不同loader，例如某些loader可以将react的代码及其依赖自动变成一个js文件
-
-🌰
+7.1：loader机制
+rules:{ test include exclude use }在其中配置不同类型文件所使用的不同loader,
+例如某些loader可以将react的代码及其依赖自动变成一个js文件
 module{
-rules：:[
+rules:[
   {
      test:/\.js$/,
      indclude:srcPath
@@ -102,7 +98,6 @@ rules：:[
 }
 # babel-loader(jsx--->js) 
 # style-loader,css-loader(css) 
-
 8：plugins插件
   plugins: [
     new HtmlwebpackPlugin({
@@ -115,6 +110,56 @@ rules：:[
   ]
 1. html-webpack-plugin能自动将改名后的文件加载到原先引用它的文件中
 1. DefinePlugin能将常量插入文件中
+
+# 彻底弄懂Webpack中的Loader机制 https://juejin.cn/post/7157739406835580965
+Loader 本质上是导出为函数的 JavaScript 模块。它接收资源文件或者上一个 Loader 产生的结果作为入参，也可以用多个 Loader 函数组成 loader chain(链)最终输出转换后的结果
+在 Loader 的运行过程中，如果发现该 Loader 上有pitch属性,会先执行 pitch 阶段，再执行 normal 阶段。
+
+🌰手写 babel-loader  将箭头函数转普通函数
+```
+const babel = require("@babel/core");
+const path = require("path");
+function babelLoader(source) {
+  //loade里面的this=loaderContext，是一个唯一的对象，不管在哪个loader或方法里，它的this都是同一个对象，称为loaderContext，这个等会就会实现
+  const options = this.getOptions(); //拿到在webpack中传递给该loader的参数，也就是presets: ["@babel/preset-env"],
+  console.log("自己写的babel-loader");
+  const { code } = babel.transformSync(source, options); //交给babel库去解析
+  return code;
+}
+module.exports = babelLoader;
+```
+
+🌰手写less-loader   从下往上 从右往左 
+```
+"style-loader", //将css内容变成style标签插入到html中去
+"css-loader",   //一般会解析url合@import等语法
+"less-loader",  //将less=>css
+```
+
+# 彻底弄懂Webpack中的Plugin插件
+可以在构建流程中插入我们的自定义的行为
+本质上就是一种事件流的机制，到了固定的时间节点就广播特定的事件，用户可以在事件内执行特定的逻辑，类似于生命周期
+
+```
+class DemoPlugin {
+  apply(compiler) {
+    //在done（构建完成后执行）这个hook上注册自定义事件
+    compiler.hooks.done.tap("DemoPlugin", () => {
+      console.log("DemoPlugin：编译结束了");
+    });
+  }
+}
+module.exports = DemoPlugin;
+
+// webpack.config.js
+module.exports = {
+  mode: "development",
+  entry: "./src/index.js",
+  devtool: false,
+  plugins: [new DemoPlugin()],
+};
+```
+
 
 
 
@@ -133,14 +178,14 @@ rules：:[
 
 # HMR Socket Server是一个socket长连接
 
-    this.setupMiddlewares();
-    //创建 HTTP 服务器
-    this.createServer();
+this.setupMiddlewares();
+//创建 HTTP 服务器
+this.createServer();
 
-    具体是 liveReload（刷新整个页面）还是 hotReload（更新改动过的模块）就取决于我们传入的 hot 选项。
+具体是 liveReload（刷新整个页面）还是 hotReload（更新改动过的模块）就取决于我们传入的 hot 选项。
 
-    webpack-dev-server在编译之后不会写入到任何输出文件。而是将bundle文件保留在内存中
-    事实上webpck-dev-server使用了一个叫memfs的库。
+webpack-dev-server在编译之后不会写入到任何输出文件。而是将bundle文件保留在内存中
+事实上webpck-dev-server使用了一个叫memfs的库。
 
 
 # webpack 运行机制与核心工作原理 ：：：：：：：：：：：：：：：：：：(一文吃透 Webpack 核心原理：https://zhuanlan.zhihu.com/p/363928061)
@@ -160,8 +205,8 @@ chunk：代码块,一个 chunk 由多个模块组合而成，用于 代码合并
 loader：模块转换器,用于把模块原内容按照需求转换成新内容
 plugin：扩展插件,在 Webpack 构建流程中的特定时机会广播出对应的事件，插件可以监听这些事件的发生，在特定时机做对应的事情
 
-# webpack打包流程:::::::(我们直接写出来的是module webpack处理时是chunk 最后生成浏览器可以直接运行的 bundle)
-初始化配置,确定入口:根据配置中的entry找出所有的入口文件-------编译前的准备(比如:注册plugin)-------resolve流程-------构建module 上(runloader)
+#! webpack打包流程:::::::(我们直接写出来的是module webpack处理时是chunk 最后生成浏览器可以直接运行的 bundle)
+初始化配置,确定入口:根据配置中的entry找出所有的入口文件-------编译前的准备(比如:注册plugin)-------resolve流程-------构建module上(runloader)
 ------------构建module下(文件解析ast,分析依赖关系)---------生成chunk-----优化chunk(设置moduleId chunkId,hash)----
 ---资源的构建(使用template渲染chunk资源)-----生成bundle文件输入到output的指定文件夹中
 
@@ -174,23 +219,24 @@ plugin：扩展插件,在 Webpack 构建流程中的特定时机会广播出对�
 Vite实现热更新和webpack的方式也大同小异 主要是通过创建WebSocket建立浏览器与服务器建立通信，通过监听文件的改变像客户端发出消息，客户端对应不同的文件进行不同的操作的更新
 
 # vite打包流程:::::::::::::::::::::::
-在dev开发时基于浏览器ESM，访问哪个文件就只打包哪个文件，相比webpack极速启动，毫秒级别，
-vite只用打包1个文件，webpack需要打包整个项目上百个文件
-
-先启动开发服务器，利用新一代浏览器的ESM能力，无需打包，直接请求所需模块并实时编译
-
-HMR时只需让浏览器重新请求该模块，同时利用浏览器的缓存（源码模块协商缓存，依赖模块强缓存）来优化请求
+在dev开发时基于浏览器ESM,访问哪个文件就只打包哪个文件,相比webpack极速启动,毫秒级别,
+vite只用打包1个文件,webpack需要打包整个项目上百个文件。
+First,先启动开发服务器,利用新一代浏览器的ESM能力,无需打包,直接请求所需模块并实时编译
+HMR时只需让浏览器重新请求该模块,同时利用浏览器的缓存（源码模块协商缓存，依赖模块强缓存）来优化请求
 
 # vite使用esbuild预构建
 vite将代码分为源码和依赖两部分并分别处理,所谓依赖便是应用使用的第三方包,一般存在于node_modules目录中,一个较大项目的依赖及其依赖的依赖,加起来可能达到上千个包
 这些代码可能远比我们源码代码量要大,这些依赖通常是不会改变的(除非你要进行本地依赖调试)所以无论是webpack或者vite在启动时都会编译后将其缓存下来。
 
-区别是：vite会使用esbuild进行依赖编译和转换(commonjs包转为esm)而webpack则是使用acorn或者tsc进行编译,而esbuild是使用Go语言写的,其速度比使用js编写的acorn速度要快得多。
+区别是：
+vite会使用esbuild进行依赖编译和转换(commonjs包转为esm)
+而webpack则是使用acorn或者tsc进行编译,
+而esbuild是使用Go语言写的,其速度比使用js编写的acorn速度要快得多。
 
 
 # webpack 会需要打包一个一个大体积的bundle.js？之前会产生打包需求的主要原因：
 浏览器环境并不支持模块化零散模块文件会产生大量的http请求(大量请求在浏览器端会出现并发请求资源的问题)
-而vite的打包原理是基于es新特性 Dynamic imports 实现的，那对老浏览器必然会有兼容问题处理方案还是用大剑熟悉的Polyfill。
+而vite的打包原理是基于es新特性 Dynamic imports 实现的,那对老浏览器必然会有兼容问题处理方案还是用大剑熟悉的Polyfill。
 (npm install dynamic-import-polyfill)
 import dynamicImportPolyfill from 'dynamic-import-polyfill';
 // This needs to be done before any dynamic imports are used.
@@ -344,6 +390,14 @@ class FileListPlugin {
 }
 
 module.exports = FileListPlugin;
+
+
+# Turbopack
+
+Turbopack 为什么这么快？
+Turbopack 性能的秘诀有两个：
+1:高度优化的机器代码和低层级增量计算引擎，可以缓存到单个函数的级别。
+2:它的架构吸取了 Turborepo 和 Google 的 Bazel 等工具的经验教训，它们都专注于使用缓存来避免重复执行相同的工作。
 
 
 

@@ -1,4 +1,29 @@
-#1 鑫青盟官网：https://www.xqmcm.com/#/。 ：：：：：：：：：：：
+项目：
+react pc网站 
+小程序
+expo RN app
+企业级组件库开发
+threejs ERP系统和物联网三维监控系统
+next 签证网站
+node+docker+nginx+mysql 学生教师提交作业批改作业和在线交流系统的后台  node基于express的脚手架 
+研究 vite Webpack 原理和区别 掘金发布一些文章和 npm上发布一些工具包
+
+项目描述：
+项目背景：
+项目目标：
+项目难点：
+项目收获：
+项目总结：
+项目成果：
+项目进度：
+项目时间：
+项目经验：
+项目能力
+
+具备能力：
+
+
+#! 鑫青盟官网：https://www.xqmcm.com/#/。 ：：：：：：：：：：：
 react ts 类组件 redux  redux-thunk  -----------Redux store 仅支持同步数据流。
 使用 thunk 等中间件可以帮助在 Redux 应用中实现异步性。
 
@@ -23,14 +48,14 @@ export  function  mapDispatchToProps(dispath:any){
 
 bar(connect(mapStateToProps, mapDispatchToProps)(home))
 
-有thunk可以进行异步请求：：：：：：：：：：：：
+有thunk可以进行异步请求
 
 TodoAPIUtil
       .fetchTodos()
       .then(todos => dispatch(receiveTodos(todos)))
 
 
-#2 教师端(公众号 vue )：https://xqmcm.com/app/teacher/index.html 
+#! 教师端(公众号 vue )：https://xqmcm.com/app/teacher/index.html 
 
 2.1-----history模式配置失败的原因可能是url带参数没有用encodeURIComponent
 
@@ -68,17 +93,17 @@ setTimeout(function(){undefined
 2.5-----微信登陆
 
 
-#:3 团长端微信小程序。
+#! 团长端微信小程序。
 3.1-----监听订单变化 单一修改 不需要批量更新
 
-# 11111
+step 111
 	 核销订单 
 	async confirmOrder(params: { orderNo: string }): Promise<void> {
 		const detail = await this.getOrderDetail({ orderNo: params.orderNo });
 		this._events.emit('order:detail:change', detail);
 	}
 
-2222222
+step 222
 # /** 监听订单状态改变 */
 subscribeOrderDetailChange(listener: (order: IOrderPage.OrderDetail) => void): () => void {
 		//5
@@ -89,7 +114,7 @@ subscribeOrderDetailChange(listener: (order: IOrderPage.OrderDetail) => void): (
 		};
 	}
 
-###### /** 回显*/  事先监听  当出发核销订单  触发回调 111111  4444
+step 333      回显 事先监听  当出发核销订单  触发回调 111111  4444
 useOrderDetailChange(detail => { //4
 
 	});
@@ -105,7 +130,7 @@ export function useOrderDetailChange(cb: (order: IOrderPage.OrderDetail) => void
 	}, [cbFn]);
 }
 
-3.2-----解锁 上锁：：：：：：：：：：：：：：：：：：：：：：：：：
+#! 解锁 上锁 竟态锁
 只允许一个线程写入（其他线程既不能写入也不能读取）当完成是其他的线程可以继续
 没有写入时，多个线程允许同时读（提高性能）
 
@@ -122,7 +147,36 @@ const debouncedValue = useDebounce(values, 200);
 		2000,
 	);
 
-3.4 swiper
+#! web-animations-js polyfill：：：：：：：：：
+没有找到 window.requestAnimationFrame 
+
+(function () {
+	let lastTime = 0;
+	if (!window.requestAnimationFrame)
+		window.requestAnimationFrame = function (callback) {
+			const currTime = new Date().getTime();
+			const timeToCall = Math.max(0, 16 - (currTime - lastTime));
+			const id = window.setTimeout(function () {
+				callback(currTime + timeToCall);
+			}, timeToCall);
+			lastTime = currTime + timeToCall;
+			return id;
+		};
+
+	if (!window.cancelAnimationFrame)
+		window.cancelAnimationFrame = function (id) {
+			clearTimeout(id);
+		};
+})();
+
+#!单点登录
+1、一个系统登录流程：用户进入系统——未登录——跳转登录界面——用户名和密码发送——服务器端验证后，设置一个cookie发送到浏览器，设置一个session存放在服务器——用户再次请求（带上cookie）——服务器验证cookie和session匹配后，就可以进行业务了。
+2、多个系统登录：如果一个大公司有很多系统，a.seafile.com, b.seafile.com,c.seafile.com。这些系统都需要登录，如果用户在不同系统间登录需要多次输入密码，用户体验很不好。所以使用 SSO (single sign on) 单点登录实现。
+3、相同域名，不同子域名下的单点登录：在浏览器端，根据同源策略，不同子域名的cookie不能共享。所以设置SSO的域名为根域名。SSO登录验证后，子域名可以访问根域名的 cookie，即可完成校验。在服务器端，可以设置多个子域名session共享（Spring-session）
+4、不同域名下的单点登录:CAS流程:用户登录子系统时未登录,跳转到 SSO 登录界面,成功登录后,SSO 生成一个 ST (service ticket )。用户登录不同的域名时，都会跳转到 SSO,然后 SSO 带着 ST 返回到不同的子域名，子域名中发出请求验证 ST 的正确性（防止篡改请求）。验证通过后即可完成不同的业务。
+../note/sublime/assets/note2023-12-08-09-10-38.png
+
+子域会自动继承父域中的 Cookie。
 
 
 
@@ -182,28 +236,7 @@ export function usePersistFn<T extends (...args: any[]) => any>(fn: T): T {
 }
 
 
-# 4.5-----web-animations-js polyfill：：：：：：：：：
 
-没有找到 window.requestAnimationFrame 
-
-(function () {
-	let lastTime = 0;
-	if (!window.requestAnimationFrame)
-		window.requestAnimationFrame = function (callback) {
-			const currTime = new Date().getTime();
-			const timeToCall = Math.max(0, 16 - (currTime - lastTime));
-			const id = window.setTimeout(function () {
-				callback(currTime + timeToCall);
-			}, timeToCall);
-			lastTime = currTime + timeToCall;
-			return id;
-		};
-
-	if (!window.cancelAnimationFrame)
-		window.cancelAnimationFrame = function (id) {
-			clearTimeout(id);
-		};
-})();
 
 #?? 贝兹尔曲线  一阶函数 二阶函数  二项式定理
 
@@ -258,6 +291,16 @@ vite不是基于webpack为什么不可以引入loader怎么写插件解决？
 (前提创建一个项目需要用别人的脚手架 比如: vue-cli create-react-app)
 # 定制公司项目脚手架 
 
+
+
+#  视频分片   二进制流
+https://juejin.cn/post/7263776537749323831
+
+
+
+
+# 视频进入视口播放
+https://juejin.cn/post/7226187878321471549
 
 ？？？
 8： 项目开发--打包---提交git---部署服务器----发布 
@@ -404,9 +447,18 @@ export default {
   },
 };
 
+# react-i18next 国际化
 
 
 #! 代码的调试
 consle.log()
 debugger
 charles
+
+
+# js: 垃圾回收 内存泄漏 简单原型 去重 闭包和递归  
+# ts: 
+# 浏览器: 缓存 请求 安全
+# react: hooks
+# webpack: 构建流程 plugin loader 
+# 国际化
