@@ -41,13 +41,104 @@
 // width	可选。要使用的图像的宽度（伸展或缩小图像）。
 // height	可选。要使用的图像的高度（伸展或缩小图像）。
 
-# 组件库：Konva
+# 组件库：Konva http://konvajs-doc.bluehymn.com/docs/overview.html
 konva 是一个对 canvas API 做了封装增强的 JavaScript 库。
 HTML 原生的 canva 提供的 API 比较底层，用法上像是操纵一支画笔进行各种操作，画完就结束了。
 canvas 本身不维护图形树，你也无法操作修改已被绘制的图形。
 而 konva 能够像我们操作 DOM 树一样去绘制和维护元素，它会额外维护图形构成的树，并能在绘制后，对特定图形进行样式的修改。
 你还可以在上面添加事件，比如鼠标滑入某图形时，图形变大一点。此外还支持方便的变形、动画、拖拽等高级能力。
 
+../note/sublime/assets/note2023-11-22-16-17-17.png
+
+
+konva用法:
+#? 动画
+var anim = new Konva.Animation(function(frame) {
+    var time = frame.time,
+        timeDiff = frame.timeDiff,
+        frameRate = frame.frameRate;
+    // update stuff
+}, layer);
+anim.start();
+
+var tween = new Konva.Tween({
+        node: rect,
+        duration: 1,
+        x: 140,
+        rotation: Math.PI * 2,
+        opacity: 1,
+        strokeWidth: 6
+});
+tween.play();
+
+#? 选择器
+var circle = new Konva.Circle({
+        radius: 10,
+        fill: 'red',
+        id : 'face',
+        name : 'red circle'
+});
+layer.add(circle);
+
+// then try to search
+
+// find by type
+layer.find('Circle'); // all circles
+
+// find by id
+layer.findOne('#face');
+
+// find by name (like css class)
+layer.find('.red')
+
+#? 显示 隐藏
+circle.show();
+circle.hide();
+
+#? 序列化 反序列化
+var json = stage.toJSON();
+var stage = Konva.Node.create(json, 'container');
+
+
+#? cache clone  缓存
+layer.add(star);
+stage.add(layer);
+star.cache();
+
+var clone;
+for (var n = 0; n < 10; n++) {
+clone = star.clone({
+    x: Math.random() * stage.width(),
+    y: Math.random() * stage.height()
+});
+clone.cache();
+layer.add(clone);
+}
+
+layer.draw();
+
+#? hitFunc 属性来创建一个定义事件响应区域函数
+
+#? 创建自定义图形 
+
+
+
+#? 填充 http://konvajs-doc.bluehymn.com/docs/styling/Fill.html
+
+var radialGradPentagon = new Konva.RegularPolygon({
+        x: 500,
+        y: stage.height() / 2,
+        sides: 5,
+        radius: 70,
+        fillRadialGradientStartPoint: { x: 0, y: 0 },
+        fillRadialGradientStartRadius: 0,
+        fillRadialGradientEndPoint: { x: 0, y: 0 },
+        fillRadialGradientEndRadius: 70,
+        fillRadialGradientColorStops: [0, 'red', 0.5, 'yellow', 1, 'blue'],
+        stroke: 'black',
+        strokeWidth: 4,
+        draggable: true
+    });
 
 # svg:
 
@@ -181,3 +272,49 @@ yarn：
 npm：
 
 cnpm：
+
+
+
+
+
+canvas: Canvas; // Canvas 元素
+_context: CanvasRenderingContext2D; // 2D 渲染上下文对象
+traceArr: Array<String>; // 跟踪绘图操作的数组
+constructor(canvas: Canvas); // 构造函数，接收 Canvas 元素作为参数
+fillShape(shape: Shape): void; // 填充形状
+_fill(shape: Shape): void; // 内部方法，用于填充形状
+strokeShape(shape: Shape): void; // 描边形状
+_stroke(shape: Shape): void; // 内部方法，用于描边形状
+fillStrokeShape(shape: Shape): void; // 填充并描边形状
+getTrace(relaxed?: boolean, rounded?: boolean): string; // 获取绘图操作的跟踪信息
+clearTrace(): void; // 清除绘图操作的跟踪信息
+_trace(str: any): void; // 内部方法，用于跟踪绘图操作
+reset(): void; // 重置上下文状态
+getCanvas(): Canvas; // 获取关联的 Canvas 元素
+clear(bounds?: IRect): void; // 清除画布内容
+_applyLineCap(shape: Shape): void; // 应用线段端点样式
+_applyOpacity(shape: Node): void; // 应用透明度
+_applyLineJoin(shape: Shape): void; // 应用线段连接样式
+setAttr(attr: string, val: any): void; // 设置属性值
+arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, counterClockwise?: boolean): void; // 创建圆弧路径
+arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void; // 创建圆弧路径（通过两个切点）
+beginPath(): void; // 开始新路径
+bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void; // 创建贝塞尔曲线路径
+clearRect(x: number, y: number, width: number, height: number): void; // 清除矩形区域
+clip(fillRule?: CanvasFillRule): void; // 剪切路径（根据当前路径）
+clip(path: Path2D, fillRule?: CanvasFillRule): void; // 剪切路径（根据指定路径）
+closePath(): void; // 关闭当前路径
+createImageData(width: any, height: any): ImageData | undefined; // 创建新的 ImageData 对象
+createLinearGradient(x0: number, y0: number, x1: number, y1: number): CanvasGradient; // 创建线性渐变对象
+createPattern(image: CanvasImageSource, repetition: string | null): CanvasPattern | null; // 创建图案填充对象
+createRadialGradient(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): CanvasGradient; // 创建径向渐变对象
+drawImage(image: CanvasImageSource, sx: number, sy: number, sWidth?: number, sHeight?: number, dx?: number, dy?: number, dWidth?: number, dHeight?: number): void; // 绘制图像
+ellipse(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void; // 创建椭圆路径
+isPointInPath(x: number, y: number, path?: Path2D, fillRule?: CanvasFillRule): boolean; // 判断坐标点是否在路径内
+fill(fillRule?: CanvasFillRule): void; // 填充路径
+fill(path: Path2D, fillRule?: CanvasFillRule): void; // 填充指定路径
+fillRect(x: number, y: number, width: number, height: number): void; // 填充矩形
+strokeRect(x: number, y: number, width: number, height: number): void; // 描边矩形
+fillText(text: string, x: number, y: number, maxWidth?: number) : void; // 填充文本
+strokeText(text: string, x: number, y: number, maxWidth?: number) : void; // 描边文本
+measureText(text: string) : TextMetrics; // 测量文本
