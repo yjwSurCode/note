@@ -22,7 +22,7 @@ addHandler(el, event, code, null, true)
 Object.defindProperty
 observer.js 数据劫持  geter seter
 compile.js 判断元素  添加监听数据的订阅者 数据变化 更新试图
-watcher 订阅者 oserver compile之间通信的桥梁
+watcher 订阅者 oserver compile之间通信的桥梁 发布订阅模式
 mvvm
 
 #v-model源码精髓  https://ustbhuangyi.github.io/vue-analysis/v2/extend/v-model.html#%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0
@@ -36,8 +36,10 @@ addHandler(el, event, code, null, true)
 tip；在vue3中允许你写多个v-model,这也是强烈的说明了，v-model就是一个语法糖，只是帮你减少了代码量，仅此而已
 
 # Object.defindProperty 对比 proxy  (https://juejin.cn/post/6844904150560423950)
+Object.defineProperty的第一个缺陷,无法监听数组变化
+target 目标对象（对象、数组、函数） handler 代理对象，可以对目标对象进行自定义的操作
 
- Object.defineProperty(argu, key, {
+Object.defineProperty(argu, key, {
                 configurable: true,
                 enumerable: true,
                 get() {
@@ -249,6 +251,29 @@ setup() {
         return {};
     }
 
+# vue3 ref中可以放对象作为参数吗? reactive可以放基础值作为参数吗?
+ref是可以传对象的, 如果传的是对象会给reactive去实现
+reactive放基础值是没什么作用的
+
+##! toRef
+可以用来为源响应式对象上的某个 property 新创建一个 ref。然后，ref 可以被传递，它会保持对其源 property 的响应式连接。
+
+reactive 函数用于创建一个响应式的对象。它接受一个普通的 JavaScript 对象，并返回一个响应式的代理对象。
+而 toRef 函数则用于将一个响应式对象的属性转换为一个 ref 对象
+
+```
+      let rightReactive = reactive({ name: "NAN" });
+      let toRef_rightReactive = toRef(rightReactive, "name");
+      console.log(toRef_rightReactive)
+```
+##! toRefs
+循环遍历逐渐toRef即可
+
+```
+      let rightReactive = reactive({ name: "NAN",address:'wuhan' });
+      let toRef_rightReactive = toRef(rightReactive);
+      console.log(toRef_rightReactive)
+```
 
 # vue编译器， template到render过程
 Vue中有个独特的编译器模块，称为“compiler”，它的主要作用是将用户编写的template编译为js中可执行的render函数。

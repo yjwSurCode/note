@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="app1"></div>
+    <div id="app2"></div>
+    <div id="app3"></div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.3.13/dist/vue.global.min.js"></script>
+    <script>
+      let { ref, effect, reactive, toRef, toRefs } = Vue;
+      let name = ref("vvv");
+      let info = ref({ age: 11 });
+
+      let rightReactive = reactive({ name: "NAN", address: "wuhan" });
+      let errorReactive = reactive("123");
+
+      let toRef_rightReactive = toRef(rightReactive, "name");
+      let toRefs_rightReactive = toRefs(rightReactive);
+
+      console.log(name, "name");
+      console.log(info, "info");
+      console.log(rightReactive, "rightReactive");
+      console.log(
+        toRef_rightReactive,
+        "toRef_rightReactive",
+        toRef_rightReactive.value,
+        "toRefs_rightReactive",
+        toRefs_rightReactive
+      );
+
+      effect(() => {
+        app.innerHTML = name.value;
+        app1.innerHTML = info.value.age;
+        app2.innerHTML = errorReactive; // 123
+        // app3.innerHTML = rightReactive.name; //NAN
+        // app3.innerHTML = toRef_rightReactive.value; //NAN
+        app3.innerHTML = toRefs_rightReactive.address.value //wuhan
+      });
+
+      setTimeout(() => {
+        name.value = "vvv-next";
+        errorReactive = "456"; //!单独修改reactive的值，不会触发effect
+        // rightReactive.name = "NAN-CHANGE";
+      }, 1000);
+    </script>
+  </body>
+</html>

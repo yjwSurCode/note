@@ -567,3 +567,35 @@ function test(n) {
 
 
 console.log(test(3), 'test')
+
+
+const fnPromiseAll = async () => {
+
+    const aPromise = new Promise((resolve, reject) => {
+        // 假设异步操作成功并返回 storesTab
+        const storesTab = ['a', 'b', 'c'];
+        setTimeout(() => {
+            resolve({ storesTab });
+        }, 2000)
+    });
+
+    const cPromise = new Promise((resolve, reject) => {
+        // 假设异步操作成功并返回 storesTab
+        const storesTab = ['x', 'y', 'z'];
+        resolve({ storesTab });
+    });
+
+    // 使用 Promise.all 进行并行处理
+    // const [{ storesTab = [] }] = await Promise.all([aPromise, cPromise]);
+
+    const [{ storesTab = [] }] = [{ storesTab: ['a', 'b', 'c'] }, { storesTab: ['x', 'y', 'z'] }]
+    console.log(storesTab, 'storesTab')
+    const res = await Promise.all([aPromise, cPromise]);
+    console.log(res, 'res')
+
+}
+
+
+fnPromiseAll()
+
+

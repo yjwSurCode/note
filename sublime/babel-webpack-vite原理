@@ -69,6 +69,7 @@ Webpack是一种前端资源构建工具，一个静态模块打包器
 
 社区围绕着 Webpack 衍生出了各种手脚架，比如 vue-cli、create-react-app,umi解决“用”的问题。
 
+webpack配置介绍：https://juejin.cn/post/7277490138518159379
 
 # 8个配置:
 1：mode模型-------development production

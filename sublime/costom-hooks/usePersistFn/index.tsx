@@ -111,3 +111,29 @@ const FancyInput = React.forwardRef((_props, ref) => {
 usePersistFns.displayName = 'usePersistFns';
 
 export default usePersistFns;
+
+const { areaCode, areaType } = this;
+
+const { storesTab = [] } = await getAllChannelTab({ typeCode: areaType, areaCode })     // typeCode: bigarea, areaCode: cPG0
+
+const c = await getAllChannelTab({ type: "1", typeCode: areaType, areaCode });
+const { storesTab = [] } = await getAllChannelTab()
+import { getAllChannelTab } from '@/pages/b2c-report/service';
+
+
+
+import { getAllChannelTab } from '@/services/store-services.js';
+const { storesTab = [] } = await getAllChannelTab()
+
+
+
+import { getAllChannelTab } from '@/pages/b2c-report/service';
+
+const { storesTab = [] } = await getAllChannelTab({})
+
+
+
+
+
+
+import { getAllChannelTab } from '@/services/store-services.js';
