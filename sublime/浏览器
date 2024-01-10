@@ -146,6 +146,8 @@ QUIC 基于 UDP 实现，是 HTTP/3 中的底层支撑协议，该协议基于 U
 
 # 浏览器的本地存储 ：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 Cookie：体积上限只有4KB。 由于 Cookie 以纯文本的形式在浏览器和服务器中传递(cookie会跟随任意HTTP请求一起发送)
+有两种方法可以确保 Cookie 被安全发送,并且不会被意外的参与者或脚本访问: Secure 属性和HttpOnly 属性。
+
 localStorage：只存在客户端,默认不参与与服务端的通信。这样就很好地避免了 Cookie 带来的性能问题和安全问题。
 sessionStorage：会话结束,也就是页面关闭,这部分sessionStorage就不复存在了。
 
