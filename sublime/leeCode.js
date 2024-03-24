@@ -587,36 +587,47 @@ function areArraysContentEqual(arr1 = [], arr2 = []) {
   return !arr2.length; //  [].length==false
 }
 
-console.log(test(3), 'test')
-
+console.log(test(3), 'test');
 
 const fnPromiseAll = async () => {
+  const aPromise = new Promise((resolve, reject) => {
+    // 假设异步操作成功并返回 storesTab
+    const storesTab = ['a', 'b', 'c'];
+    setTimeout(() => {
+      resolve({ storesTab });
+    }, 2000);
+  });
 
-    const aPromise = new Promise((resolve, reject) => {
-        // 假设异步操作成功并返回 storesTab
-        const storesTab = ['a', 'b', 'c'];
-        setTimeout(() => {
-            resolve({ storesTab });
-        }, 2000)
-    });
+  const cPromise = new Promise((resolve, reject) => {
+    // 假设异步操作成功并返回 storesTab
+    const storesTab = ['x', 'y', 'z'];
+    resolve({ storesTab });
+  });
 
-    const cPromise = new Promise((resolve, reject) => {
-        // 假设异步操作成功并返回 storesTab
-        const storesTab = ['x', 'y', 'z'];
-        resolve({ storesTab });
-    });
+  // 使用 Promise.all 进行并行处理
+  // const [{ storesTab = [] }] = await Promise.all([aPromise, cPromise]);
 
-    // 使用 Promise.all 进行并行处理
-    // const [{ storesTab = [] }] = await Promise.all([aPromise, cPromise]);
+  const [{ storesTab = [] }] = [
+    { storesTab: ['a', 'b', 'c'] },
+    { storesTab: ['x', 'y', 'z'] },
+  ];
+  console.log(storesTab, 'storesTab');
+  const res = await Promise.all([aPromise, cPromise]);
+  console.log(res, 'res');
+};
 
-    const [{ storesTab = [] }] = [{ storesTab: ['a', 'b', 'c'] }, { storesTab: ['x', 'y', 'z'] }]
-    console.log(storesTab, 'storesTab')
-    const res = await Promise.all([aPromise, cPromise]);
-    console.log(res, 'res')
+fnPromiseAll();
 
+/* 斐波那契数列：递归 */
+function fib(n) {
+  // 终止条件 f(1) = 0, f(2) = 1
+  if (n === 1 || n === 2) return n - 1;
+  // 递归调用 f(n) = f(n-1) + f(n-2)
+  // const res = fib(n - 1) + fib(n - 2);
+  // 返回结果 f(n)
+  return fib(n - 1) + fib(n - 2);
 }
 
-
-fnPromiseAll()
+console.log(fib(123), 'fib(123)');
 
 

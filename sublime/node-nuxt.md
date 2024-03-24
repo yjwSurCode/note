@@ -362,6 +362,8 @@ redis.set("name", "Condor Hero").then(res => {
 https://juejin.cn/post/7264532077575716879?searchId=202308091654215CE155C37F1F3459D572
 
 
+# nestJs redis
+
 
 # Nuxt
 npx nuxi@latest init <my-project>
