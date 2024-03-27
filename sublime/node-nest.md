@@ -360,6 +360,20 @@ redis.set("name", "Condor Hero").then(res => {
 
 # NestJs
 OOP（面向对象编程）、FP（函数式编程）和 FRP（函数式响应式编程）
+https://juejin.cn/post/7264532077575716879?searchId=202308091654215CE155C37F1F3459D572
+
+
+# nestJs redis
+
+
+# Nuxt
+npx nuxi@latest init <my-project>
+
+
+
+## typescript 
+yarn add --dev vue-tsc typescript
+
 
 https://juejin.cn/post/7264532077575716879?searchId=202308091654215CE155C37F1F3459D572
 

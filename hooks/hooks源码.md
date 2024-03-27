@@ -112,6 +112,23 @@ function `mountEffectImpl`(
   );
 }
 ```
+{
+  for (let i = 0; i < prevDeps.length && i < nextDeps.length; i++) {
+    // $FlowFixMe[incompatible-use] found when upgrading Flow
+    if (is(nextDeps[i], prevDeps[i])) {
+      continue;
+    }
+    return false;
+  }
+  return true;
+}
+
+objectIs
+return (
+    (x === y && (x !== 0 || 1 / x === 1 / y)) || (x !== x && y !== y) // eslint-disable-line no-self-compare
+  );
+
+
 `pushEffect`
 ![Alt text](./assets/image-5.png)
 
@@ -165,6 +182,8 @@ export type Effect = {
 };
 ```
 
+
+useEffect的参数说明：https://juejin.cn/post/7083308347331444750
 
 `简易版本useEffect`
 let _deps;

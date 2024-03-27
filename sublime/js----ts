@@ -333,20 +333,6 @@ var obj = { a: 'ss', b: 'bb', c: 'cc' }---------for (var i in obj) { console.log
 Object.defineProperty(obj, prop, descriptor)
 
 
-
-# new WeakMap用法：：：：：：：：：：：：：：：：：：：：：：
-WeakMap的作用就是可以更有效的垃圾回收、释放内存。
-let myWm = new WeakMap()
-// 删除键
-myWm.delete(key);
-// 设置键和值------------key只能是对象 myWm.set(()=>{}, 1) myWm.set(new Date(), '鑫空间');
-myWm.set(key, value);
-// 是否包含某键
-myWm.has(key);
-// 获取键对应的值
-myWm.get(key);
-
-
 #  事件流  捕获和冒泡
 <div class="box" id="box1">
   <div class="box" id="box2">
@@ -570,7 +556,7 @@ Array.isArray(target)
 eventBus：：：：：：：：：：：：：：：：：：：：：：：
 
 # JS 设计模式23种
-代理模式：
+1 代理模式：
 let Flower = function() {}
 let xiaoming = {
   sendFlower: function(target) {
@@ -596,8 +582,8 @@ let A = {
   }
 }
 xiaoming.sendFlower(B)
-状态模式
-观察者模式
+2 状态模式
+3 观察者模式
 
 
 JS的20个实用技巧：：：：：：：：：：：：：：：：：   https://juejin.cn/post/7083016475547533348
