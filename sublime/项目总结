@@ -316,6 +316,55 @@ https://juejin.cn/post/7226187878321471549
 # 文件上传 七牛云 阿里OSS
 
 
+# 文件分片上传 断点续传 秒传 2024-01-23-16-53-57.png
+秒传
+import SparkMD5 from 'spark-md5'
+getFileMD5(file, callback) {
+        let spark = new SparkMD5.ArrayBuffer()
+        let fileReader = new FileReader()
+        let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice
+        let currentChunk = 0
+        let chunks = Math.ceil(file.size / CHUNK_SIZE)
+        let startTime = new Date().getTime()
+        file.pause()
+
+        // 分片1
+        loadNext()
+
+        fileReader.onload = function(e) {
+          spark.append(e.target.result)
+          if (currentChunk < chunks) {
+            // 分片2 递归增加分片段
+            currentChunk++
+            loadNext()
+          } else {
+            // 分片3 计算MD5值开始上传
+            let md5 = spark.end()
+            console.log(`MD5计算完毕：${md5}，耗时：${new Date().getTime() - startTime} ms.`)
+            callback(md5)
+          }
+        }
+
+        fileReader.onerror = function() {
+          this.$message.error('文件读取错误')
+          file.cancel()
+        }
+
+        function loadNext() {
+          const start = currentChunk * CHUNK_SIZE
+          const end = ((start + CHUNK_SIZE) >= file.size) ? file.size : start + CHUNK_SIZE
+          fileReader.readAsArrayBuffer(blobSlice.call(file.file, start, end))
+        }
+      },
+
+分片上传
+
+
+# 虚拟滚动
+
+
+this.pageLoading = false;
+
 
 # 大厂代码规范
 

@@ -416,9 +416,9 @@ console.log(
 const res =
   (String(data.value).split('.')[0] || []).length > 7
     ? String(data.value)
-        .split('.')[0]
-        .substring(4)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '万'
+      .split('.')[0]
+      .substring(4)
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '万'
     : String(data.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 console.log(res, 'res');
@@ -592,27 +592,27 @@ console.log(test(3), 'test')
 
 const fnPromiseAll = async () => {
 
-    const aPromise = new Promise((resolve, reject) => {
-        // 假设异步操作成功并返回 storesTab
-        const storesTab = ['a', 'b', 'c'];
-        setTimeout(() => {
-            resolve({ storesTab });
-        }, 2000)
-    });
+  const aPromise = new Promise((resolve, reject) => {
+    // 假设异步操作成功并返回 storesTab
+    const storesTab = ['a', 'b', 'c'];
+    setTimeout(() => {
+      resolve({ storesTab });
+    }, 2000)
+  });
 
-    const cPromise = new Promise((resolve, reject) => {
-        // 假设异步操作成功并返回 storesTab
-        const storesTab = ['x', 'y', 'z'];
-        resolve({ storesTab });
-    });
+  const cPromise = new Promise((resolve, reject) => {
+    // 假设异步操作成功并返回 storesTab
+    const storesTab = ['x', 'y', 'z'];
+    resolve({ storesTab });
+  });
 
-    // 使用 Promise.all 进行并行处理
-    // const [{ storesTab = [] }] = await Promise.all([aPromise, cPromise]);
+  // 使用 Promise.all 进行并行处理
+  // const [{ storesTab = [] }] = await Promise.all([aPromise, cPromise]);
 
-    const [{ storesTab = [] }] = [{ storesTab: ['a', 'b', 'c'] }, { storesTab: ['x', 'y', 'z'] }]
-    console.log(storesTab, 'storesTab')
-    const res = await Promise.all([aPromise, cPromise]);
-    console.log(res, 'res')
+  const [{ storesTab = [] }] = [{ storesTab: ['a', 'b', 'c'] }, { storesTab: ['x', 'y', 'z'] }]
+  console.log(storesTab, 'storesTab')
+  const res = await Promise.all([aPromise, cPromise]);
+  console.log(res, 'res')
 
 }
 
@@ -620,3 +620,71 @@ const fnPromiseAll = async () => {
 fnPromiseAll()
 
 
+
+// const filterData = (selectedPgSeq, selectedBusinessTypes, data) => {
+//   return data.filter(item => {
+//     const pgSeqMatch = selectedPgSeq.includes(item.pgSeq);
+//     const businessTypeMatch = selectedBusinessTypes.includes(item.businessType);
+//     return pgSeqMatch && businessTypeMatch;
+//   });
+// };
+
+// // 示例使用
+// const seqData = [
+//   // ...你的对象数组
+// ];
+
+// const selectedPgSeq = [1]; // 单选华中区
+// const selectedBusinessTypes = [1, 2]; // 多选大超和中超
+
+// const filteredData = filterData(selectedPgSeq, selectedBusinessTypes, seqData);
+// console.log(filteredData);
+
+
+const filterData = (selectedPgSeq, selectedBusinessTypes, data) => {
+  return data.filter(item => {
+    const pgSeqMatch = selectedPgSeq.includes(item.pgSeq);
+    
+    const businessTypeMatch = (
+      (selectedBusinessTypes.a && item.businessType === '1') ||
+      (selectedBusinessTypes.b && item.businessType === '2')||
+      (selectedBusinessTypes.c && item.businessType === '3')
+    );
+
+    return pgSeqMatch && businessTypeMatch;
+  });
+};
+
+// 示例使用
+const seqData = [
+  {
+    businessType: '1',
+    pgSeq: "1",
+  },
+  {
+    businessType: '2',
+    pgSeq: "1",
+  },
+  {
+    businessType: '3',
+    pgSeq: "1",
+  },
+  {
+    businessType: '1',
+    pgSeq: "2",
+  },
+  {
+    businessType: '2',
+    pgSeq: "2",
+  },
+  {
+    businessType: '3',
+    pgSeq: "2",
+  }
+];
+
+const selectedPgSeq = ["1"]; // 单选华中区
+const selectedBusinessTypes = { a: true, b: true, c:true }; // 多选大超和中超
+
+const filteredData = filterData(selectedPgSeq, selectedBusinessTypes, seqData);
+console.log(filteredData);
