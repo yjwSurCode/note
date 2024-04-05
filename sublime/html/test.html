@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ul>
+      控件
+    </ul>
+    <script>
+      setTimeout(() => {
+        // 插入十万条数据
+        const total = 10;
+        // 一次插入 20 条，如果觉得性能不好就减少
+        const once = 20;
+        // 渲染数据总共需要几次
+        const loopCount = total / once;
+        let countOfRender = 0;
+        let ul = document.querySelector('ul');
+        function add() {
+          // 优化性能，插入不会造成回流
+          const fragment = document.createDocumentFragment();
+          for (let i = 0; i < once; i++) {
+            const li = document.createElement('li');
+            li.innerText = Math.floor(Math.random() * total);
+            fragment.appendChild(li);
+          }
+          ul.appendChild(fragment);
+          countOfRender += 1;
+          loop();
+        }
+        function loop() {
+          if (countOfRender < loopCount) {
+            window.requestAnimationFrame(add);
+          }
+        }
+        loop();
+      }, 0);
+    </script>
+
+    <script>
+      for (let i = 0; i < 10; i++) {
+        if (i > 5) {
+          console.log(i, '1111');
+          continue; // 后面的语句不执行，进入下一次 //  continue一般配合判断条件使用
+          // break; // 跳出当前循环,不执行后面条件   // 一般配合判断语句使用
+          // return 'return'; //当程序运行到 return; 语句时，会终止循环，结束当前方法。只能在函数中使用
+        }
+        console.log(i, '3333');
+      }
+      console.log(444);
+
+      for (let value of [1, 2, 3]) {
+        console.log(value); //1 2 3
+      }
+
+      const expr = 'Mangoes';
+      switch (expr) {
+        case 'Oranges':
+          console.log('Oranges are $0.59 a pound.');
+          break;
+        case 'Mangoes':
+        case 'Papayas1':
+          console.log('Mangoes and papayas are $2.79 a pound.');
+          // expected output: "Mangoes and papayas are $2.79 a pound."
+          break;
+        default:
+          console.log(`Sorry, we are out of ${expr}.`);
+      }
+
+      const arr = [1, 2, 3, 4];
+      // arr.forEach((item, index) => {
+      //   if (index == 0) {
+      //     arr.splice(index, 1);
+      //   }
+      //   console.log(item, '<----item,index--->', index);
+      // }); //当 index=0,时 进入删除,然后进入下一次遍历 index=1,而此时 index=1 的项是第三项
+
+      [...arr].forEach((item, index) => {
+        if (index == 0) {
+          arr.splice(index, 1);
+        }
+        console.log(item, '<----item,index--->', index);
+      });
+      console.log(arr,'arr')
+
+       
+
+      // for (let value of [1, 2, 3]) {
+      //   if (index == 0) {
+      //     arr.splice(index, 1);
+      //   }
+      //   console.log(item, '<----item,index--->', value);
+      // }
+
+      // const objArr = [
+      //   { name: 'Amy', age: 10 },
+      //   { name: 'Bob', age: 20 },
+      // ];
+      // const a = objArr.reduce((total, value) => {
+      //   console.log(total, value);
+      //   return [...total, value.name];
+      // }, []);
+      // console.log('a', a);
+
+      // var flatArr = [1, 2, 3, 4, [1, 2, 3, 4, 5, [2, 3, 4]]];
+      // function arrFlat(flatArr, depth = 1) {
+      //   return depth
+      //     ? flatArr.reduce((total, currentValue) => {
+      //         return Array.isArray(currentValue)
+      //           ? [...total, ...arrFlat(currentValue, depth - 1)]
+      //           : [...total, currentValue];
+      //       }, [])
+      //     : flatArr;
+      // }
+      // console.log(arrFlat(flatArr, 2), 'arrFlat(flatArr, 2);');
+
+      // function deepLevel(flatArr) {
+      //   if (!Array.isArray(flatArr)) {
+      //     return 0;
+      //   }
+      //   let result = 1;
+      //   for (let i = 0; i < flatArr.length; i++) {
+      //     if (Array.isArray(flatArr[i])) {
+      //       result += deepLevel(flatArr[i]);
+      //     }
+      //   }
+      //   return result;
+      // }
+    </script>
+  </body>
+</html>

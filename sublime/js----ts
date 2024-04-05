@@ -3,6 +3,8 @@ export PUB_HOSTED_URL = https://pub.flutter-io.cn
 # 编译语言的JavaScript
 分词 / 词法分析------解析 / 语法分析------代码生成
 
+# 执行上下文和执行栈(调用栈)
+
 
 # 变量提升 函数提升
 var 存在变量提升 (var在全局作用域声明的变量有一种行为会挂载在window对象上)   注意：变量赋值不会被提升
@@ -314,17 +316,6 @@ fn('a', 'b', 'c'); // abc
 fn('a', 'b')('c'); // abc
 fn('a')('b')('c'); // abc
 
-
-
-# forEach、map、filter、reduce、every、some的区别联系：：：：：：：：：：：
-forEach：  让数组中的每一项做一件事
-map： 让数组的通过某种计算产生一个新的数组
-filter： 筛选出数组符合条件的项 组成一个新数组
-reduce： 让数组的前项和后项做某种计算 并累计最终值   //[1,2,3,4,5].reduce((prev,next)=>return prev+next)
-every： 检测数组的每一项是否符合条件 全部符合就是true
-some： 检测数组中的某一项是否符合条件 一项符合即可
-splice：操作函数：
-
 # 对象操作：：：：：：：：：：：：：：：：：：：：：：：：：：：
 var copy = Object.assign({}, obj)
 var obj = { 0: 'a', 1: 'b', 2: 'c' } console.log(Object.keys(obj))---console: ['0', '1', '2'] console.log(Object.values(obj))----['a', 'b', 'c']
@@ -553,38 +544,25 @@ f 的隐式原型 __proto__ 和 Foo.prototype
 Array.isArray(target)
 
 
-eventBus：：：：：：：：：：：：：：：：：：：：：：：
+eventBus 
 
 # JS 设计模式23种
-1 代理模式：
-let Flower = function() {}
-let xiaoming = {
-  sendFlower: function(target) {
-    let flower = new Flower()
-    target.receiveFlower(flower)
-  }
-}
-let B = {
-  receiveFlower: function(flower) {
-    A.listenGoodMood(function() {
-      A.receiveFlower(flower)
-    })
-  }
-}
-let A = {
-  receiveFlower: function(flower) {
-    console.log('收到花'+ flower)
-  },
-  listenGoodMood: function(fn) {
-    setTimeout(function() {
-      fn()
-    }, 1000)
-  }
-}
-xiaoming.sendFlower(B)
-2 状态模式
-3 观察者模式
+1:代理模式  例如vue3的Proxy代理
+    访问一个对象 而不是直接访问这个对象 通过中间代理的模式访问, 好处是在中间做一个处理 过滤。 
+2:单例模式: 一个类只有一个实例，并提供一个访问该实例的全局节点
+    例如项目中的请求组件 get post delete方法  封装一个请求类 实例化这个类 
+3:策略模式:
+    项目中的函数有多个判断场景 避免过多的使用if else 可以使用策略模式 转化成MAP  提高代码的可维护性和可读性
+4:装饰器模式
+    定义一个类,在不变原先这个类的情况下,拓展这个类的方法.
+5:观察者模式
+    vue源码中 Observer 视图更新
+6:发布订阅模式
+    设计eventBus
 
+../note/sublime/assets/观察者模式and发布订阅模式.png
+../note/sublime/assets/观察者and发布订阅.png
+../note/sublime/assets/观察者模式.png
 
 JS的20个实用技巧：：：：：：：：：：：：：：：：：   https://juejin.cn/post/7083016475547533348
 
@@ -811,7 +789,9 @@ let mainfest = ['img1','img2']
 
 
 ##! TYPESCRIPT（ts）
-ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+ts：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 
 # 接口iterface 和 类型别名type 的关联和区别：：：：：：：：：
 1：都可以描述 对象和函数

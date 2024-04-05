@@ -354,6 +354,8 @@ https://juejin.cn/post/6844903479681499150
 // vh   相对于视口的宽度， 视口被均分为 100 单位的vh  高版本浏览器均支持
 // 通过js来实现自适应
 
+# autofit 浏览器自适应
+
 
 滚动条：npm i perfect-scrollbar
 

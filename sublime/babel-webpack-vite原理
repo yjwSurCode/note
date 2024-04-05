@@ -132,9 +132,12 @@ module.exports = babelLoader;
 
 🌰手写less-loader   从下往上 从右往左 
 ```
-"style-loader", //将css内容变成style标签插入到html中去
-"css-loader",   //一般会解析url合@import等语法
-"less-loader",  //将less=>css
+"style-loader", 
+//经过css-loader的转译,我们已经得到了完整的css样式代码,style-loader的作用就是将结果以style标签的方式插入DOM树中。
+"css-loader",   
+//一般会解析url合@import等语法  css-loader的作用主要是解析css文件中的@import和url语句，处理css-modules，并将结果作为一个js模块返回
+"less-loader",  
+//将less=>css  就是调用less库提供的方法，转译less语法后输出
 ```
 
 # 彻底弄懂Webpack中的Plugin插件
@@ -164,6 +167,11 @@ module.exports = {
 
 
 
+# Tree Shaking 的原理是什么
+Tree Shaking 指基于 ES Module 进行静态分析，通过 AST 将用不到的函数进行移除，从而减小打包体积.
+
+
+
 # webpack-dev-server 热更新原理 
     //添加一些 hooks 插件，这里主要关注 webpack compiler 的 done 钩子，即每次编译完成后的钩子 (编译完成触发 _sendStats 方法给客户端广播消息 )
     this.setupHooks();
@@ -179,12 +187,15 @@ module.exports = {
 
 # HMR Socket Server是一个socket长连接
 
+#! 热更新原理总结
+通过webpack-dev-server创建两个服务器:提供静态资源的服务(express)和Socket服务 express server 负责直接提供静态资源的服务(打包后的资源直接被浏览器请求和解析) socket server 是一个 websocket 的长连接，
+双方可以通信 当 socket server 监听到对应的模块发生变化时，会生成两个文件.json(manifest文件)和.js文件(update chunk) 通过长连接,socket server 可以直接将这两个文件主动发送给客户端(浏览器) 浏览器拿到两个新的文件后,
+通过HMR runtime机制,加载这两个文件,并且针对修改的模块进行更新
+
 this.setupMiddlewares();
 //创建 HTTP 服务器
 this.createServer();
-
 具体是 liveReload（刷新整个页面）还是 hotReload（更新改动过的模块）就取决于我们传入的 hot 选项。
-
 webpack-dev-server在编译之后不会写入到任何输出文件。而是将bundle文件保留在内存中
 事实上webpck-dev-server使用了一个叫memfs的库。
 
@@ -274,14 +285,12 @@ vite 的作用就是体现在了这里,vite的任务就是用koa起一个http请
 # terser 
 
 
-#rollup (https://juejin.cn/user/3263006243296440)
-
-
 gulp构建工具：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
 擅长：前端开发流程规范管理。不包括模块化功能。
 gulp是一个基于流的构建工具
 
-gulp是基于Nodejs,自动化地完成 javascript、coffee、sass、less、html/image、css 等文件的测试、检查、合并、压缩、格式化、浏览器自动刷新、部署文件生成
+gulp是基于Nodejs,自动化地完成 javascript、coffee、sass、less、html/image、css 
+等文件的测试、检查、合并、压缩、格式化、浏览器自动刷新、部署文件生成
 并监听文件在改动后重复指定的这些步骤。借鉴了Unix操作系统的管道(pipe)思想,前一级的输出,直接变成后一级的输入,使得在操作上非常简单。
 流,Node将几乎所有IO操作都抽象成了stream的操作,简单来说就是建立在面向对象基础上的一种抽象的处理数据的工具。
 特点：压缩资源文件,实页面响应速度提升。自动构建。

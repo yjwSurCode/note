@@ -31,18 +31,43 @@ const reactDOMRoot = ReactDOM.createRoot(document.getElementById('root'));
 调用组件的render方法,将返回的JSX转化为虚拟DOM
 将虚拟DOM和上次更新时的虚拟DOM对比
 通过对比找出本次更新中变化的虚拟DOM
-真实DOM： <li>a</li>  虚拟DOM： let vnode = h('li','a'),
+真实DOM： <li>a</li>  虚拟DOM： let vNode = h('li','a'),
+
+
+
+react 是基于 vDom 的前端框架，组件渲染产生 vDom 渲染器把 vDom 渲染成 dom。
+浏览器下使用 react-dom 的渲染器，会先把 vDom 转成 fiber，找到需要更新 dom 的部分，打上增删改的 effectTag 标记，这个过程叫做 reconcile，可以打断，由 Scheduler 调度执行。reconcile 结束之后一次性根据 effectTag 更新 dom，叫做 commit。
+这就是 react 的基于 fiber 的渲染流程，分成 render（reconcile + schedule）、commit 两个阶段。
+当渲染完一次，产生了 fiber 之后，再次渲染的 vDom 要和之前的 fiber 对比下，再决定如何产生新的 fiber，目标是尽可能复用已有的 fiber 节点，这叫做 diff 算法。
+react 的 diff 算法分为两个阶段：
+第一个阶段一一对比，如果可以复用就下一个，不可以复用就结束。
+第二个阶段把剩下的老 fiber 放到 map 里，遍历剩余的vDom,一一查找 map 中是否有可复用的节点。
+最后把剩下的老 fiber 删掉，剩下的新 vDom 新增。
+这样就完成了更新时的 reconcile 过程。
+其实 diff 算法的核心就是复用节点，通过一一对比也好，通过 map 查找也好，都是为了找到可复用的节点，移动过来。然后剩下的该删删该增增
 
 # react diff算法
+![](../note/sublime/assets/reactDiffl流程.png)
 React 算法之调和diff算法 ：：：：：：：
-深度优先算法----Diff算法比较只会在同层级进行, 不会跨层级比较
-比较oldfiber.key 
+深度优先遍历算法----Diff算法比较只会在同层级进行, 不会跨层级比较
+广度优先遍历算法----会操作生命周期错乱-------因为 React 组件的更新是一层一层往下传递的，而不是水平传递，先更新兄弟组件那不是乱了套了。
+
+传统diff算法 会带来一些性能瓶颈  复杂度为O(n^3) 
+因为两个二叉树的每一个节点进行两两对比的时间复杂度是O(N^2)，此时如果继续进行树的编辑操作（修改、删除）等还需要O(N)的时间复杂度，所以总的时间复杂度是O（N^3）
+
+通过分治
+1:同级对比
+2:类型对比
+3:通过key
+
+
+比较oldFiber.key 
 如 key 相同, 进一步比较fiber.elementType与newChild.type
 如 type 相同, 调用useFiber, 创建oldFiber.alternate,（老节点的链表头）并返回
 如 type 不同, 调用createFiber创建新的fiber
 在进行子节点的diff算法过程中，会进行旧首节点和新首节点的sameNode对比,这一步命中了逻辑,因为现在新旧两次首部节点的key都是0了,
-同理,key为1和2的也是命中了逻辑，导致相同key的节点会去进行patchVnode更新文本，而原本就有的c节点，却因为之前没有key为4的节点，而被当做了新节点，
-所以很搞笑，使用index做key，最后新增的居然是本来就已有的c节点。所以前三个都进行patchVnode更新文本，最后一个进行了新增，
+同理,key为1和2的也是命中了逻辑，导致相同key的节点会去进行patchVNode更新文本，而原本就有的c节点，却因为之前没有key为4的节点，而被当做了新节点，
+所以很搞笑，使用index做key，最后新增的居然是本来就已有的c节点。所以前三个都进行patchVNode更新文本，最后一个进行了新增，
 那就解释了为什么所有li标签都更新了。
 
 4.3：Renderer(渲染器)———— 负责将变化的组件渲染到页面上
@@ -55,20 +80,6 @@ React 算法之调和diff算法 ：：：：：：：
 ; React、Vue2、Vue3的三种Diff算法：：：：：：https://juejin.cn/post/6919376064833667080#heading-14
 
 React 递增法  通过 index  preList  nextList
-
-; Vue2.X Diff —— 双端比较
-Vue.js使用了一种称为Virtual DOM的技术来提高渲染性能，而Virtual DOM 的实现主要基于两个算法：diff算法和patch算法。
-其中，diff算法用于计算新旧虚拟DOM树的差异，patch算法则用于将计算出的差异应用到真实DOM上。
-Vue.js的diff算法主要采用了双端比较的策略。它通过遍历新旧虚拟DOM树的节点来找到差异。
-具体来说，算法会同时从新旧节点的首尾两端开始比较，逐步向中间靠拢。在比较过程中，如果发现新旧节点相同，
-则直接进入下一个节点的比较。如果发现新旧节点不同，则根据一定的策略（如节点的key属性或tag名称）
-判断是要创建、更新、移动、删除节点。比如，如果新节点的key值与旧节点的key值相同，则说明这两个节点是同一个节点，
-只需要更新其内容即可。如果新节点的key值在旧节点中不存在，则说明需要创建一个新节点。如果新节点的key值与旧节点中的其他节点的key值相同，
-则说明需要将当前节点移动到对应节点的位置上。如果发现旧节点有但新节点没有，则说明需要删除旧节点。
-在比较完节点之后，diff算法会对需要更新的节点进行更新操作。具体来说，Vue.js会根据需要更新的节点以及差异类型，生成一组针对真实DOM的操作指令。这些指令包括插入节点、删除节点、移动节点、更新节点等等。最后，Vue.js通过执行这些操作指令，将计算出的差异应用到真实DOM上，完成渲染过程。
-需要注意的是，由于diff算法是一种计算量较大的算法，因此Vue.js会通过一些优化手段来提高算法的性能。例如，Vue.js会缓存一些常用的节点、限制比较的深度、跳过静态节点等等。这些优化手段可以有效地减少diff算法的计算量，提高Vue.js的渲染性能。
-
-Vue3 Diff —— 最长递增子序列
 
 
 React 中的优先级管理 ：：：：：：：：
@@ -85,7 +96,7 @@ React 中的优先级管理 ：：：：：：：：
 // 那就是 useState 不对状态做浅层合并了，而 useReducer 会合并
 
 ahooks源码:https://github1s.com/alibaba/hooks/blob/HEAD/packages/hooks/src/useLockFn/index.ts
-          演示地址：https://ahooks.js.org/zh-CN/hooks/use-lock-fn/
+演示地址：https://ahooks.js.org/zh-CN/hooks/use-lock-fn/
 
 调度实现(Scheduler) ：：：：：：：：：：：：：：：：：：：：：：：：
 export let requestHostCallback; // 请求及时回调: port.postMessage
@@ -279,7 +290,7 @@ react 性能优化 ：：：：：：：：：：：：：：：：：：：：�
 正确地使用 Webpack 4.0 的 Tree Shaking；
 使用动态 import，切分页面代码，减小首屏 JS 体积；
 编译到 ES2015+，提高代码运行效率，减小体积；
-使用 lazyload 和 placeholder 提升加载体验。
+使用 lazyLoad 和 placeholder 提升加载体验。
 
 
 ## react-router  https://github.com/remix-run/react-router/blob/main/docs/getting-started/tutorial.md

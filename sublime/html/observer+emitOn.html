@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 创建一个Dep类(目标类)(发布者类)
+      class Dep {
+        constructor(name) {
+          this.name = name;
+          this.watcherList = []; //用来登记哪些人要买衣服
+        }
+        add(watcher) {
+          this.watcherList.push(watcher);
+        }
+        notify() {
+          this.watcherList.forEach((item) => {
+            item.update();
+          });
+        }
+      }
+
+      //创建一个被观察者的实例
+      const dep = new Dep('宝宝');
+
+      // 创建一个Watcher类（观察者类）
+      class Watcher {
+        constructor(name) {
+          this.name = name;
+        }
+        update() {
+          console.log(this.name + '被通知到了');
+        }
+      }
+
+      //创建二个观察者
+      const father = new Watcher('爸爸');
+      const mother = new Watcher('妈妈');
+      //把这二个观察者添加到被观察者的列表中
+      dep.add(father);
+      dep.add(mother);
+      //当宝宝被观察者有需求的时候，就去通知所有的观察者
+      dep.notify();
+    </script>
+
+    <script>
+      // 	getValue: () => BaseSvc.getAppEnv(),
+      // setValue: (env: any) => BaseSvc.setAppEnv(env),
+      // subscribe: (listener: any) => BaseSvc.subscribeAppEnv(listener),
+
+      // 由统一调度中心调用，因此发布者和订阅者不需要知道对方的存在
+
+      class Events {
+        _events = {};
+
+        /**
+         * Register an event handler for the given type.
+         *
+         * @param type	Type of event to listen for, or `"*"` for all events
+         * @param handler Function to call in response to given event
+         */
+        on(type, handler) {
+          (this._events[type] || (this._events[type] = [])).push(handler);
+        }
+
+        /**
+         * Remove an event handler for the given type.
+         *
+         * @param type	Type of event to unregister `handler` from, or `"*"`
+         * @param handler Handler function to remove
+         */
+        off(type, handler) {
+          if (this._events[type]) {
+            this._events[type].splice(
+              this._events[type].indexOf(handler) >>> 0,
+              1
+            );
+          }
+        }
+        /**
+         * Invoke all handlers for the given type.
+         * If present, `"*"` handlers are invoked after type-matched handlers.
+         *
+         * Note: Manually firing "*" handlers is not supported.
+         *
+         * @param type  The event type to invoke
+         * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
+         */
+        emit(type, evt) {
+          (this._events[type] || []).slice().forEach((handler) => {
+            handler(evt);
+          });
+          (this._events['*'] || []).slice().forEach((handler) => {
+            handler(type, evt);
+          });
+        }
+      }
+
+      class BaseService {
+        _sessionStorage = new Map();
+        _localStorageCache = new Map();
+        _events = new Events();
+
+        getAppEnv() {
+          return localStorage.getItem('app:env');
+        }
+
+        setAppEnv(env) {
+          localStorage.setItem('app:env', env);
+          this._events.emit('change:app:env', env);
+        }
+
+        subscribeAppEnv(listener) {
+          return this.subscribe('change:app:env', listener);
+        }
+
+        subscribe(type, listener) {
+          this._events.on(type, listener);
+
+          return () => {
+            this._events.off(type, listener);
+          };
+        }
+      }
+
+      const BaseSvc = new BaseService();
+
+      // 创建一个事件监听器
+      function handleAppEnvChange(env) {
+        console.log('App environment changed:', env);
+      }
+      // 订阅应用环境变化事件
+      const unsubscribe = BaseSvc.subscribeAppEnv(handleAppEnvChange);
+      // 设置应用环境
+      BaseSvc.setAppEnv('production');
+      BaseSvc.setAppEnv('production123');
+      // 退订应用环境变化事件
+      unsubscribe();
+    </script>
+  </body>
+</html>

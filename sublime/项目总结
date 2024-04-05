@@ -130,7 +130,7 @@ export function useOrderDetailChange(cb: (order: IOrderPage.OrderDetail) => void
 	}, [cbFn]);
 }
 
-#! 解锁 上锁 竟态锁
+#! 解锁 上锁 竟态锁  useLockFn
 只允许一个线程写入（其他线程既不能写入也不能读取）当完成是其他的线程可以继续
 没有写入时，多个线程允许同时读（提高性能）
 
@@ -231,7 +231,7 @@ easing:'cubic-bezier(1,0.01,0,1)'
 
 
 
-# 4 转盘游戏(桥接至app 支付宝小程序 微信小程序)。 
+#! 4 转盘游戏(桥接至app 支付宝小程序 微信小程序)。 
 4.1-----页面跳转
 loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');  RwMutex  writeLock
 
@@ -311,6 +311,12 @@ rafPolyfill  raf
 用电信息
 用水信息
 
+
+#6 虚拟滚动 react-window
+
+
+#! pinia  vuex redux 
+../note/sublime/assets/redux.png
 
 
 
@@ -448,7 +454,20 @@ git 提交规范
 8：构建工具的配置
 
 
-##! 前端性能优化
+##! 前端性能优化 https://juejin.cn/post/6844903655330562062#heading-16
+
+1:减少请求数、减小请求资源体积、提升网络传输速率
+2:资源打包压缩
+  uglifyJsPlugin 用来对js文件进行压缩 (将code转换成AST 将AST进行优化,生成一个更小的AST 将新生成的AST再转化成code)
+  HtmlWebpackPlugin HTML压缩
+  CommonsChunkPlugin 提取公共资源 
+  MiniCssExtractPlugin 提取css并压缩
+3:图片资源优化
+  使用雪碧图(CSS Sprite) https://www.toptal.com/developers/css/sprite-generator
+4.利用浏览器缓存
+5.使用CDN
+对于首次访问的加速,我们需要从网络层面进行优化,最常见的手段就是CDN(Content Delivery Network,内容分发网络)加速。
+通过将静态资源(例如javascript,css,图片等等)缓存到离用户很近的相同网络运营商的CDN节点上,不但能提升用户的访问速度，还能节省服务器的带宽消耗，降低负载.
 
 【减少重定向】
 尽量避免使用重定向，当页面发生了重定向，就会延迟整个HTML文档的传输。在HTML文档到达之前，页面中不会呈现任何东西，
@@ -467,54 +486,6 @@ link 代替 @import
 加载页面时，link标签引入的 CSS 被同时加载；@import引入的 CSS 将在页面加载完毕后被加载。
 
 
-
-
-#! 浏览器兼容性问题 ：：：：：：：：：：：
-
-@vitejs/plugin-legacy
-
-1:通过rollup构建了面向低版本的资源 
-rollup cjs esm umd
-2:在html入口增加了nomodule的兼容
-
-css兼容性：
-
-			postcss: {
-				plugins: [
-					autoprefixer({
-						overrideBrowserslist: COMPILE_TARGETS,
-					}),
-				],
-			},
-
-比如：：：
-
-* html .test { color: #090; }       /* For IE6 and earlier */
-* + html .test { color: #ff0; }     /* For IE7 */
-
-.container {
-	display: flex;
-	flex-direction: row;
-}
-
-需要增加兼容 chrome49 以及 chrome79 以上的样式
-.container {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	min-height: 0;
-}
-
-
-; 浏览器前缀 ：
--moz代表firefox浏览器私有属性
--ms代表IE浏览器私有属性
--webkit代表chrome、safari私有属性
--o代表opera私有属性
-
-; js兼容性
-可以使用 const 关键字或 var 关键字来定义常量；IE下，只能使用 var 关键字来定义常量。
-解决方案：统一使用 var 关键字来定义常量。
 
 
 
@@ -548,6 +519,21 @@ export default {
 };
 
 # react-i18next 国际化
+
+
+# ue项目中使用可选链 ( ?. )和双问号 ( ??）
+
+1.安装插件：@babel/plugin-proposal-optional-chaining
+
+npm install --save-dev @babel/plugin-proposal-optional-chaining
+2.配置babel .babelrc 或者 babel.config.js 文件添加 plugins 配置
+
+{
+  "plugins": [
+    "@babel/plugin-proposal-optional-chaining"
+  ]
+}
+3.使用 配置完了,就可以在项目中使用可选链 ( ?. ) 和双问号 ( ?? )
 
 
 #! 代码的调试
@@ -636,6 +622,7 @@ SSR(Server-Side Rendering)和SSG(Static Site Generation)
 总体而言，我作为一名有五年经验的前端开发人员，我对自己的技术能力、问题解决能力、团队合作能力、用户体验导向和项目管理能力有着自信。我不断学习和探索新的技术，以不断提升自己的专业水平，并为项目的成功和用户的满意而努力
 
 
-
 缺点是：我有时候过于注重技术细节（代码排序算法对比,花费过多的时间去优化代码的结构和命名规范，以及使用最新的技术和语法特性），可能会陷入过度优化的思维模式。这可能导致我花费过多的时间和精力在微小的技术细节上，而忽略了更重要的项目需求和用户体验。
 我正在积极改进这一些，提高代码的可读性和可维护性，通过更好的项目规划和时间管理，以及更加注重整体目标和用户需求，来平衡技术细节与项目目标之间的关系。
+
+比如贝塞尔曲线 为什么要去研究
