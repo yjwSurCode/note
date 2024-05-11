@@ -8,12 +8,12 @@ break // 跳出当前循环 // 一般配合判断语句使用
 return 当程序运行到 return; 语句时，会终止循环，结束当前方法。
 }
 
-2： for( ...in )
+2：for( ... in )   遍历普通对象
 for (let key in {a:1, b:2, c:3}) {
 console.log(key); /a b c
 }
 
-3： for( ...of )
+3：for( ... of )  可迭代对象（包括Array，Map，Set，String，TypedArray，arguments 对象等等）
 for (let value of [1,2,3]) {
 console.log(value); /1 2 3
 }

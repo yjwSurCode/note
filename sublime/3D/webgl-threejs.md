@@ -59,7 +59,6 @@ narmalize() //转化为单位向量 就是转化成位移
 var arr = new Float32Array(2);
 var arr = new Float32Array([21, 31]);
 
-
 # modal.traverse
 
 isMesh getObjectName
@@ -98,12 +97,11 @@ targetObject.position.copy(sourceObject.position);
 
 # 相机 https://threejs.org/manual/#zh/cameras
 
-
 `new THREE.PerspectiveCamera( fov, aspect, near, far );`
 
 //创建镜头
 //PerspectiveCamera() 中的 4 个参数分别为：
-//1、fov(field of view 的缩写)，可选参数，默认值为 50，`视场角度` 指垂直方向上的角度，注意该值是度数而不是弧度,`视野角度fov越大，观察范围越大`
+//1、fov(field of view 的缩写)，可选参数，默认值为 50，`视场角度` 指垂直方向上的角度，注意该值是度数而不是弧度,`视野角度fov越大，观察范围越大` 扩张得就越大。
 //2、aspect，可选参数，默认值为 1，`画布的高宽比`，例如画布高 300 像素，宽 150 像素，那么意味着高宽比为 2
 //3、near，可选参数，默认值为 0.1，`近平面`，限制摄像机可绘制最近的距离，若小于该距离则不会绘制(相当于被裁切掉)
 //4、far，可选参数，默认值为 2000，`远平面`，限制摄像机可绘制最远的距离，若超出该距离则不会绘制(相当于被裁切掉)
@@ -136,7 +134,6 @@ https://threejs.org/manual/examples/cameras-perspective-2-scenes.html
 
 ## 正交相机（OrthographicCamera）
 
-
 https://threejs.org/manual/examples/cameras-orthographic-2-scenes.html
 在这种投影模式下，无论物体距离相机距离远或者近，在最终渲染的图片中物体的大小都保持不变。
 zoom 属性可以改变视野大小
@@ -161,17 +158,17 @@ stats.update();//渲染循环中执行 stats.update()来刷新时间
 # 图元 https://threejs.org/manual/#zh/primitives
 
 # BufferGeometry
+
 `缓冲类型几何体BufferGeometry`
 threejs 的长方体 BoxGeometry、球体 SphereGeometry 等几何体都是基于 BufferGeometry (opens new window)类构建的，BufferGeometry 是一个没有任何形状的空几何体
 threejs 的长方体 BoxGeometry、球体 SphereGeometry 等几何体都是基于 BufferGeometry (opens new window)类构建的，BufferGeometry 是一个没有任何形状的空几何体
 
-顶点坐标、面索引、顶点颜色、顶点法向量、顶点UV
+顶点坐标、面索引、顶点颜色、顶点法向量、顶点 UV
 
 geometry.setIndex( indices );
 geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( normals, 3 ) );
 geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-
 
 图元种类(按英文首字母排序) 图元构造函数
 盒子(Box) BoxBufferGeometry、BoxGeometry
@@ -195,6 +192,12 @@ geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 由函数生成的形状(Parametric) ParametricBufferGeometry、ParametriceGeometry
 
 2D 平面矩形(Plane) PlaneBufferGeometry、PlaneGeometry `Three.js的材质默认正面可见,想看到两面可以设置 side: THREE.DoubleSide`
+// width — 平面沿着 X 轴的宽度。默认值是 1。
+// height — 平面沿着 Y 轴的高度。默认值是 1。
+// widthSegments — （可选）平面的宽度分段数，默认值是 1。
+// heightSegments — （可选）平面的高度分段数，默认值是 1。
+const geometry = new THREE.PlaneGeometry(11, 8, 50, 50);
+
 
 多面体(Polyhedron) PolyhedronBufferGeometry、PolyhedronGeometry
 
@@ -223,17 +226,18 @@ geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 # 场景
 
 ## !! 设计师给我的模型类型是 obj 的，还带有素材 mtl (obj+mtl) 库：vue-3d-model
+
 OBJ：文件包含了模型的几何信息，例如顶点坐标、面的定义等。
 MTL：文件包含了与模型相关的材质属性，例如颜色、纹理映射、光照参数等。
 
-首先安装 obj2gltf；该插件的作用是把 obj 格式转为 gltf 格式 
+首先安装 obj2gltf；该插件的作用是把 obj 格式转为 gltf 格式
 `npm i -g obj2gltf`
 `obj2gltf -i name.obj -o name.gltf`
 
-接着安装`gltf-pipeline`该插件的作用是把现有的gltf格式模型进行压缩,跟图片压缩一样,减少大小,更快的加载。
+接着安装`gltf-pipeline`该插件的作用是把现有的 gltf 格式模型进行压缩,跟图片压缩一样,减少大小,更快的加载。
 `npm i -g gltf-pipeline`
 
- )!! 将 obj 模型转化 gltf 过程中，如果报错说没有找到 xx.mtl 文件时；解决方案：确定 mtl 和 obj 文件是否相同，其次 mtl 和 obj 文件放在同一录下面
+)!! 将 obj 模型转化 gltf 过程中，如果报错说没有找到 xx.mtl 文件时；解决方案：确定 mtl 和 obj 文件是否相同，其次 mtl 和 obj 文件放在同一录下面
 ENOENT: no such file or directory, open '/Users/surcode/Desktop/material-t/Seeget-3D/threeModule/public/BusGameMap.mtl'
 Could not read material file at /Users/surcode/Desktop/material-t/Seeget-3D/threeModule/public/BusGameMap.mtl. Attempting to read the material file from within the obj directory instead.
 ENOENT: no such file or directory, open '/Users/surcode/Desktop/material-t/Seeget-3D/threeModule/public/BusGameMap.mtl'
@@ -255,11 +259,12 @@ gltf 在用于 3d 展示时，图片部分要做 base64 解码，也需要消耗
 gltf-pipeline -i tm.gltf -o tm.glb
 
 ## .gltf + .bin + texture(图片)
+
 .gltf 文件是一种开放的三维模型文件格式，它使用 JSON 格式对模型的结构和属性进行描述。
 .bin 文件是 .gltf 文件的二进制数据文件，包含了模型的几何信息和材质数据。
 texture（纹理）是用于给模型表面添加颜色、纹理或图案的图像文件。
 
- dracoLoader
+dracoLoader
 
 # glb 文件
 
@@ -385,7 +390,6 @@ solarSystem.add(earthMesh);
 ![](2023-10-07-17-26-28.png)
 ![](2023-09-19-10-53-34.png)
 
-
 例子：
 https://threejs.org/manual/examples/scenegraph-sun-earth-moon-axes.html
 
@@ -405,10 +409,20 @@ camera.lookAt( 0, 0, 0 );
 而 up 向量指示了你站立时头部的朝向。(20, 10, 1)中的数字代表了相机在水平、垂直和深度方向上的朝向。通过设置 up 向量，你可以控制相机的视角。
 以此为例，假设你站在一个房间的角落里，使用相机进行拍摄。你调整相机的位置和朝向，就像移动和转动自己的身体来获得不同的视角和拍摄效果。
 
+`mesh.position.length()`
+// 1. 模型与原点间的距离 场景原点为 new THREE.Vector3(0,0,0)
+mesh.position.distanceTo(new THREE.Vector3(0,0,0))
+// Vector3(x,y,z).length() 计算从(0,0,0)至 Vector3(x,y,z)的距离
+mesh.position.length()
+// 2.模型与相机之间的距离
+mesh.position.distanceTo(camera.position)
+// 3.两模型之间的距离
+mesh.position.distanceTo(otherMesh.position)
+
 # 材质 https://threejs.org/manual/#zh/materials
 
 高光网格材质 MeshPhongMaterial `通过MeshPhongMaterial的高光亮度.shininess属性,可以控制高光反射效果 specular: 0x444444, //高光部分的颜色`
-MeshBasicMaterial是一种不需要光照参数就可见的材质
+MeshBasicMaterial 是一种不需要光照参数就可见的材质
 
 基础网格材质 MeshBasicMaterial
 漫反射网格材质 MeshLambertMateria
@@ -429,6 +443,11 @@ material.flatShading = true
 ![Alt text](image-2.png)
 
 # textures 纹理 https://threejs.org/manual/#zh/textures#hello
+
+const texture = new THREE.TextureLoader().load('2.webp');
+texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+texture.repeat.set(1, 1)
+texture.needsUpdate = true
 
 要解决加载 gltf 的格式模型纹理贴图和原图不一样的问题 `render.outputCoding=THREE.sRGBEnding`
 
@@ -503,8 +522,7 @@ texture.colorSpace = THREE.SRGBColorSpace;
 const repeats = planeSize / 2;
 texture.repeat.set(repeats, repeats);
 
-
-环境遮挡 aoMap  需要第二组UV
+环境遮挡 aoMap 需要第二组 UV
 
 const planeGeometry=new THREE.planeBufferGeometry()
 planeGeometry.setAttribute( 'uv2',new THREE.BufferAttribute( planeBufferGeometry.attribute.uv.array,2 ) )
@@ -526,8 +544,7 @@ should be negated to compensate for the different handedness.
 
 # PBR 基于物理渲染
 
-
-# 光照    https://threejs.org/manual/examples/lights-directional-w-helper.html
+# 光照 https://threejs.org/manual/examples/lights-directional-w-helper.html
 
 回顾 PointLight
 {
@@ -539,12 +556,10 @@ should be negated to compensate for the different handedness.
 
 }
 
-
 设置点光源的照射位置
 spotLight.target=sphere;
 
-
-mesh.rotation.x = Math.PI * - .5;  将mesh angle旋转到-90度
+mesh.rotation.x = Math.PI \* - .5; 将 mesh angle 旋转到-90 度
 
 环境光（AmbientLight） new THREE.AmbientLight(color, intensity);
 半球光（HemisphereLight） new THREE.HemisphereLight(skyColor, groundColor, intensity);
@@ -552,8 +567,55 @@ mesh.rotation.x = Math.PI * - .5;  将mesh angle旋转到-90度
 ![](./assets/2023-09-21-14-30-21.png)
 ![](./assets/2023-09-21-14-30-45.png)
 
-# 摄像机  https://threejs.org/manual/#zh/cameras
+# 全景贴图
 
+const textures = `getTexturesFromAtlasFile`('/textures/sun_temple_stripe.jpg', 6)
+for (let index = 0; index < 6; index++) {
+materials.push(new THREE.MeshBasicMaterial({ map: textures[index] }))
+}
+skyBox = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), materials)
+skyBox.geometry.scale(1, 1, - 1)
+scene?.add(skyBox)
+
+const `getTexturesFromAtlasFile` = (imgUrl: string, tilesCount: number): THREE.Texture[] => {
+const textures: THREE.Texture[] = []
+for (let i: number = 0; i < tilesCount; i++) {
+textures[i] = new THREE.Texture()
+}
+new THREE.ImageLoader().load(imgUrl, (image) => {
+let canvas: HTMLCanvasElement
+let context: CanvasRenderingContext2D | null
+const tileWidth = image.height
+for (let index = 0; index < textures.length; index++) {
+canvas = document.createElement('canvas')
+context = canvas.getContext('2d')
+canvas.height = tileWidth
+canvas.width = tileWidth
+// drawImage(图片或视频资源, 图片的 x 坐标开始剪切, 图片的 y 坐标开始剪切, 被剪切图像的宽度，被剪切图像的高度, 图像放置的 x 坐标, 图像放置的 y 坐标, 图像宽度, 图像高度)
+context?.drawImage(image, tileWidth \* index, 0, tileWidth, tileWidth, 0, 0, tileWidth, tileWidth)
+textures[index].image = canvas
+textures[index].needsUpdate = true
+}
+})
+return textures
+}
+
+# 环境贴图
+
+const envUrls = ref<string[]>(
+[
+'/textures/park/1.jpg',
+'/textures/park/2.jpg',
+'/textures/park/3.jpg',
+'/textures/park/4.jpg',
+'/textures/park/5.jpg',
+'/textures/park/6.jpg'
+]
+)
+textureCube = new THREE.CubeTextureLoader().load(envUrls.value)
+scene.background = textureCube
+
+# 摄像机 https://threejs.org/manual/#zh/cameras
 
 # 阴影 https://threejs.org/manual/#zh/shadows
 
@@ -564,6 +626,7 @@ mesh.rotation.x = Math.PI * - .5;  将mesh angle旋转到-90度
 5、设置物体接收阴影 plane.receiveShadow=true;
 
 ## GLTFLoader
+
 // 创建加载管理器
 const manager = new THREE.LoadingManager();
 new GLTFLoader(manager)
@@ -587,14 +650,16 @@ gltf.scene.traverse( n => {
 scene.add( gltf.scene );
 
 ## ktx2Loader
+
 // 用于加载和解析 KTX2 格式的纹理文件。KTX2 是一种高效的纹理压缩格式，可以显著减少纹理文件的大小并提高加载性能
 ktx2Loader = new KTX2Loader();
 
 # 技巧!!!
+
 ## 按需加载
 
 render();
-controls.addEventListener( 'change', render );
+controls.addEventListener( 'change', render ); // 监听相机位置
 window.addEventListener( 'resize', render );
 
 // 设置相机控件轨道控制器 OrbitControls
@@ -605,19 +670,20 @@ renderer.render(scene, camera); //执行渲染操作
 });//监听鼠标、键盘事件
 
 # 防止输出模糊处理
+
 renderer.setPixelRatio(window.devicePixelRatio);
 
 # 锯齿处理
+
 new THREE.WebGLRenderer( { antialias: true } );
 // 获取你屏幕对应的设备像素比.devicePixelRatio 告诉 threeJs,以免渲染模糊问题
 renderer.setPixelRatio(window.devicePixelRatio); //1---10
 
-threeJs 基础总结：
+# threeJs 基础总结：
 https://blog.pig1024.me/posts/5d7fc47447d84c6fc9bd0815
 
-元素按轨道移动
+# 元素按轨道移动
 https://threejs.org/manual/examples/debugging-mcve.html
-
 
 # 创建标注元素 缩放保持一致
 
@@ -625,24 +691,26 @@ https://threejs.org/manual/examples/debugging-mcve.html
 
 大量对象的优化 https://threejs.org/manual/#zh/optimize-lots-of-objects
 
-
 # threeJS 常见优化手段
-https://discoverthreejs.com/zh/tips-and-tricks/
 
+https://discoverthreejs.com/zh/tips-and-tricks/
 
 # 好用的库
 
-相机控制库 ：https://www.npmjs.com/package/camera-controls
+相机控制库: https://www.npmjs.com/package/camera-controls
+
+git地址: https://github1s.com/yomotsu/camera-controls/blob/dev/examples/auto-rotate.html
+
 
 # 生成曲线,几何体
 
-// 三维向量Vector3创建一组顶点坐标
+// 三维向量 Vector3 创建一组顶点坐标
 const arr = [
-    new THREE.Vector3(-50, 50, 50),
-    new THREE.Vector3(-40, 40, 40),
-    new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(60, -60, 0),
-    new THREE.Vector3(70, 0, 80)
+new THREE.Vector3(-50, 50, 50),
+new THREE.Vector3(-40, 40, 40),
+new THREE.Vector3(0, 0, 0),
+new THREE.Vector3(60, -60, 0),
+new THREE.Vector3(70, 0, 80)
 ]
 // 三维样条曲线
 const curve = new THREE.CatmullRomCurve3(arr);
@@ -651,13 +719,12 @@ console.log(pointsArr,'pointsArr')
 const geometry = new THREE.BufferGeometry();
 geometry.setFromPoints(pointsArr); //读取坐标数据赋值给几何体顶点
 
-
-// 用点模型可视化样条曲线经过的顶点位置-----------这些点就是上面的三维向量Vector3创建一组顶点坐标
+// 用点模型可视化样条曲线经过的顶点位置-----------这些点就是上面的三维向量 Vector3 创建一组顶点坐标
 const geometry2 = new THREE.BufferGeometry();
 geometry2.setFromPoints(arr);
 const material2 = new THREE.PointsMaterial({
-    color: 0xff00ff,
-    size: 10,
+color: 0xff00ff,
+size: 10,
 });
 const points = new THREE.Points(geometry2, material2);
 
@@ -665,16 +732,16 @@ const points = new THREE.Points(geometry2, material2);
 
 // 物体沿线移动方法
 function moveOnCurve() {
-  if (curve == null || model == null) {
-    console.log("Loading");
-  } else {
-    if (progress <= 1 - velocity) {
-      console.log(progress); //0.02
-      console.log(velocity); // 0.01 0.6
-      const point = curve.getPointAt(progress); //获取样条曲线指定点坐标
-      console.log(point, "point"); //{x: 0, y: 0, z: 0}
-      const pointBox = curve.getPointAt(progress + velocity); //获取样条曲线指定点坐标
-      console.log(pointBox, "pointBox"); //{x: 0, y: 0, z: 0}
+if (curve == null || model == null) {
+console.log("Loading");
+} else {
+if (progress <= 1 - velocity) {
+console.log(progress); //0.02
+console.log(velocity); // 0.01 0.6
+const point = curve.getPointAt(progress); //获取样条曲线指定点坐标
+console.log(point, "point"); //{x: 0, y: 0, z: 0}
+const pointBox = curve.getPointAt(progress + velocity); //获取样条曲线指定点坐标
+console.log(pointBox, "pointBox"); //{x: 0, y: 0, z: 0}
 
       if (point && pointBox) {
         model.position.set(point.x, point.y, point.z);
@@ -703,9 +770,9 @@ function moveOnCurve() {
     } else {
       progress = 0;
     }
-  }
-}
 
+}
+}
 
 # 绘制库区
 
@@ -742,8 +809,6 @@ function moveOnCurve() {
           hullMesh = createMesh(hullGeometry);
           scene.add(hullMesh);
         }
-
-
 
 scene.position
 {

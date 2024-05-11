@@ -1,0 +1,414 @@
+<template>
+  <div class="content_box">
+    <div class="canvas_box">
+      <canvas ref="canvas" id="canvsa" />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+/** Composition API **/
+import { onMounted, ref, onUnmounted } from 'vue';
+
+/** Components **/
+
+/** 外部依赖 **/
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { lngLatToMercator } from '@/utils/coordinate';
+
+/** API **/
+
+/** 属性 **/
+
+/** data **/
+let renderer: THREE.WebGLRenderer | null = null;
+let camera: THREE.PerspectiveCamera | null = null;
+let scene: THREE.Scene | null = null;
+
+let axesHelper: THREE.AxesHelper;
+let controls: OrbitControls;
+let clock: THREE.Clock;
+
+let clearColor: number = 0x001122; // 雾化和背景渲染的颜色
+
+/** city **/
+let floor: THREE.Group;
+let hpjGeometry: THREE.BufferGeometry; // 黄浦江几何模型
+let cityCenter: THREE.Vector3; // 城市场景几何中心
+
+const canvas = ref(); // 画布
+
+// 组件导出的属性数据
+defineExpose({
+  renderer,
+  camera,
+  scene,
+});
+
+/** 生命周期 **/
+onMounted((): void => {
+  initRenderer();
+  initCamera();
+  initScene();
+  initAxesHelper();
+  initLights();
+  initControls();
+  initClock();
+  initAll(); // 初始化城市
+  render();
+  resize();
+});
+
+onUnmounted(() => {
+  renderer?.dispose();
+});
+
+/** 方法 **/
+const initRenderer = (): void => {
+  canvas.value.style['cursor'] = 'pointer';
+  renderer = new THREE.WebGLRenderer({
+    canvas: canvas.value,
+    alpha: true,
+    antialias: true, // 抗锯齿
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // 设置像素比，提高图形精度
+  renderer.setSize(canvas.value.offsetWidth, canvas.value.offsetHeight); // 设置尺寸
+  // renderer.outputEncoding = THREE.sRGBEncoding // 开启 RGB 色值输出解码，会使物体颜色更明亮
+  // renderer.toneMapping = THREE.ACESFilmicToneMapping // 优化 sky 的渲染
+  // renderer.shadowMap.enabled = true // 开启阴影的渲染
+
+  renderer.setClearColor(clearColor, 1.0); // 渲染背景色
+};
+
+const initCamera = (): void => {
+  camera = new THREE.PerspectiveCamera(
+    60,
+    canvas.value.offsetWidth / canvas.value.offsetHeight,
+    1,
+    20000
+  );
+  // window.camera = camera
+  camera.position.set(-800, 600, 129);
+};
+
+const initScene = (): void => {
+  scene = new THREE.Scene();
+  // 设置雾化效果
+  scene.fog = new THREE.Fog(clearColor, 100, 5000);
+};
+
+const initAxesHelper = (): void => {
+  axesHelper = new THREE.AxesHelper(500);
+  if (scene) {
+    scene.add(axesHelper);
+  }
+};
+
+const initControls = (): void => {
+  if (camera) {
+    controls = new OrbitControls(camera, canvas.value);
+    controls.maxPolarAngle = Math.PI * 0.45; // 最大极角（与 xy 平面的夹角）值
+    controls.minPolarAngle = Math.PI * 0.05; // 最小极角值
+    controls.maxDistance = 3000; // 最远距离
+    controls.minDistance = 100; // 最近距离
+    controls.zoomSpeed = 0.5;
+    controls.rotateSpeed = 0.5;
+  }
+};
+
+const initLights = (): void => {
+  // 加载灯光
+  const ambient = new THREE.AmbientLight(0xffffee, 0.5);
+  scene?.add(ambient);
+
+  // 方向光，平行光，模拟太阳光
+  const directionLight_1 = new THREE.DirectionalLight(0xffffdf);
+  directionLight_1.position.set(-400, 1000, 1000);
+  directionLight_1.intensity = 0.5;
+  scene?.add(directionLight_1);
+
+  const directionLight_2 = new THREE.DirectionalLight(0xffffdf);
+  directionLight_2.position.set(-200, 600, -500);
+  directionLight_2.intensity = 0.2;
+  scene?.add(directionLight_2);
+};
+
+const initClock = (): void => {
+  clock = new THREE.Clock();
+};
+
+// 初始化场景
+const initAll = (): void => {
+  const lngLatCenter = [121.49526536464691, 31.24189350905988]; // 上海明珠的经纬度
+  const mercatorPosition = lngLatToMercator(lngLatCenter);
+  cityCenter = new THREE.Vector3(mercatorPosition.x, mercatorPosition.y, 0); // 在 XOY 平面
+  cityCenter.applyAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+
+  axesHelper.position.set(cityCenter.x, 0, cityCenter.z);
+
+  camera?.position.set(cityCenter.x - 1500, 600, cityCenter.z + 400);
+  camera?.lookAt(cityCenter.x, 0, cityCenter.z);
+
+  controls.target.set(cityCenter.x, 0, cityCenter.z); // 轨道中心点
+  controls.update();
+
+  const gltfLoader = new GLTFLoader(); // gltf 模型加载器
+  const fileLoader = new THREE.FileLoader(); // 文件加载器
+  fileLoader.setResponseType('json');
+  // 创建地面网格
+  create_grid(6000, 100, '#ff0000', 1, 0x009988);
+
+  // 加载城市模型
+  create_city_model(gltfLoader, '/models/city/shanghai.glb').then((city) => {
+    city.name = 'City_ShangHai';
+    city.position.y = 20;
+    scene?.add(city);
+  });
+
+  // 解析 GEOJSON 数据
+  create_city_json(fileLoader, [
+    '/json/shanghai/wt.json',
+    '/json/shanghai/hpj.json',
+  ]).then((city) => {
+    city.name = 'City_ShangHai';
+    scene?.add(city);
+  });
+};
+
+// 初始化网格地面
+const create_grid = (
+  gridSize: number,
+  cell: number,
+  color: THREE.ColorRepresentation,
+  pointSize: number,
+  pointColor: THREE.ColorRepresentation
+): void => {
+  floor = new THREE.Group();
+  floor.name = 'floor';
+
+  // 网格
+  const gridHelper = new THREE.GridHelper(gridSize, cell, color, color);
+  gridHelper.name = 'grid';
+  gridHelper.renderOrder = -1;
+  floor.add(gridHelper);
+
+  // 点阵
+  const gap = gridSize / cell; // 每个点之间的间距
+  const half = gridSize / 2;
+  const matrix = new THREE.Matrix4();
+  const geometry = new THREE.PlaneGeometry(pointSize, pointSize); // 此时在 XOY 平面上
+  geometry.rotateX(-Math.PI / 2);
+  const material = new THREE.MeshBasicMaterial({
+    color: pointColor,
+    side: THREE.FrontSide,
+  });
+  const points = new THREE.InstancedMesh(geometry, material, Math.pow(cell, 2));
+  points.name = 'points';
+  let index: number = 0;
+  for (let x = 0; x < cell; x++) {
+    for (let y = 0; y < cell; y++) {
+      matrix.setPosition(-half + x * gap, 0.1, -half + y * gap);
+      points.setMatrixAt(index, matrix);
+      index++;
+    }
+  }
+  floor.add(points);
+  floor.position.set(cityCenter.x, -1.0, cityCenter.z);
+
+  scene?.add(floor);
+};
+
+// 加载城市(模型)
+const create_city_model = (
+  fileLoader: GLTFLoader,
+  url: string
+): Promise<THREE.Group> => {
+  return new Promise((resolve) => {
+    fileLoader.load(url, (glb) => {
+      const city = glb.scene; // 模型场景
+      city.children = city.children.filter((item) => {
+        return (
+          item.name === '楼房' || item.name === '河面' || item.name === '地面'
+        );
+      });
+
+      // 遍历设置 楼房 的材质
+      city.getObjectByName('楼房')?.traverse((item: unknown) => {
+        const obj = item as THREE.Mesh;
+        if (obj.isObject3D) {
+          // 更改材质
+          obj.material = new THREE.MeshLambertMaterial({
+            // color: object.material.color, //读取原来材质的颜色
+            color: 0xffffff,
+          });
+        }
+      });
+
+      // 单独设置东方明珠的材质
+      const dfmz = city.getObjectByName('东方明珠') as THREE.Mesh;
+      dfmz.material = new THREE.MeshLambertMaterial({
+        color: 0xffaa88,
+      });
+      // city.children[0].remove(dfmz) // 移除 东方明珠
+
+      resolve(city);
+    });
+  });
+};
+
+//加载城市(GeoJson)
+const create_city_json = (
+  fileLoader: THREE.FileLoader,
+  url: string[]
+): Promise<THREE.Group> => {
+  /** 助方法法 **/
+
+  // 挤压模型
+  const extrudeGeometry = (
+    points: number[][][],
+    height: number
+  ): THREE.ExtrudeGeometry => {
+    const shapePaths: THREE.Vector2[] = [];
+    // 将经纬度 --> 墨卡托坐标
+    points[0].forEach((item) => {
+      const mercator = lngLatToMercator(item);
+      shapePaths.push(new THREE.Vector2(mercator.x, mercator.y));
+    });
+    const shape = new THREE.Shape(shapePaths);
+    const geometry = new THREE.ExtrudeGeometry(shape, {
+      depth: height,
+      bevelEnabled: false,
+      steps: 1,
+    });
+    return geometry;
+  };
+
+  // 形状
+  const createShape = (points: number[][][]): THREE.Shape => {
+    const shapePaths: THREE.Vector2[] = [];
+    // 将经纬度 --> 墨卡托坐标
+    points[0].forEach((item) => {
+      const mercator = lngLatToMercator(item);
+      shapePaths.push(new THREE.Vector2(mercator.x, mercator.y));
+    });
+    const shape = new THREE.Shape(shapePaths);
+    return shape;
+  };
+
+  return new Promise((resolve) => {
+    const shangHai = new THREE.Group();
+
+    // 外滩
+    fileLoader.load(url[0], (data: unknown) => {
+      const extrudeGeometryArr: THREE.ExtrudeGeometry[] = []; // 建筑挤压模列表
+      const geo = data as geoJsonData;
+      geo.features.forEach((feature) => {
+        // 统一数据格式
+        let polygons: number[][][][] = [];
+        if (feature.geometry.type === 'Polygon') {
+          polygons = [feature.geometry.coordinates as number[][][]];
+        } else {
+          polygons = feature.geometry.coordinates as number[][][][];
+        }
+        const height = feature.properties.Floor * 3.2;
+
+        polygons.forEach((item) => {
+          const extrude = extrudeGeometry(item, height);
+          extrudeGeometryArr.push(extrude);
+        });
+      });
+      const buildingGeometry = mergeBufferGeometries(extrudeGeometryArr, false);
+      buildingGeometry.rotateX(-Math.PI / 2);
+      const buildingMaterial = new THREE.MeshLambertMaterial({
+        color: 0x009999,
+        side: THREE.FrontSide,
+      });
+      const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
+      building.name = 'building';
+
+      // 计算包围盒
+      // buildingGeometry.computeBoundingBox()
+      // const box = new THREE.Box3(buildingGeometry.boundingBox?.min, buildingGeometry.boundingBox?.max)
+      // box.getCenter(cityCenter)
+
+      shangHai.add(building);
+    });
+
+    // 黄浦江
+    // fileLoader.load(url[1], (data: unknown) => {
+    //   const shapeArr: THREE.Shape[] = [] // 形状列表
+    //   const geo = data as geoJsonData
+    //   const feature = geo.features[0]
+
+    //   const shape = createShape(feature.geometry.coordinates as number[][][])
+    //   shapeArr.push(shape)
+    //   hpjGeometry = new THREE.ShapeGeometry(shapeArr)
+    //   hpjGeometry.rotateX(-Math.PI / 2)
+
+    //   // const texture = new THREE.TextureLoader().load('/textures/water/water.jpg');
+    //   // texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    //   // texture.repeat.set(2, 2);
+    //   const hpjMaterial = new THREE.MeshBasicMaterial({
+    //     // color: 0x00bbbb
+    //     color: 0x00bb99,
+    //     // map: texture
+    //   })
+    //   const hpj = new THREE.Mesh(hpjGeometry, hpjMaterial)
+    //   hpj.name = '黄浦江'
+    //   shangHai.add(hpj)
+    // })
+    resolve(shangHai);
+  });
+};
+
+const resize = (): void => {
+  if (camera && renderer) {
+    window.onresize = (): void => {
+      if (camera && renderer) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+    };
+  }
+};
+
+const render = (): void => {
+  if (scene && camera && renderer) {
+    const elapsedTime = clock.getElapsedTime();
+    if (hpjGeometry) {
+      const position = hpjGeometry.attributes.position; // 从几何体中获取 position 属性
+      for (let index = 0; index < position.count; index++) {
+        const y =
+          10 * Math.sin(index / 5 + (elapsedTime - (index * index) / 5));
+        position.setY(index, y);
+      }
+      position.needsUpdate = true;
+    }
+    renderer.render(scene, camera);
+  }
+  window.requestAnimationFrame(render);
+};
+</script>
+
+<style lang="scss" scoped>
+.content_box {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+
+  .canvas_box {
+    width: 100%;
+    height: 100%;
+
+    #canvsa {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+</style>

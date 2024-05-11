@@ -198,17 +198,20 @@ onClick中的this是指向实例对象的，
 <button type="button" onClick={this.handleClick.bind(this)}>Click Me</button>
 
 
+# 受控组件
+受控组件:表单数据由React组件负责处理(绝大部分时候推荐使用受控组件来实现表单)
+非受控组件:表单数据就由DOM本身处理
+
 
 # react是同步还是异步 ：：：：：：：：：：：：：：：：：：：：：：：
 这里所说的同步异步， 并不是真正的同步异步， 它还是同步执行的。
 这里的异步指的是多个state会合成到一起进行批量更新。
 
 
-ES5 ES6继承的区别：：：：：：：：：：：：：：：
+# ES5 ES6继承的区别：：：：：：：：：：：：：：：
 function class  
 super 
 class 声明内部会启用严格模式。
-
 
 React Hooks 在每次组件渲染时都会调用，通过隐式地将状态挂载在当前的内部组件节点上，在下一次渲染时根据调用顺序取出。
 而 Vue 的响应式机制使 setup() 只需要在初始化时调用一次，状态通过引用储存在 setup() 的闭包内。这也是vue不受调用顺序限制的原因。
@@ -233,7 +236,7 @@ Reconciler采用递归的方式创建虚拟DOM,递归过程是不能中断的。
 
 第七步的 RIC 事件不是每一帧结束都会执行，只有在一帧的 16.6ms 中做完了前面 6 件事儿且还有剩余时间，才会执行。如果一帧执行结束后还有时间执行 RIC 事件，那么下一帧需要在事件执行结束才能继续渲染，所以 RIC 执行不要超过 30ms，如果长时间不将控制权交还给浏览器，会影响下一帧的渲染，导致页面出现卡顿和事件响应不及时。
 
-基于以上原因，在React中实现了功能更完备的requestIdleCallbackpolyfill，这就是Scheduler。
+基于以上原因，在React中实现了功能更完备的requestIdleCallbackPolyfill，这就是Scheduler。
 
 
 Concurrent Mode 指的就是 React 利用上面 Fiber 带来的新特性的开启的新模式 (mode)。 react17开始支持concurrent mode，这种模式的根本目的是为了让应用保持cpu和io的快速响应，它是一组新功能，包括Fiber、Scheduler、Lane，可以根据用户硬件性能和网络状况调整应用的响应速度，核心就是为了实现异步可中断的更新。concurrent mode也是未来react主要迭代的方向。
@@ -274,8 +277,8 @@ react类组件和hooks对比：：：：：：：：：：：：：：：：：�
 
 命令式 VS 声明式
 去生命周期化
-去this 化
-编译和压缩----对于构建工具来说,class 不能很好的压缩并且会使热重载出现不稳定的情况
+去this化
+编译和压缩----对于构建工具来说,class不能很好的压缩并且会使热重载出现不稳定的情况
 性能------hook完成时间短
 
 # react 函数组件会捕获render内部的状态 https://overreacted.io/how-are-function-components-different-from-classes/

@@ -28,7 +28,34 @@ Node从池中取得一个线程来执行复杂任务，而不占用主循环线�
 当堵塞任务执行完毕通过添加到事件队列中的回调函数来处理接下来的工作。
 这也是为什么Node.js采用JavaScript单线程语言，来做到非阻塞I/O，同时处理万级的并发而不会造成I/O阻塞的原因
 
-2023-09-25-15-29-04.png
+# node 事件循环
+
+阶段概览
+`timers(定时器)`：此阶段执行那些由setTimeout()和setInterval()调度的回调函数
+`I/O callbacks(/I/O回调)`：此阶段会执行几乎所有的回调函数，除了close callbacks(关闭回调)和那些由timers与setImmediate()调度的回调 
+·idle(空转)，prepare:此阶段只在内部使用
+`POLL(轮询)`：检索新的I/O事件：在怡当的时候Node会阻塞在这个阶段
+```
+if (timer) {
+   timers时间时间已经到达，event loop将按循环顺序进入timers阶段，并执行timer queue
+} else {
+	if(poll queue==[]){
+		if(setImmediate callback ){
+        event loop 将结束poll阶段进入check阶段
+		}else{
+        将阻塞在该阶段等待callbacks加入poll queue,一旦到达就立即执行
+		}
+	}else{
+    event loop 将同步的执行queue里的callback,直至queue为空，或执行的callback到达系统上限
+	}
+}
+```
+
+·check(检查)：setImmediate()设置的回调会在此阶段被调用
+·close callbacks(关闭事件的回调)：诸如socket.on('close',·.)此类的回调在此阶段被调用
+在事件循环的每次运行之间，Node.js会检查它是否在等待异步VO或定时器，如果没有的话就会自动关闭.
+
+
 
 #并发（Concurrency）：
 是指在一个系统中，拥有多个计算，这些计算有同时执行的特性，而且他们之间有着潜在的交互。
@@ -226,18 +253,15 @@ npm ERR! Failed at the node-sass@4.13.0 postinstall script.
 npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass
 
 
-# node-sass node 版本对应关系
+# node  node-sass  sass-loader  版本对应关系
 
-Node 17 7.0+ 102
-Node 16 6.0+ 93
-Node 15 5.0+,<7.0  88
-Node 14 4.14&4.14+  83
-Node 13 4.13+,<5.0 79
-Node 12 4.12+ 72
-Node 11 4.10+,<5.0 67
-Node 10 4.9+,<6.0 64
-Node 8 4.5.3+,<5.0 57 
-Node<8 <5.0  57以下
+Node 17----- 7.0+ ------- 10.0
+Node 16----- 6.0+ -------10.0
+Node 15----- 5.0+ & <7.0 ------ 8.0.2
+Node 14----- 4.14 & 4.14+ ------ 8.0.2
+Node 13----- 4.13+ & <5.0 ------7.9
+Node 12----- 4.12+ --------7.2
+Node 11----- 4.10+ & <5.0 ------ 6.7
 
 
 # Sequelize：操作数据库的方式

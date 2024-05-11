@@ -43,6 +43,7 @@ git cat-file -p   7cdff196a6cf2251c653d5a2ec8779ee210935bb
 
 ## Git Commit
 Git 仓库中的提交记录保存的是你的目录下所有文件的快照，就像是把整个目录复制，然后再粘贴一样，但比复制粘贴优雅许多！
+![](./git-merge.gif)
 
 ## git branch
 Git 的分支也非常轻量。它们只是简单地指向某个提交纪录
@@ -232,7 +233,11 @@ git checkout -b 新分支名
 !!!!!推送
 git push origin master-preview:master-preview
 
-删除本地分支：git branch -d 分支名  (不能删除当前所在分支)
+# 查看本地分支
+ git branch
+
+# 删除本地分支：
+git branch -d 分支名  (不能删除当前所在分支)
 
 删除远程分支
 git push origin --delete 分支名

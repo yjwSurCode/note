@@ -182,6 +182,7 @@ api = new Proxy(api, {
 
 
 #! 以下是一些 Reflect 对象的常用方法：
+https://zh.javascript.info/proxy
 
 1. Reflect.apply(target, thisArg, argumentsList)
    调用一个目标函数，并传递一个指定的 this 值和参数列表。
@@ -397,25 +398,24 @@ export default defineConfig({     // vite umi??
 computed  是计算属性,依赖其它属性值，并且 computed 的值有缓存,只有它依赖的属性值发生改变,下一次获取 computed 的值时才会重新计算 computed  的值；
 watch 更多的是「观察」的作用,类似于某些数据的监听回调 ,每当监听的数据变化时都会执行回调进行后续操作；
 
+computed缓存原理  https://juejin.cn/post/7067953509026496520
 
 # 异步组件
-// const AsyncCategory = defineAsyncComponent(() => import("./AsyncCategory.vue"))
-
-//   import Loading from './Loading.vue';
-
-//   const AsyncCategory = defineAsyncComponent({
-//     loader: () => import("./AsyncCategory.vue"),
-//     loadingComponent: Loading,  占位组件，当AsyncCategory还没加载出来时候，显示这个组件
-//     errorComponent: 当AsyncCategory加载失败出现
-//     delay: 2000, 在显示loadingComponent组件之前, 等待多长时间
-//     /**
-//      * err: 错误信息,
-//      * retry: 函数, 调用retry尝试重新加载
-//      * attempts: 记录尝试的次数
-//      */
-//     onError: function(err, retry, attempts) {
-//     }
-//   })
+  const AsyncCategory = defineAsyncComponent(() => import("./AsyncCategory.vue"))
+  import Loading from './Loading.vue';
+  const AsyncCategory = defineAsyncComponent({
+    loader: () => import("./AsyncCategory.vue"),
+    loadingComponent: Loading,  占位组件，当AsyncCategory还没加载出来时候，显示这个组件
+    errorComponent: 当AsyncCategory加载失败出现
+    delay: 2000, 在显示loadingComponent组件之前, 等待多长时间
+    /**
+     * err: 错误信息,
+     * retry: 函数, 调用retry尝试重新加载
+     * attempts: 记录尝试的次数
+     */
+    onError: function(err, retry, attempts) {
+    }
+  })
 
 
 

@@ -153,6 +153,50 @@ export default OfflineHandle;
 
 # 8:第一次访问页面的时候很可能会存在“白屏”等待
 
+# 9:解决移动端 Retina屏1px像素问题
+1:css解决
+.border-1px { border: 1px solid #999 }
+@media screen and (-webkit-min-device-pixel-ratio: 2) {
+    .border-1px { border: 0.5px solid #999 }
+}
+/* dpr=2 和 dpr=3 情况下 border 相差无几，下面代码可以省略*/
+@media screen and (-webkit-min-device-pixel-ratio: 3) {
+    .border-1px { border: 0.333333px solid #999 }
+}
+
+1:border-image解决
+.border-1px{
+    border-bottom: 1px solid #000;
+}
+@media only screen and (-webkit-min-device-pixel-ratio:2){
+    .border_1px{
+        border-bottom: none;
+        border-width: 0 0 1px 0;
+        border-image: url(../img/1pxline.png) 0 0 2 0 stretch;
+    }
+}
+
+3:伪元素+transform解决
+.border-1px:before{
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 1px;
+    width: 100%;
+    background-color: #999;
+    transform-origin: 50% 0%;
+}
+@media only screen and (-webkit-min-device-pixel-ratio:2){
+    .border-1px:before{
+        transform: scaleY(0.5);
+    }
+}
+@media only screen and (-webkit-min-device-pixel-ratio:3){
+    .border-1px:before{
+        transform: scaleY(0.33);
+    }
+}
+
 
 next12使用 swc 替换掉 babel和ts部分 
 

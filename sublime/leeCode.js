@@ -1,3 +1,85 @@
+var a;
+console.log(a);
+a = 1;
+
+return;
+
+function strMapToObj(strMap) {
+  let obj = Object.create(null);
+  for (let [k, v] of strMap) {
+    obj[k] = v;
+  }
+  return obj;
+}
+
+const myMap = new Map().set('yes', true).set('no', false);
+
+console.log(strMapToObj(myMap), 'strMapToObj(myMap)', strMapToObj(myMap).yes);
+
+return;
+
+const s = new Set();
+[2, 3, 5, 4, 5, 2, 2].forEach((x) => s.add(x));
+console.log(s, 's', [...s]);
+
+return;
+Promise.retry = function (promiseFn, times = 3) {
+  return new Promise(async (resolve, reject) => {
+    while (times--) {
+      try {
+        console.log('try1');
+        var ret = await promiseFn();
+        console.log('try2');
+        resolve(ret);
+        break;
+      } catch (error) {
+        if (!times) reject(error);
+      }
+    }
+  });
+};
+
+function getProm() {
+  console.log('123');
+  const n = Math.random();
+  return new Promise((resolve, reject) => {
+    // resolve(n);
+    // 判断接口是否成功
+    setTimeout(() => (n > 0.9 ? resolve(n) : reject(n)), 100);
+  });
+}
+
+Promise.retry(getProm).then((e) => {
+  console.log('try3', e);
+});
+
+return;
+
+var combine = function (n, k) {
+  let res = [];
+  let path = [];
+  function backtracking(n, k, startIndex) {
+    if (path.length == k) {
+      res.push([...path]);
+      return;
+    }
+    //i <= n - (k - path.length) + 1为剪枝操作
+    // 如果n=4,k=4，那么从元素2开始的遍历都没有意义。所以在每层遍历时可以进行剪枝操作。还需要添加的元素个数是k-path.length，因此最多从index为n - (k - path.length) + 1处开始遍历，剩余的元素才够添加
+    // n - (k - path.length) + 1    ----- 2
+    console.log(n - (k - path.length), '1111');
+    for (let i = startIndex; i <= n - (k - path.length) + 1; i++) {
+      path.push(i);
+      backtracking(n, k, i + 1); // 2 3 4
+      path.pop();
+    }
+  }
+  // 默认从1开始
+  backtracking(n, k, 1);
+  return res;
+};
+
+console.log(combine(10, 2), 'combine');
+return;
 // ! 1:有效括号 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
 var isValid = function (s) {
   s = s.split('');
@@ -416,9 +498,9 @@ console.log(
 const res =
   (String(data.value).split('.')[0] || []).length > 7
     ? String(data.value)
-      .split('.')[0]
-      .substring(4)
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '万'
+        .split('.')[0]
+        .substring(4)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '万'
     : String(data.value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 console.log(res, 'res');
@@ -630,7 +712,6 @@ function fib(n) {
 
 console.log(fib(123), 'fib(123)');
 
-
 // # 循环引用
 const isCyclic = (obj) => {
   // 使用Set数据类型来存储已经检测过的对象
@@ -693,16 +774,14 @@ const isCyclic = (obj) => {
 // const filteredData = filterData(selectedPgSeq, selectedBusinessTypes, seqData);
 // console.log(filteredData);
 
-
 const filterData = (selectedPgSeq, selectedBusinessTypes, data) => {
-  return data.filter(item => {
+  return data.filter((item) => {
     const pgSeqMatch = selectedPgSeq.includes(item.pgSeq);
-    
-    const businessTypeMatch = (
+
+    const businessTypeMatch =
       (selectedBusinessTypes.a && item.businessType === '1') ||
-      (selectedBusinessTypes.b && item.businessType === '2')||
-      (selectedBusinessTypes.c && item.businessType === '3')
-    );
+      (selectedBusinessTypes.b && item.businessType === '2') ||
+      (selectedBusinessTypes.c && item.businessType === '3');
 
     return pgSeqMatch && businessTypeMatch;
   });
@@ -712,32 +791,32 @@ const filterData = (selectedPgSeq, selectedBusinessTypes, data) => {
 const seqData = [
   {
     businessType: '1',
-    pgSeq: "1",
+    pgSeq: '1',
   },
   {
     businessType: '2',
-    pgSeq: "1",
+    pgSeq: '1',
   },
   {
     businessType: '3',
-    pgSeq: "1",
+    pgSeq: '1',
   },
   {
     businessType: '1',
-    pgSeq: "2",
+    pgSeq: '2',
   },
   {
     businessType: '2',
-    pgSeq: "2",
+    pgSeq: '2',
   },
   {
     businessType: '3',
-    pgSeq: "2",
-  }
+    pgSeq: '2',
+  },
 ];
 
-const selectedPgSeq = ["1"]; // 单选华中区
-const selectedBusinessTypes = { a: true, b: true, c:true }; // 多选大超和中超
+const selectedPgSeq = ['1']; // 单选华中区
+const selectedBusinessTypes = { a: true, b: true, c: true }; // 多选大超和中超
 
 const filteredData = filterData(selectedPgSeq, selectedBusinessTypes, seqData);
 console.log(filteredData);

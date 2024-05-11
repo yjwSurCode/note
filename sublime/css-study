@@ -176,6 +176,10 @@ button{
   animation: throttle 2s step-end forwards;
 }
 
+# 防抖关于输入中文
+onCompositionStart onCompositionEnd
+input_dom.addEventListener('compositionstart',onCompositionStart);
+
 
 
 # GRID(grid)布局 ：：：：：：：：：：：：：：：：：：：：：：：：

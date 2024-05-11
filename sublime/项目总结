@@ -1,12 +1,43 @@
 项目：
-react pc网站 
-小程序
-expo RN app
-企业级组件库开发
-threejs ERP系统和物联网三维监控系统
+vue的 BtoB BtoC 项目
+react类组件模式 开发过pc端公司官网
+taro 开发过自研购物小程序 名字是大润发优鲜
+expo搭建的 RN app
+react hooks组件 搭建企业级组件库开发
+vue+threejs ERP系统和物联网三维监控系统
+
 next 签证网站
 node+docker+nginx+mysql 学生教师提交作业批改作业和在线交流系统的后台  node基于express的脚手架 
-研究 vite Webpack 原理和区别 掘金发布一些文章和 npm上发布一些工具包
+研究 vite esbuild Webpack Rollup 原理和区别
+掘金发布一些文章和 npm上发布一些工具包
+
+项目难点:
+# 大文件上传 文件分片上传 断点续传 秒传  ![](note/sublime/assets/大文件上传.png) 
+https://github1s.com/shenmaxg/file-upload-react/blob/main/src/uploader.js
+
+1:秒传 传文件hash值给后端 
+2:分片上传
+3:限制并发
+4:失败重试
+5:断点续传--服务器告知客户端该文件是否已经存在，如果存在，是否完整。如果文件已经存在且不完整，则返回已上传的切片信息
+根据后端返回的已上传的切片和整个文的切片做对比 进行过滤。
+chunks.forEach((chunk: any, index: number) => {
+      let hashName = hash + "-" + index;  //hash 是整个文件的hash
+      if (uploadedList.includes(hashName)) {
+        finishProgress++;
+        return;
+      }
+      const form = new FormData();
+      form.append("fileName", hashName);
+      form.append("chunk", chunk.file);
+      form.append("hash", hash);
+      fromParmas.push({ form, error: 0, progress: 0, index });
+    });
+6:用完一定要销毁web worker
+将文件哈希计算任务放在Web Worker中的主要优势之一是它可以将这个计算任务从主线程中分离出来,从而提高页面的响应性能。
+因为在哈希计算的过程中，主线程可以继续处理用户交互，而不会因为计算任务而被阻塞
+
+
 
 项目描述：
 项目背景：
@@ -370,51 +401,7 @@ https://juejin.cn/post/7226187878321471549
 手写webpack打包工具的插件plugin
 实现简易版webpack
 
-# 文件上传 七牛云 阿里OSS
 
-
-# 文件分片上传 断点续传 秒传 2024-01-23-16-53-57.png
-秒传
-import SparkMD5 from 'spark-md5'
-getFileMD5(file, callback) {
-        let spark = new SparkMD5.ArrayBuffer()
-        let fileReader = new FileReader()
-        let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice
-        let currentChunk = 0
-        let chunks = Math.ceil(file.size / CHUNK_SIZE)
-        let startTime = new Date().getTime()
-        file.pause()
-
-        // 分片1
-        loadNext()
-
-        fileReader.onload = function(e) {
-          spark.append(e.target.result)
-          if (currentChunk < chunks) {
-            // 分片2 递归增加分片段
-            currentChunk++
-            loadNext()
-          } else {
-            // 分片3 计算MD5值开始上传
-            let md5 = spark.end()
-            console.log(`MD5计算完毕：${md5}，耗时：${new Date().getTime() - startTime} ms.`)
-            callback(md5)
-          }
-        }
-
-        fileReader.onerror = function() {
-          this.$message.error('文件读取错误')
-          file.cancel()
-        }
-
-        function loadNext() {
-          const start = currentChunk * CHUNK_SIZE
-          const end = ((start + CHUNK_SIZE) >= file.size) ? file.size : start + CHUNK_SIZE
-          fileReader.readAsArrayBuffer(blobSlice.call(file.file, start, end))
-        }
-      },
-
-分片上传
 
 
 # 虚拟滚动
@@ -462,10 +449,44 @@ git 提交规范
   HtmlWebpackPlugin HTML压缩
   CommonsChunkPlugin 提取公共资源 
   MiniCssExtractPlugin 提取css并压缩
+  clean-css对css压缩
 3:图片资源优化
   使用雪碧图(CSS Sprite) https://www.toptal.com/developers/css/sprite-generator
 4.利用浏览器缓存
+  强缓存 协商缓存
 5.使用CDN
+  资源预加载
+6. async defer module 加载 
+../note/sublime/assets/defer-async-moudle.png
+parser(HTML解析)
+fetch(脚本的加载)
+execution(脚本执行)
+
+# 懒加载 也叫延迟加载
+通过滚动事件+getBoundingClientRect 判断元素是否显示在窗口
+IntersectionObserver 监听元素
+  const observe = new IntersectionObserver(callback);
+  if (observeRef.current) {
+    observe.observe(observeRef.current);
+  }
+
+# 预加载  https://juejin.cn/post/7148058997252816909
+简单来说就是将所有所需的资源提前请求加载到本地，这样后面在需要用到时就直接从缓存取资源。 
+'Resource Hints 标准' 包括 DNS Prefetch、Preconnect、Prefetch 与 Prerender。
+组件preloadJs
+<link rel="prefetch" href="/prefetch.js" as="script">
+<link rel="prerender" href="//sample.com/nextpage.html">
+<link rel="preload" href="./nextpage.js" as="script">
+
+# 虚拟滚动 虚拟列表
+react-window
+
+# 按需加载
+使用babel/plugin-syntax-dynamic-import插件
+babel-plugin-import
+原理: babel词法分析+语法分析---AST---转化(删除无用的模块)----AST---代码生成
+
+
 对于首次访问的加速,我们需要从网络层面进行优化,最常见的手段就是CDN(Content Delivery Network,内容分发网络)加速。
 通过将静态资源(例如javascript,css,图片等等)缓存到离用户很近的相同网络运营商的CDN节点上,不但能提升用户的访问速度，还能节省服务器的带宽消耗，降低负载.
 
@@ -483,7 +504,11 @@ git 提交规范
   对以上几个网站提前解析 DNS，由于它是并行的，不会堵塞页面渲染，这样可以缩短资源加载的时间
 
 link 代替 @import
-加载页面时，link标签引入的 CSS 被同时加载；@import引入的 CSS 将在页面加载完毕后被加载。
+加载页面时<link标签引入的CSS被同时加载 
+@import引入的CSS将在页面加载完毕后被加载。
+
+
+
 
 
 
@@ -521,7 +546,7 @@ export default {
 # react-i18next 国际化
 
 
-# ue项目中使用可选链 ( ?. )和双问号 ( ??）
+# 在项目中使用可选链 ( ?. )和双问号 ( ??）
 
 1.安装插件：@babel/plugin-proposal-optional-chaining
 

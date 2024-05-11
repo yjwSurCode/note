@@ -100,7 +100,7 @@ var json = stage.toJSON();
 var stage = Konva.Node.create(json, 'container');
 
 
-#? cache clone  缓存
+#? cache clone 
 layer.add(star);
 stage.add(layer);
 star.cache();

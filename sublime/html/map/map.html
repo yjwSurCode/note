@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>自定义栅格图层</title>
+  </head>
+  <script
+    charset="utf-8"
+    src="https://map.qq.com/api/gljs?v=1.exp&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77"
+  ></script>
+  <script
+    type="text/javascript"
+    src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"
+  ></script>
+  <style type="text/css">
+    html,
+    body {
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    #mapContainer {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <body>
+    <div id="mapContainer"></div>
+    <div
+      style="
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        position: absolute;
+        top: 20px;
+        z-index: 99999;
+      "
+    >
+      <div
+        id="playId"
+        style="
+          background-color: rgb(255, 255, 255);
+          border-radius: 10px;
+          width: 40px;
+          height: 20px;
+          text-align: center;
+          line-height: 20px;
+          font-size: 10px;
+          color: rgb(0, 255, 255);
+        "
+      >
+        游
+      </div>
+      <div
+        style="
+          background-color: rgb(255, 255, 255);
+          border-radius: 10px;
+          width: 40px;
+          height: 20px;
+          text-align: center;
+          line-height: 20px;
+          font-size: 10px;
+          color: rgb(0, 255, 255);
+        "
+      >
+        玩
+      </div>
+    </div>
+    <p id="markerId">markerID:</p>
+    <p id="position">当前marker位置:</p>
+
+    <div class="markerContet">
+      <div>介绍</div>
+      <div>导航</div>
+      <div>全景</div>
+      <div>语音</div>
+    </div>
+    <script>
+      function play() {
+        console.log('123');
+        wx.miniProgram.postMessage({
+          // 向小程序发送消息
+          data: {
+            title: 'play',
+            // path: `${
+            //   MINI_PROGRAME_URL_MAP['good']
+            // }?src=${getUrlPrefix()}/good/${goodDetail.id}`,
+            path: `/pages/web-view/index`,
+            // imageUrl: goodDetail?.good_img,
+          },
+        });
+      }
+
+      document.getElementById('playId').addEventListener('click', play, false);
+
+      const initPage = () => {
+        const weChatUrl = window.location.href;
+        console.log(weChatUrl, 'weChatUrl');
+
+        let urlStr = weChatUrl.split('?')[1];
+        if (!urlStr) return;
+        console.log(urlStr, 'urlStr', encodeURIComponent(urlStr));
+        const urlSearchParams = new URLSearchParams(urlStr);
+        console.log(urlSearchParams, 'urlSearchParams');
+        const result = Object.fromEntries(urlSearchParams.entries());
+        console.log(result.list, 'result1');
+        const markerList = JSON.parse(result.list); //const params = [ { position: [30, 114], content: "Marker 1" },
+        console.log('🚀 ~ markerList:', markerList.length);
+        //   if (!markerList && markerList.length == 0) return;
+
+        // const geometriesList = markerList.map((item, index) => {
+        //   return {
+        //     id: 'demo',
+        //     styleId: 'marker',
+        //     position: new TMap.LatLng(item.position[0], item.position[1]),
+        //     properties: {
+        //       title: item.content,
+        //     },
+        //   };
+        // });
+
+        const geometriesList = [
+          {
+            id: 'demo1',
+            styleId: 'marker',
+            position: new TMap.LatLng(26.870355, 100.239704),
+            content: '那家山城',
+            properties: {
+              title: 'marker',
+            },
+          },
+          {
+            id: 'demo2',
+            styleId: 'marker',
+            position: new TMap.LatLng(26.875355, 100.239704),
+            content: '我乐家具',
+            properties: {
+              title: 'marker',
+            },
+          },
+        ];
+        console.log(geometriesList, 'geometriesList');
+
+        //初始化地图
+        var map = new TMap.Map('mapContainer', {
+          zoom: 15,
+          maxZoom: 16,
+          center: new TMap.LatLng(26.870355, 100.239704), // 设置地图中心点坐标，
+          pitch: 0, // 俯仰度
+          rotation: 0, // 旋转角度
+        });
+        // 瓦片命名规范为：z(地图级别)/x(列号)_y(行号).png（以png格式举例）
+        //初始化imageTileLayer
+        var imageTileLayer = new TMap.ImageTileLayer({
+          getTileUrl: function (x, y, z) {
+            //拼接瓦片URL
+            var url =
+              'https://3gimg.qq.com/visual/lbs_gl_demo/image_tiles_layers/' +
+              z +
+              '/' +
+              x +
+              '_' +
+              y +
+              '.png';
+            return url;
+          },
+          tileSize: 256, //瓦片像素尺寸
+          minZoom: 14, //显示自定义瓦片的最小级别
+          maxZoom: 16, //显示自定义瓦片的最大级别
+          visible: true, //是否可见
+          zIndex: 5000, //层级高度（z轴）
+          opacity: 0.95, //图层透明度：1不透明，0为全透明
+          map: map, //设置图层显示到哪个地图实例中
+        });
+
+        //初始化marker
+        var marker = new TMap.MultiMarker({
+          id: 'marker-layer',
+          map: map,
+          styles: {
+            marker: new TMap.MarkerStyle({
+              width: 20,
+              height: 35,
+              anchor: { x: 16, y: 32 },
+              src: 'http://106.12.154.161/images/四合院.png',
+              // 设置文案偏移
+              offset: { x: 0, y: 15 },
+            }),
+          },
+          // 个数
+          geometries: geometriesList,
+        });
+
+        // 添加 marker
+        //   markerLayer.add({
+        //     position: evt.latLng,
+        //   });
+
+        var markerID = document.getElementById('markerId');
+        var position = document.getElementById('position');
+
+        //初始化infoWindow 信息窗口
+        // var infoWindow = new TMap.InfoWindow({
+        //   map: map,
+        //   position: new TMap.LatLng(26.870355, 100.239704),
+        //   offset: { x: 0, y: -32 }, //设置信息窗相对position偏移像素
+        //   content: `
+        //             <div class="markerContet">
+        //             <div id="sign">介绍</div>
+        //             <div>导航</div>
+        //             <div>全景</div>
+        //             <div>语音</div>
+        //             </div>
+        //             `,
+        //   // "<div><img src='https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/em.jpg'><p>Hello World!</p></div>",
+        // });
+        // infoWindow.close(); //初始关闭信息窗关闭
+        var eventClick = function (evt) {
+          console.log('123', evt);
+          // 网页端
+          // window.parent.postMessage('hello, Taro', '*');
+          wx.miniProgram.postMessage({
+            // 向小程序发送消息
+            data: {
+              title: '123',
+              // path: `${
+              //   MINI_PROGRAME_URL_MAP['good']
+              // }?src=${getUrlPrefix()}/good/${goodDetail.id}`,
+              path: `/pages/web-view/index`,
+              // imageUrl: goodDetail?.good_img,
+            },
+          });
+          // infoWindow.open(); //打开信息窗
+          // infoWindow.setPosition(evt.geometry.position); //设置信息窗位置
+          // infoWindow.setContent(evt.geometry.position.toString()); //设置信息窗内容
+
+          // markerID.innerHTML = 'markerID:' + evt.geometry.id;
+          // position.innerHTML =
+          //   '当前marker位置：' + evt.geometry.position.toString();
+        };
+        var eventClick1 = function (evt) {
+          console.log('456', evt);
+        };
+        marker.on('click', eventClick);
+
+        infoWindow.on('click', eventClick1);
+
+        new TMap.event.addListener(infoWindow, 'domready', function () {
+          console.log('domready');
+          // window.document
+          //   .getElementById('sign')
+          //   .addEventListener('click', this.goSign, false);
+        });
+      };
+
+      initPage();
+    </script>
+  </body>
+</html>
