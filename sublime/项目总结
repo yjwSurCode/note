@@ -251,7 +251,10 @@ easing:'cubic-bezier(1,0.01,0,1)'
 11. `clearTimeout(id);` - 使用 clearTimeout 方法取消延迟调用。
 通过以上代码，我们可以在不同浏览器中使用 requestAnimationFrame 和 cancelAnimationFrame 方法，以实现更加流畅的动画效果，并且无需担心浏览器兼容性问题。
 
-#!单点登录
+#! 单设备登录 
+../sublime/assets/单设备登录.png
+
+#! 单点登录SSO https://juejin.cn/post/7342349357386252314
 1、一个系统登录流程：用户进入系统——未登录——跳转登录界面——用户名和密码发送——服务器端验证后，设置一个cookie发送到浏览器，设置一个session存放在服务器——用户再次请求（带上cookie）——服务器验证cookie和session匹配后，就可以进行业务了。
 2、多个系统登录：如果一个大公司有很多系统，a.seafile.com, b.seafile.com,c.seafile.com。这些系统都需要登录，如果用户在不同系统间登录需要多次输入密码，用户体验很不好。所以使用 SSO (single sign on) 单点登录实现。
 3、相同域名，不同子域名下的单点登录：在浏览器端，根据同源策略，不同子域名的cookie不能共享。所以设置SSO的域名为根域名。SSO登录验证后，子域名可以访问根域名的 cookie，即可完成校验。在服务器端，可以设置多个子域名session共享（Spring-session）
@@ -259,6 +262,12 @@ easing:'cubic-bezier(1,0.01,0,1)'
 ../note/sublime/assets/note2023-12-08-09-10-38.png
 
 子域会自动继承父域中的 Cookie。
+
+#! oauth2（第三方登录授权）
+
+
+#! jwt https://juejin.cn/post/7319700227525476387
+../sublime/assets/jwt.png
 
 
 

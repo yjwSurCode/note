@@ -25,6 +25,7 @@
 # window安装node：：：：：：：：：：：：：：：：：：：
 nvm 下载官方安装包
 安装版本  在nvm文件夹中先创建版本文件夹 v11.15.0
+nvm setup
 nvm install 11.15.0(安装node版本)
 nvm ls
 使用 nvm use 11.15.0

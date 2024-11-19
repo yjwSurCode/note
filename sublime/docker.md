@@ -18,6 +18,11 @@ Docker 能够自动执行重复性任务，例如搭建和配置开发环境，�
 安装最新版本的 Docker Engine-Community 和 containerd。
 ## 3: sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
+# 安装docker-compose 
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+
 
 * 查看docker： docker -v
 * Docker version 20.10.17, build 100c701
@@ -36,6 +41,23 @@ Docker 能够自动执行重复性任务，例如搭建和配置开发环境，�
  需要重启一下
 
 
+ # 文档地址： https://kb.fit2cloud.com/?p=315935ca-79be-4412-a7da-6aaa932cc6e2
+ 
+
+
+ 虚拟机架构   容器架构
+
+ # 查看服务器操作系统
+ [root@iZbp1go3fz52d9hf1a9emkZ next]# cat /etc/redhat-release
+Alibaba Cloud Linux release 3 (Soaring Falcon) 
+[root@iZbp1go3fz52d9hf1a9emkZ next]# ^C
+[root@iZbp1go3fz52d9hf1a9emkZ next]# 
+
+
+
+docker-compose  version
+
+# 使用
 命令：
 > 1 查看镜像 docker images
 >
@@ -83,6 +105,22 @@ docker tag robot robot:v2   (robot 是 REPOSITORY)
 docker run --name dockercontainer -d -p 3000:3000 robot
 
 （docker run --name robotnameroute（容器名称自取） -d -p 3002:3002 robot（镜像名称））
+
+
+
+# 进入容器
+docker exec -it <container_id_or_name> /bin/sh
+
+
+
+# 执行docker-compose 
+docker-compose  up -d
+
+
+# 容器内的数据 持久化存储
+
+
+hostname -I
 
 <br>
 
@@ -218,3 +256,30 @@ docker-compose stop
 
 #### 查看某个容器服务运行日志
 docker-compose logs service-name
+
+
+
+
+
+
+
+
+
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+错误: 740
+
+需要提升权限才能运行 DISM。
+使用提升的命令提示符完成这些任务。
+
+# cmd 管理员模式运行 
+
+# 启动 Hyper-V
+DISM /Online /Enable-Feature /All /FeatureName:Microsoft-Hyper-V
+
+
+
+docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main
+
+
+https://www.cnblogs.com/jokingremarks/p/18158530

@@ -280,6 +280,7 @@ accept current change 保留现在本地最新的
 
 accept incoming change  选择git最新的
 
+git tag 列出
 
 git tag 标签名 ：直接给当前的提交版本创建一个【轻量标签】
 git tag 标签名 提交版本号  ：给指定的提交版本创建一个【轻量标签】
@@ -295,12 +296,17 @@ git tag -a 标签名称 提交版本号 -m 附注信息
 -a:理解为
 annotated的首字符，表示附注标签
 -m:指定附注信息
-git tag-a标签名称-m附注信息：直接给当前的提交版本创建一个【附注标签】
-git tag-a标签名称提交版本号-m附注信息：给指定的提交版本创建一个【附注标签】
+
+git tag -a 标签名称 -m 附注信息：直接给当前的提交版本创建一个【附注标签】
+
+git tag -a 标签名称提交版本号-m附注信息：给指定的提交版本创建一个【附注标签】
 
 $ git tag -a 标签名称 -m 附注信息
 or
 $ git tag -a 标签名称 提交版本号 -m 附注信息
+
+
+git tag -d
 
 
 
@@ -315,18 +321,28 @@ $ git tag -a 标签名称 提交版本号 -m 附注信息
 // chore: 改变构建流程、或者增加依赖库、工具等
 // revert: 回滚到上一个版本
 
+
+
+git branch -m <旧分支名> <新分支名>
+
 // 创建本地新的分支： git branch -b newbranch
 // 创建新的分支：git branch gh-dev（分支名字）   
 // 删除branch：git branch -d 名称
 // git branch -r ，查看远程的分支名   git branch -a
 
 
+添加注释
+git config branch.remotes/origin/feature/V1.2.0.description "2024-12月份上线"
+git config branch.[remotes/origin/feature/V1.2.0].description "2024-12"
+
+git config branch.[remotes/origin/feature/V1.2.0].description
+
 //切换分支 git checkout preview
 
 //  git checkout -b  test master 在master分支上创建一个test分支
 
 // 删除远程分支 Chapater6
-// git push origin--delete Chapater6
+// git push origin --delete Chapater6
 
 // 删除本地分支 Chapater6
 // git branch -d Chapater6

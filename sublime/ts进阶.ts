@@ -322,3 +322,6 @@ export interface PerformanceResponseData<T = any> {
   msg?: string;
   body: T;
 }
+
+
+const a={"chats": [{"time": "11:02:45", "value": "这样的议论是针对谁呢？", "sender": "audience", "type": "textMessage", "label": {"question": true, "knowledge": false, "negative": false}}, {"time": "11:08:38", "sender": "audience", "type": "textMessage", "value": "我也是一个从小被这样训到大的女生哦，总会被指责缺心少肺、没心眼儿、没眼力见儿、看不出来眉眼高低等等。不过在我成长一段时间之后，发现这件事情其实很简单，也没有什么大的问题。如果你愿意的话，可以找我聊聊，倾诉一下你遇到的事情，希望能够帮到你。我是树洞小太阳，欢迎你来找我玩❤", "label": {"question": false, "knowledge": false, "negative": false}}, {"time": "11:15:17", "sender": "audience", "type": "textMessage", "value": "好惨", "label": {"question": false, "knowledge": false, "negative": false}}, {"time": "11:15:35", "sender": "audience", "type": "textMessage", "value": "原生家庭也这么对你吗", "label": {"question": false, "knowledge": false, "negative": false}}], "owner": "匿名", "title": "女 听过别人最多的议论就是干啥啥不行不长心眼没有脑子", "md5": "2f63d374c071043d9e1968aefa62ffb7"}

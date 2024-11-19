@@ -22,6 +22,7 @@ ts-depot/*node_modules/
 sublime/html/custom-webpack/web-init/*node_modules/
 
 /Users/surcode/Desktop/material/sublime/.history
+/*.history
 
 # hooks/hooks-master/*
 # hooks/react-main/*
