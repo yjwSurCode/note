@@ -54,6 +54,13 @@ npm-check-updates
 更新包  ncu -u
 
 
+检查每个包的更新
+## pnpm outdated
+
+更新单个依赖包
+pnpm update <package-name>@latest 这个是更新指定的依赖到最新的版本
+
+
 # upgrade only mocha
 ncu mocha
 ncu -f mocha

@@ -1068,3 +1068,20 @@ function getProm() {
 Promise.retry(getProm).then((e) => {
   console.log('try3', e);
 });
+
+
+
+//! INPUT 取消事件
+
+  // 模拟取消事件
+  window.addEventListener(
+    'focus',
+    () => {
+      setTimeout(() => {
+        // 取消逻辑处理
+        console.log('取消了，我要处理一些事情了')
+        videoLoading.value = false
+      }, 100)
+    },
+    { once: true }
+  )
