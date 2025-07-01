@@ -322,7 +322,6 @@ git tag -d
 // revert: 回滚到上一个版本
 
 
-
 git branch -m <旧分支名> <新分支名>
 
 // 创建本地新的分支： git branch -b newbranch
@@ -343,6 +342,7 @@ git config branch.[remotes/origin/feature/V1.2.0].description
 
 // 删除远程分支 Chapater6
 // git push origin --delete Chapater6
+<!-- git push origin --delete remoteBranchName -->
 
 // 删除本地分支 Chapater6
 // git branch -d Chapater6
