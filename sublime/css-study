@@ -361,6 +361,30 @@ https://juejin.cn/post/6844903479681499150
 # autofit 浏览器自适应
 
 
+物理像素 (Physical Pixels)
+    ↑
+    × DPR (如：3.0)
+    ↓
+CSS逻辑像素 (px, rpx, rem的基准)
+    ↑
+    × 视口/容器比例
+    ↓
+相对单位 (vw, vh, em, rem, %)
+
+
+在 DPR=1 的屏幕上：占用 100 个物理像素
+
+在 DPR=2 的屏幕上：占用 200 个物理像素（100px × 2）
+
+px 是逻辑单位，会被 DPR 放大到物理像素
+
+
+/* 微信小程序：屏幕宽度固定为 750rpx */
+.box {
+    width: 375rpx; /* 在任何设备上都是屏幕的一半宽度 */  rpx 在底层会转换为物理像素，转换过程自动考虑了 DPR
+}
+
+
 滚动条：npm i perfect-scrollbar
 
 

