@@ -24,5 +24,10 @@ sublime/html/custom-webpack/web-init/*node_modules/
 /Users/surcode/Desktop/material/sublime/.history
 /*.history
 
+/*.specstory
+
 # hooks/hooks-master/*
 # hooks/react-main/*
+.specstory/*
+
+.vscode/

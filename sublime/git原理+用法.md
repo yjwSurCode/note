@@ -136,6 +136,10 @@ git update-index --add<file>
 # 查看远程地址 
 git remote -v
 
+
+## 重命名分支
+切换到想要重命名的分支 git branch -m new-branch-name
+
 HEAD：当前提交你的回购。大多数时候都  HEAD 指向分支中的最新提交，但情况并非如此。 HEAD 真的只是意味着“我的回购目前指向的是什么”。
 master：git在首次创建repo时为您创建的默认分支的名称。在大多数情况下，“主”意味着“主要分支”。大多数商店都有人推动掌握，而主人被认为是回购的最终观点。但是发布分支也很常见，因为发布分支是由master发布的。您的本地仓库有自己的主分支，几乎总是跟随远程仓库的主人。
 origin：git为主远程仓库提供的默认名称。你的盒子有自己的仓库，你最有可能推出一些你和你的同事所推动的远程仓库。这个远程仓库几乎总是被称为原产地，但并非必须如此。
@@ -218,7 +222,7 @@ git stash list
 （7）git stash drop stash@{$num} ：丢弃stash@{$num}存储，从列表中删除这个存储
 （8）git stash clear ：删除所有缓存的stash
 
-
+重命名分支
 #更改分支名称
 git branch -m oldName newName
 
@@ -227,7 +231,7 @@ git checkout -b 新分支名
 
 提交：git push --set-upstream origin 新分支名称
 
-# 创建远程分支
+# 创建远程分支  新建分支
 git checkout -b 新分支名
 
 !!!!!推送
@@ -280,7 +284,33 @@ accept current change 保留现在本地最新的
 
 accept incoming change  选择git最新的
 
-git tag 列出
+git tag 列出（只显示标签名，不显示备注）
+
+// 列出所有 tag 并显示附注信息（-n 默认显示 1 行，-n5 显示 5 行）
+git tag -n
+git tag -n5
+
+// 按模式过滤再列出（搭配 -l / --list）
+git tag -l "v1.*" -n
+
+// 查看单个 tag 的详细信息（包含 tagger、日期、附注、对应的 commit）
+git show 标签名
+🌰：git show v1.0.0
+
+// 只看 tag 自身的元数据（不带 commit diff）
+git show 标签名 --no-patch
+git show 标签名 -s
+
+// 用 for-each-ref 自定义输出（推荐：tag 名 + 备注一行展示）
+git for-each-ref --format="%(refname:short)  %(contents:subject)" refs/tags
+
+// 按时间倒序列出 tag + 备注
+git for-each-ref --sort=-creatordate --format="%(refname:short) | %(creatordate:short) | %(contents:subject)" refs/tags
+
+说明：
+轻量标签（lightweight）本身不存储备注，只是一个指向 commit 的引用，所以 -n 看到的是该 commit 的提交说明
+附注标签（annotated，用 -a 创建）才有自己的 tagger、日期、备注信息
+git tag 默认只输出名字是为了脚本友好，加 -n 才会带上备注
 
 git tag 标签名 ：直接给当前的提交版本创建一个【轻量标签】
 git tag 标签名 提交版本号  ：给指定的提交版本创建一个【轻量标签】
@@ -306,7 +336,37 @@ or
 $ git tag -a 标签名称 提交版本号 -m 附注信息
 
 
-git tag -d
+2.2.3 删除标签
+
+// 删除本地 tag
+git tag -d 标签名
+🌰：git tag -d v1.0.0
+
+// 批量删除本地 tag
+git tag -d 标签1 标签2 标签3
+
+// 删除远程 tag（写法一：推荐）
+git push origin --delete 标签名
+🌰：git push origin --delete v1.0.0
+
+// 删除远程 tag（写法二：推送一个空引用到远程的 tag）
+git push origin :refs/tags/标签名
+🌰：git push origin :refs/tags/v1.0.0
+
+// 删除所有本地 tag（谨慎使用）
+git tag | xargs git tag -d
+// Windows PowerShell 写法
+git tag | ForEach-Object { git tag -d $_ }
+
+// 完整流程：先删本地，再删远程
+git tag -d v1.0.0
+git push origin --delete v1.0.0
+
+说明：
+-d：delete 的首字符，表示删除标签
+删除远程 tag 必须显式 push，否则只删除了本地，远程仓库依然存在
+其他人 fetch 后本地依旧有旧 tag，需要执行 git fetch --prune --prune-tags 才能同步删除
+
 
 
 
@@ -538,3 +598,10 @@ yarn config set global-folder "E:\Developer\Yarn\global"
 查看当前Yarn的bin位置
 
 yarn global dir     .config 同级
+
+
+
+
+git remote set-url origin 新的仓库地址
+
+git push --set-upstream origin develop2.2

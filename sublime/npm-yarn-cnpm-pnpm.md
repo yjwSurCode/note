@@ -55,7 +55,28 @@ npm-check-updates
 
 
 检查每个包的更新
+检测更新 检查更新
 ## pnpm outdated
+
+
+# 发包
+
+npm publish
+
+
+npm_<YOUR_NPM_TOKEN>
+
+
+cat ~\.npmrc
+
+
+npm config set //registry.npmjs.org/:_authToken=npm_<YOUR_NPM_TOKEN>
+
+npm config set //registry.npmjs.org/:_authToken=npm_<YOUR_NPM_TOKEN>
+
+
+
+
 
 更新单个依赖包
 pnpm update <package-name>@latest 这个是更新指定的依赖到最新的版本
